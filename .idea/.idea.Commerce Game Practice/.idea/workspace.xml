@@ -2,13 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e3c45448-3ae0-40fa-9f8a-52f5b5fc4771" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Ads.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Commerce Game Practice/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Commerce Game Practice/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/AdsManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/AdsManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/InputManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/InputManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,7 +16,9 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/06fbd62add444b7e9fd9bccbc64e80113c00/df/12cb2caa/AdRequest.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/1f0be198f5164d2489de92f22c998266811600/48/3a5d6388/Handles.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c9b29c1f98764d19904aec63c99319c36400/b9/62cfa5fd/RewardedAd.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/AdsManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/InputManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/SceneManager.cs" root0="FORCE_HIGHLIGHTING" />
@@ -62,10 +64,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="6072">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="6072" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -82,7 +84,8 @@
       <option name="presentableId" value="Default" />
       <updated>1666680138916</updated>
       <workItem from="1666680138995" duration="6365000" />
-      <workItem from="1666796314340" duration="2978000" />
+      <workItem from="1666796314340" duration="3600000" />
+      <workItem from="1666882569816" duration="1628000" />
     </task>
     <servers />
   </component>

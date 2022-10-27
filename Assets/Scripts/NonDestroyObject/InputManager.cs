@@ -19,14 +19,18 @@ namespace NonDestroyObject
         // Update is called once per frame
         void Update()
         {
-            if (Input.touchCount == 0)
+            foreach (var touch in Input.touches)
             {
-                Touch touch = Input.GetTouch(0);
-
                 if (touch.phase == TouchPhase.Began)
                 {
-                    
+                    AdsManager.Instance.RequestRewardAds();
                 }
+            }
+
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                Debug.Log("ASDF");
+                AdsManager.Instance.RequestRewardAds();
             }
         }
     }
