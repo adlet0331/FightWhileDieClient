@@ -31,22 +31,31 @@ namespace Combat
         [SerializeField] private float attackEnd;
         [SerializeField] private float attackAfterDelay;
         [SerializeField] private ObjectType type;
-        
-        [Header("If AI, Need to be Initialized")]
+
+        [Header("If AI, Need to be Initialized")] 
+        [SerializeField] private float runningSpeed;
+        [SerializeField] private float backJumpSpeed;
         [SerializeField] private float knockBackXInterval;
         [SerializeField] private float knockBackTime;
 
         public int MaxHp => maxHp;
         public bool EnemyInRange => attackHitBox.EnemyInRange;
         public bool Attacking => attacking;
+        // Only For AI
+        public bool Running => running;
+        public bool BackJumping => backJumping;
         public bool Damaging => damaging;
 
         [Header("Debuging")] 
         [SerializeField] private int currentHp;
         [SerializeField] private bool attacking;
         [SerializeField] private bool attackedAlready;
+        [Header("Debuging Only For Enemy")]
+        [SerializeField] private bool running;
+        [SerializeField] private bool backJumping;
         [SerializeField] private bool damaging;
 
+        [Header("Components")]
         [SerializeField] private Animator animator;
         [SerializeField] private BoxCollider2D hitBox;
         [SerializeField] private AttackRangeObject attackHitBox;
@@ -89,8 +98,18 @@ namespace Combat
         {
             if (damaging)
             {
-                transform.localPosition -= Vector3.right * knockBackXInterval;
+                transform.position += Vector3.right * (knockBackXInterval * Time.fixedDeltaTime);
                 return;
+            }
+
+            if (running)
+            {
+                transform.position += Vector3.left * (runningSpeed * Time.fixedDeltaTime);
+            }
+
+            if (backJumping)
+            {
+                transform.position += Vector3.right * (backJumpSpeed * Time.fixedDeltaTime);
             }
             
             if (!attacking || attackedAlready) return;
@@ -100,7 +119,7 @@ namespace Combat
                 attackedAlready = true;
                 if (type == ObjectType.AI)
                 {
-                    PlayerManager.Instance.Player.Action(ObjectStatus.Dead);
+                    PlayerManager.Instance.PlayerDie();
                 }
 
                 if (type == ObjectType.Player)
@@ -174,7 +193,8 @@ namespace Combat
             else
             {
                 animator.SetBool("Damaged", true);
-                StartCoroutine(WaitAndChangeBoolValue(knockBackTime, (bool ch) => { damaging = ch; }, true));
+                damaging = true;
+                StartCoroutine(WaitAndChangeBoolValue(GetAnimationTime("Damage"), (bool ch) => { damaging = ch; }, true));
             }
         }
         
@@ -210,6 +230,7 @@ namespace Combat
                     return;
                 // 공격
                 case ObjectStatus.Attack:
+                    if (attacking) return;
                     animator.SetBool("Attack", true);
                     WaitAndReturnToIdle(attackEnd + attackAfterDelay);
                     WaitAndChangeAttacking(attackBeforeDelay, attackEnd);
@@ -226,10 +247,14 @@ namespace Combat
                     return;
                 // 움직임
                 case ObjectStatus.Running:
+                    running = true;
                     animator.SetBool("Running", true);
+                    WaitAndReturnToIdle(Time.fixedDeltaTime * 2);
                     return;
                 case ObjectStatus.JumpBack:
-
+                    backJumping = true;
+                    animator.SetBool("JumpBack", true);
+                    WaitAndReturnToIdle(Time.fixedDeltaTime * 2);
                     return;
             }
             

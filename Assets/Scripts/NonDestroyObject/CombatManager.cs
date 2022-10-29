@@ -18,7 +18,12 @@ namespace NonDestroyObject
         [SerializeField] private int randomSeed;
 
         private Random Random;
-        
+
+        private void Start()
+        {
+            UpdateRandomSeed();
+        }
+
         private IEnumerator UpdateDelay(float second)
         {
             updateDelayed = true;

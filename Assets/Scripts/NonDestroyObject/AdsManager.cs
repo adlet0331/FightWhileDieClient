@@ -92,9 +92,9 @@ namespace NonDestroyObject
         // Called when an ad request failed to show.
         public void HandleRewardedAdFailedToShow(object sender, AdErrorEventArgs args)
         {
-            Debug.Log(
+            Debug.LogAssertion(
                 "HandleRewardedAdFailedToShow event received with message: "
-                + args.Message);
+                + args.AdError.GetMessage());
         }
         
         // Called when the ad is closed.

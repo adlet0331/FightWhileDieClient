@@ -16,5 +16,10 @@ namespace NonDestroyObject
                 Player = GetComponent<CombatObject>();
             }
         }
+
+        public void PlayerDie()
+        {
+            Player.Action(ObjectStatus.Dead);
+        }
     }
 }

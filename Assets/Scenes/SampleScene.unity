@@ -1448,9 +1448,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AI: {fileID: 1804785329}
-  goFrontPercentage: 0
+  goFrontPercentage: 5
   updateDelayed: 0
-  updateInterval: 0
+  updateInterval: 0.02
   randomSeed: 0
 --- !u!1 &1092650146
 GameObject:
@@ -1846,6 +1846,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1334480102}
+  - component: {fileID: 1334480103}
   m_Layer: 0
   m_Name: SLManager
   m_TagString: Untagged
@@ -1861,13 +1862,28 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1334480101}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 521.278, y: 857.25165, z: -1.2910013}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1334480103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1334480101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88a681ab28e441ed99d0e0a0daf88124, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stage: 1
+  _atk: 100
+  _enemyHp: 100
 --- !u!1 &1405286872
 GameObject:
   m_ObjectHideFlags: 0
@@ -2560,11 +2576,15 @@ MonoBehaviour:
   attackEnd: 0.4
   attackAfterDelay: 0.1
   type: 1
-  knockBackXInterval: 0.3
-  knockBackTime: 0.2
+  runningSpeed: 1
+  backJumpSpeed: 1
+  knockBackXInterval: 3
+  knockBackTime: 0.4
   currentHp: 0
   attacking: 0
   attackedAlready: 0
+  running: 0
+  backJumping: 0
   damaging: 0
   animator: {fileID: 0}
   hitBox: {fileID: 0}
@@ -2855,11 +2875,15 @@ MonoBehaviour:
   attackEnd: 0.2
   attackAfterDelay: 0.55
   type: 0
+  runningSpeed: 0
+  backJumpSpeed: 0
   knockBackXInterval: 0
   knockBackTime: 0
   currentHp: 0
   attacking: 0
   attackedAlready: 0
+  running: 0
+  backJumping: 0
   damaging: 0
   animator: {fileID: 0}
   hitBox: {fileID: 1887054075}
