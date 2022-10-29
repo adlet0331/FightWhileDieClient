@@ -14,7 +14,7 @@ namespace NonDestroyObject
             // Initialize the Google Mobile Ads SDK.
             MobileAds.Initialize(initStatus => { });
 
-            RequestBanner();
+            // RequestBanner();
         }
 
         public void RequestRewardAds()

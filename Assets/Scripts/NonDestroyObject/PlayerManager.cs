@@ -1,27 +1,19 @@
-﻿using Managers;
+﻿using System;
+using Combat;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace NonDestroyObject
 {
-    public enum PlayerStatus
+    public class PlayerManager : Managers.Singleton<PlayerManager>
     {
-        Idle = 0,
-        Attack = 1,
-    }
-    public class PlayerManager : Singleton<PlayerManager>
-    {
-        [SerializeField] private Animator animator;
+        public CombatObject Player;
 
-        public void SetAnimation(PlayerStatus status)
+        private void Start()
         {
-            if (status == PlayerStatus.Idle)
+            if (Player.IsUnityNull())
             {
-                animator.SetBool("Attack", false);
-            }
-
-            if (status == PlayerStatus.Attack)
-            {
-                animator.SetBool("Attack", true);
+                Player = GetComponent<CombatObject>();
             }
         }
     }

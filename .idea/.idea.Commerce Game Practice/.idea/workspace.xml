@@ -2,23 +2,31 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e3c45448-3ae0-40fa-9f8a-52f5b5fc4771" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/PlayerManager.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/PlayerManager.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/UIManager.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/UIManager.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Combat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Combat/AttackRangeObject.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Combat/AttackRangeObject.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Combat/CombatObject.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Combat/CombatObject.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/CombatManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/CombatManager.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/SLManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/SLManager.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Commerce Game Practice/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Commerce Game Practice/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack1.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack1.anim" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack1_0.controller" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack1_0.controller.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack2_0.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack2_0.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack3_0.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack3_0.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/Animations.anim" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/Animations.anim.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/animation.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/animation.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack1.anim" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack1.anim.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack3anim.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack3anim.anim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Death.anim" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Death.anim.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Idle.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Idle.anim" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Idle_0.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Idle_0.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/IdleAttack.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/IdleAttack.controller" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/AdsManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/AdsManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/InputManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/InputManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/SceneManager.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/SceneManager.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/PlayerManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/PlayerManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/UIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/UIManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,10 +82,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="16852">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="16852" />
+      <option name="pid" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -97,7 +105,8 @@
       <workItem from="1666796314340" duration="3600000" />
       <workItem from="1666882569816" duration="1628000" />
       <workItem from="1666972878113" duration="329000" />
-      <workItem from="1666973223864" duration="3644000" />
+      <workItem from="1666973223864" duration="3824000" />
+      <workItem from="1667012798060" duration="21150000" />
     </task>
     <servers />
   </component>
