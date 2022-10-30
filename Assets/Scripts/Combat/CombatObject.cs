@@ -2,6 +2,7 @@
 using NonDestroyObject;
 using Unity.VisualScripting;
 using UnityEngine;
+using Utils;
 
 namespace Combat
 {
@@ -137,7 +138,7 @@ namespace Combat
                     InputManager.Instance.Blocked = true;
                     CombatManager.Instance.Blocked = true;
                     
-                    StartCoroutine(WaitAndOperationIEnum(GetAnimationTime("Dead"),
+                    StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(GetAnimationTime("Dead"),
                         () =>
                         {
                             PlayerManager.Instance.PlayerDie();
@@ -173,25 +174,17 @@ namespace Combat
             StartCoroutine(_waitAfterAction);
         }
 
-        // 기다렸다가 Bool 교체 
-        private delegate void AfterWaitOperation();
-        private IEnumerator WaitAndOperationIEnum(float sec, AfterWaitOperation operation)
-        {
-            yield return new WaitForSeconds(sec);
-            operation();
-        }
-
         // 공격 판정변수 설정
         private IEnumerator _hittingJudgeAction;
         private void WaitAndChangeHitting(float start, float end)
         {
-            _hittingJudgeAction = WaitAndOperationIEnum(start, () => { hitting = true; });
-            StartCoroutine(WaitAndOperationIEnum(start, () =>
+            _hittingJudgeAction = CoroutineUtils.WaitAndOperationIEnum(start, () => { hitting = true; });
+            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(start, () =>
             {
                 hitting = true;
                 _hittingJudgeAction = null;
             }));
-            StartCoroutine(WaitAndOperationIEnum(end, () => { hitting = false; }));
+            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(end, () => { hitting = false; }));
         }
         #endregion
         
@@ -246,7 +239,7 @@ namespace Combat
                 
                 float deadAnimTime = GetAnimationTime("Dead");
                 WaitAndReturnToIdle(deadAnimTime);
-                StartCoroutine(WaitAndOperationIEnum(deadAnimTime, () =>
+                StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(deadAnimTime, () =>
                 {
                     dying = false;
                     Action(ObjectStatus.Idle);
@@ -258,7 +251,7 @@ namespace Combat
             {
                 animator.SetBool("Damaged", true);
                 damaging = true;
-                StartCoroutine(WaitAndOperationIEnum(knockBackTime, () =>
+                StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(knockBackTime, () =>
                 {
                     damaging = false;
                 }));
@@ -308,7 +301,7 @@ namespace Combat
                     animator.SetBool("Attack", true);
                     //Attacking 변수
                     attacking = true;
-                    StartCoroutine(WaitAndOperationIEnum(attackEnd + attackAfterDelay, () => { attacking = false; }));
+                    StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(attackEnd + attackAfterDelay, () => { attacking = false; }));
                     // Hitting 변수
                     WaitAndChangeHitting(attackBeforeDelay, attackEnd);
                     // Idle로 리턴
@@ -337,7 +330,7 @@ namespace Combat
                         StopCoroutine(_waitAfterRunningAction);
                     }
                     // Combat Manager Update Interval
-                    _waitAfterRunningAction = WaitAndOperationIEnum(time, () => 
+                    _waitAfterRunningAction = CoroutineUtils.WaitAndOperationIEnum(time, () => 
                     { 
                         running = false;
                         _waitAfterRunningAction = null;
@@ -350,7 +343,7 @@ namespace Combat
                     float animationTime = GetAnimationTime("JumpBack");
                     // BackJumping 변수
                     backJumping = true;
-                    StartCoroutine(WaitAndOperationIEnum(animationTime, () => { backJumping = false; }));
+                    StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(animationTime, () => { backJumping = false; }));
                     WaitAndReturnToIdle(animationTime);
                     return;
             }

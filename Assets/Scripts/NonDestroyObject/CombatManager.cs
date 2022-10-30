@@ -4,6 +4,7 @@ using Combat;
 using Managers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Utils;
 using Random = System.Random;
 
 namespace NonDestroyObject
@@ -54,12 +55,18 @@ namespace NonDestroyObject
                 if (rand == 2)
                 {
                     AI.Action(ObjectStatus.Attack);
-                    _delayedCoroutine = UpdateDelay(AI.GetAnimationTime("Attack"));
+                    _delayedCoroutine = CoroutineUtils.WaitAndOperationIEnum(AI.GetAnimationTime("Attack"), () =>
+                    {
+                        updateDelayed = false;
+                    });
                 }
                 else
                 {
                     AI.Action(ObjectStatus.JumpBack);
-                    _delayedCoroutine = UpdateDelay(AI.GetAnimationTime("JumpBack"));
+                    _delayedCoroutine = CoroutineUtils.WaitAndOperationIEnum(AI.GetAnimationTime("JumpBack"), () =>
+                    {
+                        updateDelayed = false;
+                    });
                 }
                 UpdateRandomSeed();
             }
@@ -67,7 +74,10 @@ namespace NonDestroyObject
             else
             {
                 AI.Action(ObjectStatus.Running);
-                _delayedCoroutine = UpdateDelay(updateInterval);
+                _delayedCoroutine = CoroutineUtils.WaitAndOperationIEnum(updateInterval, () =>
+                {
+                    updateDelayed = false;
+                });
             }
             StartCoroutine(_delayedCoroutine);
         }

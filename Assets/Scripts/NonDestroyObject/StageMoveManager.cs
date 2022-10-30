@@ -3,6 +3,7 @@ using System.Collections;
 using Combat;
 using Managers;
 using UnityEngine;
+using Utils;
 
 namespace NonDestroyObject
 {
@@ -44,13 +45,6 @@ namespace NonDestroyObject
             }
         }
 
-        private delegate void AfterWaitOperation();
-        private IEnumerator WaitAndOperationIEnum(float sec, AfterWaitOperation operation)
-        {
-            yield return new WaitForSeconds(sec);
-            operation();
-        }
-
         private IEnumerator TransformMove(float time, Transform source, Transform target)
         {
             int count = (int)(time / (Time.deltaTime * 2));
@@ -62,36 +56,42 @@ namespace NonDestroyObject
             }
         }
 
+        private void SpawnCombatAIAndWait()
+        {
+            float time = (enemyStartPosition.position.x - enemyStageStartPosition.position.x) /
+                         CombatManager.Instance.AI.RunningSpeed;
+            // 지정 위치까지 와서 멈춰있기
+            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(time, () =>
+            {
+                PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
+                // 움직임 막고 IDLE로 만들기
+                CombatManager.Instance.Blocked = true;
+                CombatManager.Instance.AI.Action(ObjectStatus.Idle);
+            }));
+            // Blocked 해제
+            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum((time > uiMovingTime ? time : uiMovingTime) + waitBeforeStartTime, () =>
+            {
+                InputManager.Instance.Blocked = false;
+                CombatManager.Instance.Blocked = false;
+            }));
+            CombatManager.Instance.AI.Action(ObjectStatus.Idle);
+            CombatManager.Instance.AI.transform.localPosition = enemyStartPosition.localPosition;
+            CombatManager.Instance.Blocked = false;
+            PlayerManager.Instance.Player.Action(ObjectStatus.Running);
+        }
+
         public void StopCombat(bool startNextStage)
         {
-            CombatManager.Instance.AI.Action(ObjectStatus.Idle);
-            PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
-            
             // Block Input
             InputManager.Instance.Blocked = true;
             CombatManager.Instance.Blocked = true;
             
+            CombatManager.Instance.AI.Action(ObjectStatus.Idle);
+            PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
+            
             if (startNextStage)
             {
-                float time = (enemyStartPosition.position.x - enemyStageStartPosition.position.x) /
-                             CombatManager.Instance.AI.RunningSpeed;
-                // 지정 위치까지 와서 멈춰있기
-                StartCoroutine(WaitAndOperationIEnum(time, () =>
-                {
-                    PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
-                    // 움직임 막고 IDLE로 만들기
-                    CombatManager.Instance.Blocked = true;
-                    CombatManager.Instance.AI.Action(ObjectStatus.Idle);
-                }));
-                // Blocked 해제
-                StartCoroutine(WaitAndOperationIEnum((time > uiMovingTime ? time : uiMovingTime) + waitBeforeStartTime, () =>
-                {
-                    InputManager.Instance.Blocked = false;
-                    CombatManager.Instance.Blocked = false;
-                }));
-                CombatManager.Instance.AI.transform.localPosition = enemyStartPosition.localPosition;
-                CombatManager.Instance.Blocked = false;
-                PlayerManager.Instance.Player.Action(ObjectStatus.Running);
+                SpawnCombatAIAndWait();
             }
             else
             {
@@ -104,29 +104,11 @@ namespace NonDestroyObject
 
         public void StartCombat()
         {
-            float time = (enemyStartPosition.position.x - enemyStageStartPosition.position.x) /
-                         CombatManager.Instance.AI.RunningSpeed;
-            // 지정 위치까지 와서 멈춰있기
-            StartCoroutine(WaitAndOperationIEnum(time, () =>
-            {
-                PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
-                // 움직임 막고 IDLE로 만들기
-                CombatManager.Instance.Blocked = true;
-                CombatManager.Instance.AI.Action(ObjectStatus.Idle);
-            }));
-            // Blocked 해제
-            StartCoroutine(WaitAndOperationIEnum((time > uiMovingTime ? time : uiMovingTime) + waitBeforeStartTime, () =>
-            {
-                InputManager.Instance.Blocked = false;
-                CombatManager.Instance.Blocked = false;
-            }));
-            CombatManager.Instance.AI.transform.localPosition = enemyStartPosition.localPosition;
-            CombatManager.Instance.Blocked = false;
-            PlayerManager.Instance.Player.Action(ObjectStatus.Running);
-            UIManager.Instance.ShowButtons(false);
+            SpawnCombatAIAndWait();
             
             StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.stageHpTransform, titleShowPosition));
             StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.titleTransform, titleHidePosition));
+            UIManager.Instance.ShowButtons(false);
         }
     }
 }
