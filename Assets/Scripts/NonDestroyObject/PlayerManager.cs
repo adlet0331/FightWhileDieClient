@@ -19,7 +19,7 @@ namespace NonDestroyObject
 
         public void PlayerDie()
         {
-            Player.Action(ObjectStatus.Dead);
+            
         }
     }
 }

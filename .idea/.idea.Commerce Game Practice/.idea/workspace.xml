@@ -2,30 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e3c45448-3ae0-40fa-9f8a-52f5b5fc4771" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Combat.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Combat/AttackRangeObject.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Combat/AttackRangeObject.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Combat/CombatObject.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Combat/CombatObject.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/CombatManager.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/CombatManager.cs.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/SLManager.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/SLManager.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/StageMoveManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/StageMoveManager.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Commerce Game Practice/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Commerce Game Practice/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/Animations.anim" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/Animations.anim.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/Damaged.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/Damaged.anim" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/JumpBack.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/JumpBack.anim" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/animation.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Hero_Knight/Animations/animation.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack1.anim" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack1.anim.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack3anim.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Attack3anim.anim" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Death.anim" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Death.anim.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Idle.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Idle.anim" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/IdleAttack.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/IdleAttack.controller" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/AdsManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/AdsManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/InputManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/InputManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Combat/CombatObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Combat/CombatObject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/CombatManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/CombatManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/PlayerManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/PlayerManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/SLManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/SLManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/UIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/UIManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,8 +24,14 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/06fbd62add444b7e9fd9bccbc64e80113c00/df/12cb2caa/AdRequest.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/1f0be198f5164d2489de92f22c998266811600/48/3a5d6388/Handles.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/1f0be198f5164d2489de92f22c998266811600/b2/a267e1dd/SemVersionParser.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4a31731933e0419ca5a995305014ad37157a00/30/ba0bb4e3/WaitForSeconds.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/bbae6af52a2a4bd982f8fde9721d2c3b284000/54/a69e4369/Socket.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c9b29c1f98764d19904aec63c99319c36400/b9/62cfa5fd/RewardedAd.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e40e5a8f982c4b618a930d29f9bd091c46a800/24/0016895b/EncodingTable.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e40e5a8f982c4b618a930d29f9bd091c46a800/c1/dfb17b35/Number.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e40e5a8f982c4b618a930d29f9bd091c46a800/c3/1aca1253/TaskAwaiter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e40e5a8f982c4b618a930d29f9bd091c46a800/c6/3654c134/Enum.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/AdsManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/InputManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.burst@1.6.5/Editor/BurstAotCompiler.cs" root0="SKIP_HIGHLIGHTING" />
@@ -53,16 +47,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Discover.Launch.Via.Unity&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;rider.run.widget.enabled.cache&quot;: &quot;false&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Discover.Launch.Via.Unity": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "XThreadsFramesViewSplitterKey": "0.46931818",
+    "rider.run.widget.enabled.cache": "false",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="UnitTests (batch mode)" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="C:\Program Files\Unity\2021.3.5f1\Editor\Unity.exe" />
@@ -82,10 +77,10 @@
       </option>
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" ignored-value-for-modified-check="41032">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" />
+      <option name="pid" value="41032" />
       <option name="projectPathOnTarget" />
       <option name="selectedOptions">
         <list />
@@ -106,7 +101,7 @@
       <workItem from="1666882569816" duration="1628000" />
       <workItem from="1666972878113" duration="329000" />
       <workItem from="1666973223864" duration="3824000" />
-      <workItem from="1667012798060" duration="21150000" />
+      <workItem from="1667012798060" duration="44588000" />
     </task>
     <servers />
   </component>
@@ -129,5 +124,24 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Assets/Scripts/Combat/CombatObject.cs</url>
+          <line>268</line>
+          <properties documentPath="C:\Workspace\Programming\Commerce Game Practice\Assets\Scripts\Combat\CombatObject.cs" initialLine="268" containingFunctionPresentation="method 'Action'">
+            <startOffsets>
+              <option value="8914" />
+            </startOffsets>
+            <endOffsets>
+              <option value="8926" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

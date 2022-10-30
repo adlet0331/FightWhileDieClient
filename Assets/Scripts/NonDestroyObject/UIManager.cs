@@ -34,7 +34,7 @@ namespace NonDestroyObject
         private IEnumerator _sliderUpdate;
         private IEnumerator UpdateEnemyHpEnum(float end, float time)
         {
-            int interval = (int)((_enemyHp.value - end)/0.01);
+            int interval = (int)((_enemyHp.value - end)/0.01f);
             for (int i = 0; i < interval; i++)
             {
                 yield return new WaitForSeconds(time / interval);
@@ -48,7 +48,8 @@ namespace NonDestroyObject
             {
                 StopCoroutine(_sliderUpdate);
             }
-            _sliderUpdate = UpdateEnemyHpEnum(end, 1f);
+            _sliderUpdate = UpdateEnemyHpEnum(end, 0.5f);
+            StartCoroutine(_sliderUpdate);
         }
         
         public void UpdateStage(int stage)

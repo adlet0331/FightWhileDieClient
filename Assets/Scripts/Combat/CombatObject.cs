@@ -41,6 +41,7 @@ namespace Combat
         public int MaxHp => maxHp;
         public bool EnemyInRange => attackHitBox.EnemyInRange;
         public bool Attacking => attacking;
+        public bool Hitting => hitting;
         // Only For AI
         public bool Running => running;
         public bool BackJumping => backJumping;
@@ -49,7 +50,7 @@ namespace Combat
         [Header("Debuging")] 
         [SerializeField] private int currentHp;
         [SerializeField] private bool attacking;
-        [SerializeField] private bool attackedAlready;
+        [SerializeField] private bool hitting;
         [Header("Debuging Only For Enemy")]
         [SerializeField] private bool running;
         [SerializeField] private bool backJumping;
@@ -61,6 +62,7 @@ namespace Combat
         [SerializeField] private AttackRangeObject attackHitBox;
         [SerializeField] private RuntimeAnimatorController runtimeAnimatorController;
 
+        #region Start, FixedUpdate
         private void Start()
         {
             if (animator.IsUnityNull())
@@ -81,6 +83,9 @@ namespace Combat
             currentHp = maxHp;
             runtimeAnimatorController = animator.runtimeAnimatorController;
 
+            _waitAfterAction = null;
+            _waitAfterRunningAction = null;
+
             if (type == ObjectType.Player)
             {
                 atk = SLManager.Instance.ATK;
@@ -99,27 +104,22 @@ namespace Combat
             if (damaging)
             {
                 transform.position += Vector3.right * (knockBackXInterval * Time.fixedDeltaTime);
-                return;
             }
-
-            if (running)
+            else if (running)
             {
                 transform.position += Vector3.left * (runningSpeed * Time.fixedDeltaTime);
             }
-
-            if (backJumping)
+            else if (backJumping)
             {
                 transform.position += Vector3.right * (backJumpSpeed * Time.fixedDeltaTime);
             }
-            
-            if (!attacking || attackedAlready) return;
 
-            if (attackHitBox.EnemyInRange)
+            if (attackHitBox.EnemyInRange && hitting)
             {
-                attackedAlready = true;
+                hitting = false;
                 if (type == ObjectType.AI)
                 {
-                    PlayerManager.Instance.PlayerDie();
+                    PlayerManager.Instance.Player.Action(ObjectStatus.Dead);
                 }
 
                 if (type == ObjectType.Player)
@@ -128,9 +128,54 @@ namespace Combat
                 }
             }
         }
+        #endregion
 
+        #region IEnumerator
+        // 기다렸다가 IDLE로 전환
+        private IEnumerator _waitAfterAction;
+        // Running IEnumerator (달리는 것을 연속적으로 만들기 위해)
+        private IEnumerator _waitAfterRunningAction;
+        private IEnumerator WaitAndReturnToIdleIEnum(float second)
+        {
+            yield return new WaitForSeconds(second);
+            Action(ObjectStatus.Idle);
+            _waitAfterAction = null;
+        }
+        private void WaitAndReturnToIdle(float sec)
+        {
+            if (_waitAfterAction != null)
+            {
+                StopCoroutine(_waitAfterAction);
+            }
+            _waitAfterAction = WaitAndReturnToIdleIEnum(sec);
+            StartCoroutine(_waitAfterAction);
+        }
+        
+        private IEnumerator WaitAndDieIEnum(float second)
+        {
+            yield return new WaitForSeconds(second);
+            PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
+            _waitAfterAction = null;
+        }
+
+        // 기다렸다가 Bool 교체 
+        private delegate void AfterWaitOperation();
+        private IEnumerator WaitAndOperationIEnum(float sec, AfterWaitOperation operation)
+        {
+            yield return new WaitForSeconds(sec);
+            operation();
+        }
+
+        // 공격 판정변수 설정
+        private void WaitAndChangeHitting(float start, float end)
+        {
+            StartCoroutine(WaitAndOperationIEnum(start, () => { hitting = true; }));
+            StartCoroutine(WaitAndOperationIEnum(end, () => { hitting = false; }));
+        }
+        #endregion
+        
         // Animation 시간 이름으로 받아오기
-        private float GetAnimationTime(string name)
+        public float GetAnimationTime(string name)
         {
             for(int i = 0; i<runtimeAnimatorController.animationClips.Length; i++) //For all animations
             {
@@ -143,63 +188,52 @@ namespace Combat
             Debug.LogAssertion("No Animation Named " + name);
             return 0.0f;
         }
-        
-        // 기다렸다가 IDLE로 전환
-        private IEnumerator _waitAfterAction;
-        private IEnumerator WaitAndReturnToIdleIEnum(float second)
-        {
-            yield return new WaitForSeconds(second);
-            PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
-            _waitAfterAction = null;
-        }
-        private void WaitAndReturnToIdle(float sec)
-        {
-            if (_waitAfterAction != null)
-            {
-                StopCoroutine(_waitAfterAction);
-            }
-            _waitAfterAction = WaitAndReturnToIdleIEnum(sec);
-            StartCoroutine(_waitAfterAction);
-        }
 
-        // 기다렸다가 Bool 교체 
-        private delegate void ChangeBoolValue(bool changeVal);
-        private IEnumerator WaitAndChangeBoolValue(float sec, ChangeBoolValue operation, bool changeVal)
+        public void SetCombatHp(int mhp)
         {
-            yield return new WaitForSeconds(sec);
-            operation(changeVal);
-        }
-        
-        // 공격 판정변수 설정
-        private void WaitAndChangeAttacking(float start, float end)
-        {
-            StartCoroutine(WaitAndChangeBoolValue(start, (bool ch) => { attacking = ch; }, true));
-            StartCoroutine(WaitAndChangeBoolValue(end, (bool ch) => { attacking = ch; }, false));
+            currentHp = mhp;
+            maxHp = mhp;
         }
         
         public void Damaged(int damage)
         {
+            hitting = false;
             attacking = false;
-            attackedAlready = false;
+            running = false;
+            backJumping = false;
+            
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
             UIManager.Instance.UpdateEnemyHp((float)currentHp / MaxHp);
             // 죽음
             if (currentHp == 0)
             {
-                animator.SetBool("Death", true);
+                animator.SetBool("Dead", true);
                 WaitAndReturnToIdle(GetAnimationTime("Dead"));
+                StartCoroutine(WaitAndOperationIEnum(knockBackTime, () =>
+                {
+                    Action(ObjectStatus.Idle);
+                    CombatManager.Instance.AIDie();
+                }));
             }
             // 안 죽고 넉백 당함
             else
             {
                 animator.SetBool("Damaged", true);
                 damaging = true;
-                StartCoroutine(WaitAndChangeBoolValue(GetAnimationTime("Damage"), (bool ch) => { damaging = ch; }, true));
+                StartCoroutine(WaitAndOperationIEnum(knockBackTime, () =>
+                {
+                    damaging = false;
+                }));
+                WaitAndReturnToIdle(knockBackTime);
+                UIManager.Instance.UpdateEnemyHp((float)currentHp / maxHp);
             }
         }
-        
+
         public void Action(ObjectStatus objectStatus)
         {
+            // 공격 중이면 Action 안 받음
+            if (hitting) return;
+            
             // Player Action WhiteList
             if (type == ObjectType.Player &&
                 (objectStatus != ObjectStatus.Idle && objectStatus != ObjectStatus.Attack &&
@@ -221,23 +255,30 @@ namespace Combat
                 // Player, AI 둘 다 사용
                 case ObjectStatus.Idle:
                     animator.SetBool("Attack", false);
-                    animator.SetBool("Death", false);
+                    animator.SetBool("Dead", false);
                     if (type is ObjectType.Player) return;
                     
                     animator.SetBool("AttackSlow", false);
-                    animator.SetBool("Running", false);
+                    animator.SetBool("Running", false); 
                     animator.SetBool("JumpBack", false);
+                    animator.SetBool("Damaged", false);
                     return;
                 // 공격
                 case ObjectStatus.Attack:
+                    // 공격중에는 추가적인 공격 안 받음
                     if (attacking) return;
                     animator.SetBool("Attack", true);
+                    //Attacking 변수
+                    attacking = true;
+                    StartCoroutine(WaitAndOperationIEnum(attackEnd + attackAfterDelay, () => { attacking = false; }));
+                    // Hitting 변수
+                    WaitAndChangeHitting(attackBeforeDelay, attackEnd);
+                    // Idle로 리턴
                     WaitAndReturnToIdle(attackEnd + attackAfterDelay);
-                    WaitAndChangeAttacking(attackBeforeDelay, attackEnd);
                     return;
                 // 죽음 (플레이어만)
                 case ObjectStatus.Dead:
-                    animator.SetBool("Death", true);
+                    animator.SetBool("Dead", true);
                     WaitAndReturnToIdle(GetAnimationTime("Dead"));
                     return;
                 // 아래는 AI 만 사용
@@ -247,14 +288,29 @@ namespace Combat
                     return;
                 // 움직임
                 case ObjectStatus.Running:
-                    running = true;
                     animator.SetBool("Running", true);
-                    WaitAndReturnToIdle(Time.fixedDeltaTime * 2);
+                    // Running 변수
+                    running = true;
+                    if (_waitAfterRunningAction != null)
+                    {
+                        StopCoroutine(_waitAfterRunningAction);
+                    }
+                    // Combat Manager Update Interval
+                    _waitAfterRunningAction = WaitAndOperationIEnum(CombatManager.Instance.updateInterval, () => 
+                    { 
+                        running = false;
+                        _waitAfterRunningAction = null;
+                    });
+                    StartCoroutine(_waitAfterRunningAction);
+                    WaitAndReturnToIdle(CombatManager.Instance.updateInterval);
                     return;
                 case ObjectStatus.JumpBack:
-                    backJumping = true;
                     animator.SetBool("JumpBack", true);
-                    WaitAndReturnToIdle(Time.fixedDeltaTime * 2);
+                    float animationTime = GetAnimationTime("JumpBack");
+                    // BackJumping 변수
+                    backJumping = true;
+                    StartCoroutine(WaitAndOperationIEnum(animationTime, () => { backJumping = false; }));
+                    WaitAndReturnToIdle(animationTime);
                     return;
             }
             

@@ -1,4 +1,6 @@
-﻿using Managers;
+﻿using System;
+using Combat;
+using Managers;
 using UnityEngine;
 
 namespace NonDestroyObject
@@ -13,6 +15,20 @@ namespace NonDestroyObject
         [SerializeField] private int _atk = 100;
         [SerializeField] private int _enemyHp = 100;
 
+        private void Start()
+        {
+            CombatManager.Instance.AI.SetCombatHp(_enemyHp);
+            Load();
+            UIManager.Instance.UpdateStage(_stage);
+            UIManager.Instance.UpdateEnemyHp(_enemyHp);
+            CombatManager.Instance.AI.SetCombatHp(_enemyHp);
+        }
+
+        private void Load()
+        {
+            
+        }
+
         public void Save()
         {
             
@@ -22,8 +38,11 @@ namespace NonDestroyObject
         {
             _stage += 1;
             UIManager.Instance.UpdateStage(_stage);
-            _enemyHp = (int)(1.1 * _enemyHp);
+            _enemyHp += 50;
             UIManager.Instance.UpdateEnemyHp(_enemyHp);
+            _atk += 10;
+            UIManager.Instance.UpdateAttackVal(_atk);
+            CombatManager.Instance.AI.SetCombatHp(_enemyHp);
             Save();
         }
     }

@@ -3,71 +3,80 @@ using System.Collections;
 using Combat;
 using Managers;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = System.Random;
 
 namespace NonDestroyObject
 {
     public class CombatManager : Singleton<CombatManager>
     {
+        [Header("Need Initialize In Unity")]
         public CombatObject AI;
 
-        [SerializeField] private int goFrontPercentage;
-        
-        [SerializeField] private bool updateDelayed;
-        [SerializeField] private float updateInterval;
+        [Header("Debuging")]
+        [SerializeField] public bool updateDelayed;
+        [SerializeField] public float updateInterval;
         [SerializeField] private int randomSeed;
 
         private Random Random;
 
         private void Start()
         {
+            randomSeed = DateTime.Now.Millisecond * 103729;
+            Random = new Random(randomSeed);
             UpdateRandomSeed();
         }
 
+        private IEnumerator _delayedCoroutine;
         private IEnumerator UpdateDelay(float second)
         {
-            updateDelayed = true;
             yield return new WaitForSeconds(second);
             updateDelayed = false;
-        }
-
-        public void UpdateRandomSeed()
-        {
-            randomSeed = DateTime.Now.Millisecond;
-            randomSeed *= DateTime.UtcNow.DayOfYear * 7 + DateTime.UtcNow.Minute * 3;
-            Random = new Random(randomSeed);
         }
 
         private void FixedUpdate()
         {
             if (updateDelayed) return;
-            if (AI.Attacking || AI.Damaging) return;
+            if (AI.Attacking || AI.Damaging || AI.BackJumping || AI.Running) return;
             
-            StartCoroutine(UpdateDelay(updateInterval));
-            
+            updateDelayed = true;
+
             if (AI.EnemyInRange)
             {
-                if (Random.Next(1, 2) == 1)
+                int rand = Random.Next(1, 3);
+                if (rand == 2)
                 {
                     AI.Action(ObjectStatus.Attack);
+                    _delayedCoroutine = UpdateDelay(AI.GetAnimationTime("Attack"));
                 }
                 else
                 {
                     AI.Action(ObjectStatus.JumpBack);
+                    _delayedCoroutine = UpdateDelay(AI.GetAnimationTime("JumpBack"));
                 }
             }
 
             else
             {
-                if (Random.Next(1, 100) > goFrontPercentage)
-                {
-                    AI.Action(ObjectStatus.Running);
-                }
-                else
-                {
-                    AI.Action(ObjectStatus.JumpBack);
-                }
+                AI.Action(ObjectStatus.Running);
+                _delayedCoroutine = UpdateDelay(updateInterval);
             }
+            StartCoroutine(_delayedCoroutine);
+            UpdateRandomSeed();
+        }
+        
+        private void UpdateRandomSeed()
+        {
+            randomSeed = Random.Next();
+            Random = new Random(randomSeed);
+        }
+
+        public void AIDie()
+        {
+            UpdateRandomSeed();
+            SLManager.Instance.StageCleared();
+            StageMoveManager.Instance.EnemyDead();
+            //AI.gameObject.SetActive(false);
         }
     }
 }
