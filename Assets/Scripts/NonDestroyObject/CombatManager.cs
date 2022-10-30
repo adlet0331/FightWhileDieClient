@@ -14,10 +14,17 @@ namespace NonDestroyObject
         public CombatObject AI;
 
         [Header("Debuging")]
+        [SerializeField] private bool blocked;
         [SerializeField] public bool updateDelayed;
         [SerializeField] public float updateInterval;
         [SerializeField] private int randomSeed;
 
+        public bool Blocked
+        {
+            get => blocked;
+            set => blocked = value;
+        }
+        
         private Random Random;
 
         private void Start()
@@ -37,7 +44,7 @@ namespace NonDestroyObject
         private void FixedUpdate()
         {
             if (updateDelayed) return;
-            if (AI.Attacking || AI.Damaging || AI.BackJumping || AI.Running) return;
+            if (AI.Attacking || AI.Damaging || AI.BackJumping || AI.Running || AI.Dying) return;
             
             updateDelayed = true;
 

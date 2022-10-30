@@ -41,7 +41,7 @@ namespace Combat
         public int MaxHp => maxHp;
         public bool EnemyInRange => attackHitBox.EnemyInRange;
         public bool Attacking => attacking;
-        public bool Hitting => hitting;
+        public bool Dying => dying;
         // Only For AI
         public bool Running => running;
         public bool BackJumping => backJumping;
@@ -51,6 +51,7 @@ namespace Combat
         [SerializeField] private int currentHp;
         [SerializeField] private bool attacking;
         [SerializeField] private bool hitting;
+        [SerializeField] private bool dying;
         [Header("Debuging Only For Enemy")]
         [SerializeField] private bool running;
         [SerializeField] private bool backJumping;
@@ -120,6 +121,7 @@ namespace Combat
                 if (type == ObjectType.AI)
                 {
                     PlayerManager.Instance.Player.Action(ObjectStatus.Dead);
+                    PlayerManager.Instance.PlayerDie();
                 }
 
                 if (type == ObjectType.Player)
@@ -189,7 +191,12 @@ namespace Combat
             return 0.0f;
         }
 
-        public void SetCombatHp(int mhp)
+        public void ResetInRange()
+        {
+            attackHitBox.ResetInRange();
+        }
+        
+        public void UpdateStatus(int mhp)
         {
             currentHp = mhp;
             maxHp = mhp;
@@ -201,6 +208,7 @@ namespace Combat
             attacking = false;
             running = false;
             backJumping = false;
+            damaging = false;
             
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
             UIManager.Instance.UpdateEnemyHp((float)currentHp / MaxHp);
@@ -208,9 +216,15 @@ namespace Combat
             if (currentHp == 0)
             {
                 animator.SetBool("Dead", true);
-                WaitAndReturnToIdle(GetAnimationTime("Dead"));
-                StartCoroutine(WaitAndOperationIEnum(knockBackTime, () =>
+                PlayerManager.Instance.Player.ResetInRange();
+                ResetInRange();
+                dying = true;
+                
+                float deadAnimTime = GetAnimationTime("Dead");
+                WaitAndReturnToIdle(deadAnimTime);
+                StartCoroutine(WaitAndOperationIEnum(deadAnimTime, () =>
                 {
+                    dying = false;
                     Action(ObjectStatus.Idle);
                     CombatManager.Instance.AIDie();
                 }));

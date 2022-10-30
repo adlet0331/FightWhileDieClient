@@ -34,5 +34,10 @@ namespace Combat
                 enemyInRange = false;
             }
         }
+
+        public void ResetInRange()
+        {
+            enemyInRange = false;
+        }
     }
 }

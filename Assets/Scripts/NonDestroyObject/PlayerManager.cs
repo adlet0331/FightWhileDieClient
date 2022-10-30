@@ -19,7 +19,11 @@ namespace NonDestroyObject
 
         public void PlayerDie()
         {
-            
+            CombatManager.Instance.AI.transform.position =
+                StageMoveManager.Instance.enemyStartPosition.transform.position;
+            SLManager.Instance.StageReset();
+            Player.ResetInRange();
+            CombatManager.Instance.AI.ResetInRange();
         }
     }
 }

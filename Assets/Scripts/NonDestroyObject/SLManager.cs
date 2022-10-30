@@ -1,6 +1,4 @@
-﻿using System;
-using Combat;
-using Managers;
+﻿using Managers;
 using UnityEngine;
 
 namespace NonDestroyObject
@@ -12,16 +10,17 @@ namespace NonDestroyObject
         public int EnemyHp => _enemyHp;
 
         [SerializeField] private int _stage = 1;
-        [SerializeField] private int _atk = 100;
-        [SerializeField] private int _enemyHp = 100;
+        [SerializeField] private int _atk = 50;
+        [SerializeField] private int _enemyHp = 50;
+        [SerializeField] private int _coin = 10;
 
         private void Start()
         {
-            CombatManager.Instance.AI.SetCombatHp(_enemyHp);
             Load();
             UIManager.Instance.UpdateStage(_stage);
             UIManager.Instance.UpdateEnemyHp(_enemyHp);
-            CombatManager.Instance.AI.SetCombatHp(_enemyHp);
+            CombatManager.Instance.AI.UpdateStatus(_enemyHp);
+            UpdateUI();
         }
 
         private void Load()
@@ -33,16 +32,30 @@ namespace NonDestroyObject
         {
             
         }
+
+        private void UpdateUI()
+        {
+            UIManager.Instance.UpdateStage(_stage);
+            UIManager.Instance.UpdateEnemyHp(_enemyHp);
+            UIManager.Instance.UpdateAttackVal(_atk);
+        }
+
+        public void StageReset()
+        {
+            _stage = 1;
+            _enemyHp = 50;
+            _atk = 50;
+            CombatManager.Instance.AI.UpdateStatus(_enemyHp);
+            UpdateUI();
+        }
         
         public void StageCleared()
         {
             _stage += 1;
-            UIManager.Instance.UpdateStage(_stage);
             _enemyHp += 50;
-            UIManager.Instance.UpdateEnemyHp(_enemyHp);
             _atk += 10;
-            UIManager.Instance.UpdateAttackVal(_atk);
-            CombatManager.Instance.AI.SetCombatHp(_enemyHp);
+            CombatManager.Instance.AI.UpdateStatus(_enemyHp);
+            UpdateUI();
             Save();
         }
     }

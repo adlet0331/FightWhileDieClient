@@ -12,17 +12,24 @@ namespace NonDestroyObject
         [SerializeField] private float sceneMoveTime;
         [SerializeField] private float waitBeforeStartTime;
         [SerializeField] private float updateDelayTime;
-        [SerializeField] private Transform enemyStartPosition;
+        [SerializeField] public Transform enemyStartPosition;
         [SerializeField] private Transform enemyStageStartPosition;
 
         [Header("Debuging")] 
         [SerializeField] private bool moving;
         [SerializeField] private bool updateDelayed;
 
+        private IEnumerator UpdateDelay()
+        {
+            yield return new WaitForSeconds(updateDelayTime);
+            updateDelayed = false;
+        }
+        
         private void FixedUpdate()
         {
             if (!moving || updateDelayed) return;
 
+            updateDelayed = true;
             StartCoroutine(UpdateDelay());
 
             if (Math.Abs(enemyStageStartPosition.transform.position.x - transform.position.x) < 0.05)
@@ -33,20 +40,11 @@ namespace NonDestroyObject
             }
         }
 
-        private IEnumerator UpdateDelay()
-        {
-            updateDelayed = true;
-            yield return new WaitForSeconds(updateDelayTime);
-            updateDelayed = false;
-        }
-
         private IEnumerator WaitUntilNewEnemyIEnum(float second)
         {
             CombatManager.Instance.AI.transform.localPosition = enemyStartPosition.localPosition;
             yield return new WaitForSeconds(second);
-
-            CombatManager.Instance.AI.gameObject.SetActive(true);
-            CombatManager.Instance.AI.Action(ObjectStatus.Idle);
+            
             moving = true;
         }
         
@@ -60,7 +58,7 @@ namespace NonDestroyObject
             moving = true;
         }
 
-        private void UIUpdate()
+        private void HideUI()
         {
             
         }
