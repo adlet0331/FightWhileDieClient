@@ -8,6 +8,7 @@ namespace NonDestroyObject
         public int Stage => _stage;
         public int ATK => _atk;
         public int EnemyHp => _enemyHp;
+        public int Coin => _coin;
 
         [SerializeField] private int _stage = 1;
         [SerializeField] private int _atk = 50;
@@ -17,13 +18,10 @@ namespace NonDestroyObject
         private void Start()
         {
             Load();
-            UIManager.Instance.UpdateStage(_stage);
-            UIManager.Instance.UpdateEnemyHp(_enemyHp);
-            CombatManager.Instance.AI.UpdateStatus(_enemyHp);
             UpdateUI();
         }
 
-        private void Load()
+        public void Load()
         {
             
         }
@@ -38,23 +36,26 @@ namespace NonDestroyObject
             UIManager.Instance.UpdateStage(_stage);
             UIManager.Instance.UpdateEnemyHp(_enemyHp);
             UIManager.Instance.UpdateAttackVal(_atk);
+            UIManager.Instance.UpdateCoinVal(_coin);
         }
 
         public void StageReset()
         {
             _stage = 1;
             _enemyHp = 50;
-            _atk = 50;
-            CombatManager.Instance.AI.UpdateStatus(_enemyHp);
+            // _atk = 50;
+            CombatManager.Instance.AI.UpdateStatus(_enemyHp, 1);
             UpdateUI();
         }
         
         public void StageCleared()
         {
             _stage += 1;
-            _enemyHp += 50;
+            _enemyHp = (int)(_enemyHp * 1.2f);
             _atk += 10;
-            CombatManager.Instance.AI.UpdateStatus(_enemyHp);
+            _coin += _stage;
+            PlayerManager.Instance.Player.UpdateStatus(1, _atk);
+            CombatManager.Instance.AI.UpdateStatus(_enemyHp, 1);
             UpdateUI();
             Save();
         }

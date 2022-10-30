@@ -43,7 +43,7 @@ namespace NonDestroyObject
 
         private void FixedUpdate()
         {
-            if (updateDelayed) return;
+            if (updateDelayed || blocked) return;
             if (AI.Attacking || AI.Damaging || AI.BackJumping || AI.Running || AI.Dying) return;
             
             updateDelayed = true;
@@ -61,6 +61,7 @@ namespace NonDestroyObject
                     AI.Action(ObjectStatus.JumpBack);
                     _delayedCoroutine = UpdateDelay(AI.GetAnimationTime("JumpBack"));
                 }
+                UpdateRandomSeed();
             }
 
             else
@@ -69,7 +70,6 @@ namespace NonDestroyObject
                 _delayedCoroutine = UpdateDelay(updateInterval);
             }
             StartCoroutine(_delayedCoroutine);
-            UpdateRandomSeed();
         }
         
         private void UpdateRandomSeed()
@@ -82,8 +82,7 @@ namespace NonDestroyObject
         {
             UpdateRandomSeed();
             SLManager.Instance.StageCleared();
-            StageMoveManager.Instance.EnemyDead();
-            //AI.gameObject.SetActive(false);
+            StageMoveManager.Instance.StopCombat(true);
         }
     }
 }

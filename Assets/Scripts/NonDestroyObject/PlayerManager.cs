@@ -19,11 +19,14 @@ namespace NonDestroyObject
 
         public void PlayerDie()
         {
-            CombatManager.Instance.AI.transform.position =
-                StageMoveManager.Instance.enemyStartPosition.transform.position;
-            SLManager.Instance.StageReset();
+            // Range 처리 초기화
             Player.ResetInRange();
             CombatManager.Instance.AI.ResetInRange();
+            
+            // 스테이지 리셋
+            SLManager.Instance.StageReset();
+            // 다음 스테이지 X, Combat End
+            StageMoveManager.Instance.StopCombat(false);
         }
     }
 }

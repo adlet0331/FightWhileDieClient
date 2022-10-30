@@ -44,6 +44,7 @@ namespace Combat
         public bool Dying => dying;
         // Only For AI
         public bool Running => running;
+        public float RunningSpeed => runningSpeed;
         public bool BackJumping => backJumping;
         public bool Damaging => damaging;
 
@@ -87,6 +88,7 @@ namespace Combat
             _waitAfterAction = null;
             _waitAfterRunningAction = null;
 
+            SLManager.Instance.Load();
             if (type == ObjectType.Player)
             {
                 atk = SLManager.Instance.ATK;
@@ -120,8 +122,26 @@ namespace Combat
                 hitting = false;
                 if (type == ObjectType.AI)
                 {
+                    hitting = false;
+                    attacking = false;
+                    running = false;
+                    backJumping = false;
+                    damaging = false;
+                    if (_hittingJudgeAction != null)
+                    {
+                        StopCoroutine(_hittingJudgeAction);
+                    }
+                    
                     PlayerManager.Instance.Player.Action(ObjectStatus.Dead);
-                    PlayerManager.Instance.PlayerDie();
+                    
+                    InputManager.Instance.Blocked = true;
+                    CombatManager.Instance.Blocked = true;
+                    
+                    StartCoroutine(WaitAndOperationIEnum(GetAnimationTime("Dead"),
+                        () =>
+                        {
+                            PlayerManager.Instance.PlayerDie();
+                        }));
                 }
 
                 if (type == ObjectType.Player)
@@ -152,13 +172,6 @@ namespace Combat
             _waitAfterAction = WaitAndReturnToIdleIEnum(sec);
             StartCoroutine(_waitAfterAction);
         }
-        
-        private IEnumerator WaitAndDieIEnum(float second)
-        {
-            yield return new WaitForSeconds(second);
-            PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
-            _waitAfterAction = null;
-        }
 
         // 기다렸다가 Bool 교체 
         private delegate void AfterWaitOperation();
@@ -169,9 +182,15 @@ namespace Combat
         }
 
         // 공격 판정변수 설정
+        private IEnumerator _hittingJudgeAction;
         private void WaitAndChangeHitting(float start, float end)
         {
-            StartCoroutine(WaitAndOperationIEnum(start, () => { hitting = true; }));
+            _hittingJudgeAction = WaitAndOperationIEnum(start, () => { hitting = true; });
+            StartCoroutine(WaitAndOperationIEnum(start, () =>
+            {
+                hitting = true;
+                _hittingJudgeAction = null;
+            }));
             StartCoroutine(WaitAndOperationIEnum(end, () => { hitting = false; }));
         }
         #endregion
@@ -196,10 +215,11 @@ namespace Combat
             attackHitBox.ResetInRange();
         }
         
-        public void UpdateStatus(int mhp)
+        public void UpdateStatus(int mhp, int at)
         {
             currentHp = mhp;
             maxHp = mhp;
+            atk = at;
         }
         
         public void Damaged(int damage)
@@ -209,6 +229,10 @@ namespace Combat
             running = false;
             backJumping = false;
             damaging = false;
+            if (_hittingJudgeAction != null)
+            {
+                StopCoroutine(_hittingJudgeAction);
+            }
             
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
             UIManager.Instance.UpdateEnemyHp((float)currentHp / MaxHp);
@@ -251,7 +275,7 @@ namespace Combat
             // Player Action WhiteList
             if (type == ObjectType.Player &&
                 (objectStatus != ObjectStatus.Idle && objectStatus != ObjectStatus.Attack &&
-                 objectStatus != ObjectStatus.Dead))
+                 objectStatus != ObjectStatus.Dead && objectStatus != ObjectStatus.Running))
             {
                 Debug.Log("Player Action Rejected");
                 return;
@@ -270,10 +294,10 @@ namespace Combat
                 case ObjectStatus.Idle:
                     animator.SetBool("Attack", false);
                     animator.SetBool("Dead", false);
+                    animator.SetBool("Running", false); 
                     if (type is ObjectType.Player) return;
                     
                     animator.SetBool("AttackSlow", false);
-                    animator.SetBool("Running", false); 
                     animator.SetBool("JumpBack", false);
                     animator.SetBool("Damaged", false);
                     return;
@@ -303,6 +327,9 @@ namespace Combat
                 // 움직임
                 case ObjectStatus.Running:
                     animator.SetBool("Running", true);
+                    float time = type == ObjectType.AI
+                        ? CombatManager.Instance.updateInterval
+                        : StageMoveManager.Instance.UIMovingTime;
                     // Running 변수
                     running = true;
                     if (_waitAfterRunningAction != null)
@@ -310,13 +337,13 @@ namespace Combat
                         StopCoroutine(_waitAfterRunningAction);
                     }
                     // Combat Manager Update Interval
-                    _waitAfterRunningAction = WaitAndOperationIEnum(CombatManager.Instance.updateInterval, () => 
+                    _waitAfterRunningAction = WaitAndOperationIEnum(time, () => 
                     { 
                         running = false;
                         _waitAfterRunningAction = null;
                     });
                     StartCoroutine(_waitAfterRunningAction);
-                    WaitAndReturnToIdle(CombatManager.Instance.updateInterval);
+                    WaitAndReturnToIdle(time);
                     return;
                 case ObjectStatus.JumpBack:
                     animator.SetBool("JumpBack", true);

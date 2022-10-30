@@ -8,12 +8,16 @@ namespace NonDestroyObject
 {
     public class StageMoveManager : Singleton<StageMoveManager>
     {
-        [Header("Need To be Initialized")] 
-        [SerializeField] private float sceneMoveTime;
+        public float UIMovingTime => uiMovingTime;
+        
+        [Header("Need To be Initialized")]
+        [SerializeField] private float uiMovingTime;
         [SerializeField] private float waitBeforeStartTime;
         [SerializeField] private float updateDelayTime;
         [SerializeField] public Transform enemyStartPosition;
         [SerializeField] private Transform enemyStageStartPosition;
+        [SerializeField] private Transform titleShowPosition;
+        [SerializeField] private Transform titleHidePosition;
 
         [Header("Debuging")] 
         [SerializeField] private bool moving;
@@ -40,32 +44,89 @@ namespace NonDestroyObject
             }
         }
 
-        private IEnumerator WaitUntilNewEnemyIEnum(float second)
+        private delegate void AfterWaitOperation();
+        private IEnumerator WaitAndOperationIEnum(float sec, AfterWaitOperation operation)
         {
-            CombatManager.Instance.AI.transform.localPosition = enemyStartPosition.localPosition;
-            yield return new WaitForSeconds(second);
-            
-            moving = true;
+            yield return new WaitForSeconds(sec);
+            operation();
         }
-        
-        private IEnumerator UIUpdateIEnum()
-        {
-            CombatManager.Instance.AI.transform.localPosition = enemyStartPosition.localPosition;
-            yield return new WaitForSeconds(sceneMoveTime);
 
-            CombatManager.Instance.AI.gameObject.SetActive(true);
+        private IEnumerator TransformMove(float time, Transform source, Transform target)
+        {
+            int count = (int)(time / (Time.deltaTime * 2));
+            Vector3 interval = (target.position - source.position) / count;
+            for (int i = 0; i < count; i++)
+            {
+                yield return new WaitForSeconds(Time.deltaTime * 2);
+                source.position += interval;
+            }
+        }
+
+        public void StopCombat(bool startNextStage)
+        {
             CombatManager.Instance.AI.Action(ObjectStatus.Idle);
-            moving = true;
+            PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
+            
+            // Block Input
+            InputManager.Instance.Blocked = true;
+            CombatManager.Instance.Blocked = true;
+            
+            if (startNextStage)
+            {
+                float time = (enemyStartPosition.position.x - enemyStageStartPosition.position.x) /
+                             CombatManager.Instance.AI.RunningSpeed;
+                // 지정 위치까지 와서 멈춰있기
+                StartCoroutine(WaitAndOperationIEnum(time, () =>
+                {
+                    PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
+                    // 움직임 막고 IDLE로 만들기
+                    CombatManager.Instance.Blocked = true;
+                    CombatManager.Instance.AI.Action(ObjectStatus.Idle);
+                }));
+                // Blocked 해제
+                StartCoroutine(WaitAndOperationIEnum((time > uiMovingTime ? time : uiMovingTime) + waitBeforeStartTime, () =>
+                {
+                    InputManager.Instance.Blocked = false;
+                    CombatManager.Instance.Blocked = false;
+                }));
+                CombatManager.Instance.AI.transform.localPosition = enemyStartPosition.localPosition;
+                CombatManager.Instance.Blocked = false;
+                PlayerManager.Instance.Player.Action(ObjectStatus.Running);
+            }
+            else
+            {
+                CombatManager.Instance.AI.transform.localPosition = enemyStageStartPosition.localPosition;
+                StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.stageHpTransform, titleHidePosition));
+                StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.titleTransform, titleShowPosition));
+                UIManager.Instance.ShowButtons(true);
+            }
         }
 
-        private void HideUI()
+        public void StartCombat()
         {
+            float time = (enemyStartPosition.position.x - enemyStageStartPosition.position.x) /
+                         CombatManager.Instance.AI.RunningSpeed;
+            // 지정 위치까지 와서 멈춰있기
+            StartCoroutine(WaitAndOperationIEnum(time, () =>
+            {
+                PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
+                // 움직임 막고 IDLE로 만들기
+                CombatManager.Instance.Blocked = true;
+                CombatManager.Instance.AI.Action(ObjectStatus.Idle);
+            }));
+            // Blocked 해제
+            StartCoroutine(WaitAndOperationIEnum((time > uiMovingTime ? time : uiMovingTime) + waitBeforeStartTime, () =>
+            {
+                InputManager.Instance.Blocked = false;
+                CombatManager.Instance.Blocked = false;
+            }));
+            CombatManager.Instance.AI.transform.localPosition = enemyStartPosition.localPosition;
+            CombatManager.Instance.Blocked = false;
+            PlayerManager.Instance.Player.Action(ObjectStatus.Running);
+            UIManager.Instance.ShowButtons(false);
             
-        }
-        
-        public void EnemyDead()
-        {
-            StartCoroutine(WaitUntilNewEnemyIEnum(sceneMoveTime));
+            StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.stageHpTransform, titleShowPosition));
+            StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.titleTransform, titleHidePosition));
         }
     }
 }

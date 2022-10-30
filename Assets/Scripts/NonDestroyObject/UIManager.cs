@@ -17,20 +17,15 @@ namespace NonDestroyObject
     }
     public class UIManager : Singleton<UIManager>
     {
-        public UIStatus CurrentStatus => _currentStatus;
-
-        [Header("UI Status")]
-        [SerializeField] private UIStatus _currentStatus;
-
         [Header("Components")] 
+        public Transform titleTransform;
+        public Transform stageHpTransform;
+        public Button startButton;
         [SerializeField] private TextMeshProUGUI _stage;
         [SerializeField] private TextMeshProUGUI _attackVal;
+        [SerializeField] private TextMeshProUGUI _coinVal;
         [SerializeField] private Slider _enemyHp;
-        public void ChangeUIStatus(UIStatus status)
-        {
-            _currentStatus = status;
-        }
-        
+
         private IEnumerator _sliderUpdate;
         private IEnumerator UpdateEnemyHpEnum(float end, float time)
         {
@@ -51,6 +46,11 @@ namespace NonDestroyObject
             _sliderUpdate = UpdateEnemyHpEnum(end, 0.5f);
             StartCoroutine(_sliderUpdate);
         }
+
+        public void ShowButtons(bool show)
+        {
+            startButton.gameObject.SetActive(show);
+        }
         
         public void UpdateStage(int stage)
         {
@@ -61,6 +61,10 @@ namespace NonDestroyObject
         {
             _attackVal.text = atk.ToString();
         }
-        
+
+        public void UpdateCoinVal(int coin)
+        {
+            _coinVal.text = coin.ToString();
+        }
     }
 }
