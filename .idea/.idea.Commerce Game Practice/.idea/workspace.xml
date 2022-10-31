@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e3c45448-3ae0-40fa-9f8a-52f5b5fc4771" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Utils.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Utils/CoroutineUtils.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Utils/CoroutineUtils.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Commerce Game Practice/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Commerce Game Practice/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Run.anim" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Medieval King Pack 2/Animations/Run.anim" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Combat/CombatObject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Combat/CombatObject.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/CombatManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/CombatManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/StageMoveManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/NonDestroyObject/StageMoveManager.cs" afterDir="false" />
-    </list>
+    <list default="true" id="e3c45448-3ae0-40fa-9f8a-52f5b5fc4771" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -105,7 +95,7 @@
       <workItem from="1666972878113" duration="329000" />
       <workItem from="1666973223864" duration="3824000" />
       <workItem from="1667012798060" duration="44588000" />
-      <workItem from="1667141201956" duration="2147000" />
+      <workItem from="1667141201956" duration="2165000" />
     </task>
     <servers />
   </component>

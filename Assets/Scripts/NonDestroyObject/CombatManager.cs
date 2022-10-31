@@ -55,18 +55,10 @@ namespace NonDestroyObject
                 if (rand == 2)
                 {
                     AI.Action(ObjectStatus.Attack);
-                    _delayedCoroutine = CoroutineUtils.WaitAndOperationIEnum(AI.GetAnimationTime("Attack"), () =>
-                    {
-                        updateDelayed = false;
-                    });
                 }
                 else
                 {
                     AI.Action(ObjectStatus.JumpBack);
-                    _delayedCoroutine = CoroutineUtils.WaitAndOperationIEnum(AI.GetAnimationTime("JumpBack"), () =>
-                    {
-                        updateDelayed = false;
-                    });
                 }
                 UpdateRandomSeed();
             }
@@ -74,11 +66,13 @@ namespace NonDestroyObject
             else
             {
                 AI.Action(ObjectStatus.Running);
-                _delayedCoroutine = CoroutineUtils.WaitAndOperationIEnum(updateInterval, () =>
-                {
-                    updateDelayed = false;
-                });
             }
+
+            if (_delayedCoroutine != null)
+            {
+                StopCoroutine(_delayedCoroutine);
+            }
+            _delayedCoroutine = UpdateDelay(updateInterval);
             StartCoroutine(_delayedCoroutine);
         }
         
