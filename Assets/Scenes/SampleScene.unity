@@ -1942,7 +1942,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -845}
+  m_AnchoredPosition: {x: 0, y: -830}
   m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1092650148
@@ -2981,14 +2981,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   atk: 1
   maxHp: 50
-  attackBeforeDelay: 0.35
+  attackDelay: 0.35
   attackEnd: 0.45
-  attackAfterDelay: 0.1
+  attackAfterDelay: 0.55
   type: 1
   runningSpeed: 3.5
   backJumpSpeed: 3.5
   knockBackXInterval: 4
   knockBackTime: 0.5
+  currentStatus: 0
   currentHp: 50
   attacking: 0
   hitting: 0
@@ -3281,7 +3282,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   atk: 50
   maxHp: 1
-  attackBeforeDelay: 0.1
+  attackDelay: 0
   attackEnd: 0.2
   attackAfterDelay: 0.55
   type: 0
@@ -3289,6 +3290,7 @@ MonoBehaviour:
   backJumpSpeed: 0
   knockBackXInterval: 0
   knockBackTime: 0
+  currentStatus: 0
   currentHp: 1
   attacking: 0
   hitting: 0

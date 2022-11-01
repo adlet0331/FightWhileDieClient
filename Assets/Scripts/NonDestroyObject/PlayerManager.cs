@@ -20,8 +20,8 @@ namespace NonDestroyObject
         public void PlayerDie()
         {
             // Range 처리 초기화
-            Player.ResetInRange();
-            CombatManager.Instance.AI.ResetInRange();
+            Player.ResetAfterDie();
+            CombatManager.Instance.AI.ResetAfterDie();
             
             // 스테이지 리셋
             SLManager.Instance.StageReset();

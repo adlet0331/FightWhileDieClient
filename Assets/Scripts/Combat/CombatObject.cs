@@ -38,8 +38,7 @@ namespace Combat
         [SerializeField] private float backJumpSpeed;
         [SerializeField] private float knockBackXInterval;
         [SerializeField] private float knockBackTime;
-
-        public int MaxHp => maxHp;
+        
         public bool EnemyInRange => attackHitBox.EnemyInRange;
         public bool Attacking => attacking;
         public bool Dying => dying;
@@ -49,12 +48,12 @@ namespace Combat
         public bool BackJumping => backJumping;
         public bool Damaging => damaging;
 
-        [Header("Debuging")] [SerializeField] public ObjectStatus currentStatus;
+        [Header("Debugging")] [SerializeField] public ObjectStatus currentStatus;
         [SerializeField] private int currentHp;
         [SerializeField] private bool attacking;
         [SerializeField] private bool hitting;
         [SerializeField] private bool dying;
-        [Header("Debuging Only For Enemy")]
+        [Header("Debugging Only For Enemy")]
         [SerializeField] private bool running;
         [SerializeField] private bool backJumping;
         [SerializeField] private bool damaging;
@@ -124,29 +123,21 @@ namespace Combat
                 hitting = false;
                 if (type == ObjectType.AI)
                 {
-                    hitting = false;
-                    attacking = false;
-                    running = false;
-                    backJumping = false;
-                    damaging = false;
                     if (_hittingJudgeAction != null)
                     {
                         StopCoroutine(_hittingJudgeAction);
+                        _hittingJudgeAction = null;
                     }
                     
                     PlayerManager.Instance.Player.Action(ObjectStatus.Dead);
-                    
-                    InputManager.Instance.Blocked = true;
-                    CombatManager.Instance.Blocked = true;
-                    
+
                     StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(GetAnimationTime("Dead"),
                         () =>
                         {
                             PlayerManager.Instance.PlayerDie();
                         }));
                 }
-
-                if (type == ObjectType.Player)
+                else if (type == ObjectType.Player)
                 {
                     CombatManager.Instance.AI.Damaged(PlayerManager.Instance.Player.atk);
                 }
@@ -186,23 +177,49 @@ namespace Combat
         #endregion
         
         // Animation 시간 이름으로 받아오기
-        public float GetAnimationTime(string name)
+        public float GetAnimationTime(string animationName)
         {
-            for(int i = 0; i<runtimeAnimatorController.animationClips.Length; i++) //For all animations
+            foreach (var t in runtimeAnimatorController.animationClips)
             {
-                if(runtimeAnimatorController.animationClips[i].name == name) //If it has the same name as your clip
+                if(t.name == animationName) //If it has the same animationName as your clip
                 {
-                    return runtimeAnimatorController.animationClips[i].length; // Because For Delay
+                    return t.length; // Because For Delay
                 }
             }
 
-            Debug.LogAssertion("No Animation Named " + name);
+            Debug.LogAssertion("No Animation Named " + animationName);
             return 0.0f;
         }
 
-        public void ResetInRange()
+        public void ResetAfterDie()
         {
             attackHitBox.ResetInRange();
+            if (_blockInput != null)
+            {
+                StopCoroutine(_blockInput);
+                _blockInput = null;
+            }
+            if (_hittingJudgeAction != null)
+            {
+                StopCoroutine(_hittingJudgeAction);
+                _hittingJudgeAction = null;
+            }
+            if (_waitAfterAction != null)
+            {
+                StopCoroutine(_waitAfterAction);
+                _waitAfterAction = null;
+                // 플레이어 공격 모션 캔슬 안 되기 위함
+                if (type == ObjectType.Player)
+                {
+                    StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(attackAfterDelay, () =>
+                    {
+                        attacking = false;
+                        SwitchStatus(ObjectStatus.Idle);
+                    }));
+                    return;
+                }
+            }
+            SwitchStatus(ObjectStatus.Idle);
         }
         
         public void UpdateStatus(int mhp, int at)
@@ -291,8 +308,8 @@ namespace Combat
             });
             StartCoroutine(_blockInput);
         }
-        
-        public void Damaged(int damage)
+
+        private void Damaged(int damage)
         {
             if (_hittingJudgeAction != null)
             {
@@ -301,18 +318,19 @@ namespace Combat
             }
             
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
-            UIManager.Instance.UpdateEnemyHp((float)currentHp / MaxHp);
+            UIManager.Instance.UpdateEnemyHp((float)currentHp / maxHp);
             // 죽음
             if (currentHp == 0)
             {
-                PlayerManager.Instance.Player.ResetInRange();
-                ResetInRange();
+                PlayerManager.Instance.Player.ResetAfterDie();
+                ResetAfterDie();
 
-                BlockInput(GetAnimationTime("Dead"), () =>
+                StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(GetAnimationTime("Dead"), () =>
                 {
                     dying = false;
                     CombatManager.Instance.AIDie();
-                });
+                }));
+                
                 SwitchStatus(ObjectStatus.Dead);
             }
             // 안 죽고 넉백 당함
