@@ -23,7 +23,7 @@ namespace NonDestroyObject
             {
                 if (touch.phase == TouchPhase.Began)
                 {
-                    AdsManager.Instance.RequestRewardAds();
+                    PlayerManager.Instance.Player.Action(ObjectStatus.Attack);
                 }
             }
 
