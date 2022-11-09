@@ -12,8 +12,8 @@ variables:
   IMAGE_VERSION: 1 # This will automatically use latest v1.x.x, see https://github.com/game-ci/docker/releases
   UNITY_DIR: $CI_PROJECT_DIR # this needs to be an absolute path. Defaults to the root of your tree.
   # You can expose this in Unity via Application.version
-  VERSION_NUMBER_VAR: 2021.3.12f1
-  # VERSION_BUILD_VAR: $CI_PIPELINE_IID
+  VERSION_NUMBER_VAR: $CI_COMMIT_REF_SLUG-$CI_PIPELINE_ID-$CI_JOB_ID
+  VERSION_BUILD_VAR: $CI_PIPELINE_IID
 
 image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
 
