@@ -37,7 +37,7 @@ namespace NonDestroyObject
             updateDelayed = true;
             StartCoroutine(UpdateDelay());
 
-            if (Math.Abs(enemyStageStartPosition.transform.position.x - transform.position.x) < 0.05)
+            if (Math.Abs(enemyStageStartPosition.transform.position.x - transform.position.x) < 0.1)
             {
                 moving = false;
                 // 움직임 막기
