@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Managers;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace NonDestroyObject
@@ -17,6 +19,11 @@ namespace NonDestroyObject
     }
     public class UIManager : Singleton<UIManager>
     {
+        [FormerlySerializedAs("_updating")]
+        [Header("UI Update")] 
+        [SerializeField] private int _updateCount;
+        [SerializeField] private float _updatingInterval;
+        [SerializeField] private float _updatingEndValue;
         [Header("Components")] 
         public Transform titleTransform;
         public Transform stageHpTransform;
@@ -26,25 +33,28 @@ namespace NonDestroyObject
         [SerializeField] private TextMeshProUGUI _coinVal;
         [SerializeField] private Slider _enemyHp;
 
-        private IEnumerator _sliderUpdate;
-        private IEnumerator UpdateEnemyHpEnum(float end, float time)
+        private void FixedUpdate()
         {
-            int interval = (int)((_enemyHp.value - end)/0.01f);
-            for (int i = 0; i < interval; i++)
+            if (_updateCount > 0)
             {
-                yield return new WaitForSeconds(time / interval);
-                _enemyHp.value -= 0.01f;
+                if (_updateCount == 1)
+                {
+                    _enemyHp.value = _updatingEndValue;
+                }
+                else
+                {
+                    _enemyHp.value -= _updatingInterval;
+                }
+                _updateCount -= 1;
             }
-            _enemyHp.value = end;
         }
+        
         public void UpdateEnemyHp(float end)
         {
-            if (_sliderUpdate != null)
-            {
-                StopCoroutine(_sliderUpdate);
-            }
-            _sliderUpdate = UpdateEnemyHpEnum(end, 0.5f);
-            StartCoroutine(_sliderUpdate);
+            Debug.Log(Time.fixedDeltaTime);
+            _updateCount = (int) (0.5f / Time.fixedDeltaTime);
+            _updatingInterval = (float) Math.Round((_enemyHp.value - end)/ _updateCount, 3);
+            _updatingEndValue = end;
         }
 
         public void ShowButtons(bool show)
