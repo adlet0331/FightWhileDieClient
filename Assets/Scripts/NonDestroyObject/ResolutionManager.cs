@@ -1,4 +1,3 @@
-using System;
 using Managers;
 using UnityEngine;
 
@@ -7,17 +6,14 @@ namespace NonDestroyObject
     public class ResolutionManager : Singleton<ResolutionManager>
     {
         [Header(("Size"))]
-        [SerializeField] private int FixedHeight;
+        [SerializeField] private int FixedWidth;
         [Header("Components")]
         [SerializeField] private Camera MainCamera;
         [SerializeField] private Canvas MainCanvas;
         private void Start()
         {
-#if UNITY_ANDROID
-            MainCamera.orthographic = true;
-            MainCamera.orthographicSize = 5;
-# endif
-            
+            Debug.Log(MainCamera.aspect);
+            MainCamera.orthographicSize = FixedWidth / ((float)Screen.width / Screen.height);
         }
     }
 }

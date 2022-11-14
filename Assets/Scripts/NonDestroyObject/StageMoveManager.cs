@@ -24,6 +24,12 @@ namespace NonDestroyObject
         [SerializeField] private bool moving;
         [SerializeField] private bool updateDelayed;
 
+        private void Start()
+        {
+            UIManager.Instance.titleTransform.position = titleShowPosition.position;
+            UIManager.Instance.stageHpTransform.position = titleHidePosition.position;
+        }
+
         private IEnumerator UpdateDelay()
         {
             yield return new WaitForSeconds(updateDelayTime);
@@ -53,6 +59,7 @@ namespace NonDestroyObject
             {
                 yield return new WaitForSeconds(Time.deltaTime * 2);
                 source.position += interval;
+                
             }
         }
 
