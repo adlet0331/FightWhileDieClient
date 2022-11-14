@@ -70,7 +70,7 @@ namespace NonDestroyObject
             // 지정 위치까지 와서 멈춰있기
             StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(time, () =>
             {
-                PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
+                PlayerCombatManager.Instance.Player.Action(ObjectStatus.Idle);
                 // 움직임 막고 IDLE로 만들기
                 CombatManager.Instance.Blocked = true;
                 CombatManager.Instance.AI.Action(ObjectStatus.Idle);
@@ -84,7 +84,7 @@ namespace NonDestroyObject
             CombatManager.Instance.AI.Action(ObjectStatus.Idle);
             CombatManager.Instance.AI.transform.localPosition = enemyStartPosition.localPosition;
             CombatManager.Instance.Blocked = false;
-            PlayerManager.Instance.Player.Action(ObjectStatus.Running);
+            PlayerCombatManager.Instance.Player.Action(ObjectStatus.Running);
         }
 
         public void StopCombat(bool startNextStage)
@@ -94,7 +94,7 @@ namespace NonDestroyObject
             CombatManager.Instance.Blocked = true;
             
             CombatManager.Instance.AI.Action(ObjectStatus.Idle);
-            PlayerManager.Instance.Player.Action(ObjectStatus.Idle);
+            PlayerCombatManager.Instance.Player.Action(ObjectStatus.Idle);
             
             if (startNextStage)
             {

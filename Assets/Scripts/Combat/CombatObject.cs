@@ -129,17 +129,17 @@ namespace Combat
                         _hittingJudgeAction = null;
                     }
                     
-                    PlayerManager.Instance.Player.Action(ObjectStatus.Dead);
+                    PlayerCombatManager.Instance.Player.Action(ObjectStatus.Dead);
 
                     StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(GetAnimationTime("Dead"),
                         () =>
                         {
-                            PlayerManager.Instance.PlayerDie();
+                            PlayerCombatManager.Instance.PlayerDie();
                         }));
                 }
                 else if (type == ObjectType.Player)
                 {
-                    CombatManager.Instance.AI.Damaged(PlayerManager.Instance.Player.atk);
+                    CombatManager.Instance.AI.Damaged(PlayerCombatManager.Instance.Player.atk);
                 }
             }
         }
@@ -322,7 +322,7 @@ namespace Combat
             // 죽음
             if (currentHp == 0)
             {
-                PlayerManager.Instance.Player.ResetAfterDie();
+                PlayerCombatManager.Instance.Player.ResetAfterDie();
                 ResetAfterDie();
 
                 StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(GetAnimationTime("Dead"), () =>

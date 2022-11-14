@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace NonDestroyObject
 {
-    public class PlayerManager : Managers.Singleton<PlayerManager>
+    public class PlayerCombatManager : Managers.Singleton<PlayerCombatManager>
     {
         public CombatObject Player;
 

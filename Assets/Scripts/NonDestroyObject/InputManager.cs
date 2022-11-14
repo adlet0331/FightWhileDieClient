@@ -23,18 +23,18 @@ namespace NonDestroyObject
             {
                 if (touch.phase == TouchPhase.Began)
                 {
-                    PlayerManager.Instance.Player.Action(ObjectStatus.Attack);
+                    PlayerCombatManager.Instance.Player.Action(ObjectStatus.Attack);
                 }
             }
 
             if (Input.GetKeyDown(KeyCode.A))
             {
-                PlayerManager.Instance.Player.Action(ObjectStatus.Attack);
+                PlayerCombatManager.Instance.Player.Action(ObjectStatus.Attack);
             }
             
             if (Input.GetKeyDown(KeyCode.D))
             {
-                PlayerManager.Instance.Player.Action(ObjectStatus.Dead);
+                PlayerCombatManager.Instance.Player.Action(ObjectStatus.Dead);
             }
         }
     }

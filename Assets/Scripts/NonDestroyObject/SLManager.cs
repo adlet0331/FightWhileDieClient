@@ -54,7 +54,7 @@ namespace NonDestroyObject
             _enemyHp = (int)(_enemyHp * 1.2f);
             _atk += 10;
             _coin += _stage;
-            PlayerManager.Instance.Player.UpdateStatus(1, _atk);
+            PlayerCombatManager.Instance.Player.UpdateStatus(1, _atk);
             CombatManager.Instance.AI.UpdateStatus(_enemyHp, 1);
             UpdateUI();
             Save();
