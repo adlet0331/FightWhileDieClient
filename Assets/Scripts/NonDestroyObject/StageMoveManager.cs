@@ -105,7 +105,7 @@ namespace NonDestroyObject
                 CombatManager.Instance.AI.transform.localPosition = enemyStageStartPosition.localPosition;
                 StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.stageHpTransform, titleHidePosition));
                 StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.titleTransform, titleShowPosition));
-                UIManager.Instance.ShowButtons(true);
+                UIManager.Instance.ShowHideButtons(true);
             }
         }
 
@@ -115,7 +115,7 @@ namespace NonDestroyObject
             
             StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.stageHpTransform, titleShowPosition));
             StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.titleTransform, titleHidePosition));
-            UIManager.Instance.ShowButtons(false);
+            UIManager.Instance.ShowHideButtons(false);
         }
     }
 }

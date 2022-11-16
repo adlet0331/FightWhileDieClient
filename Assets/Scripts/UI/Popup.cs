@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using NonDestroyObject;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UI
 {
-    [RequireComponent(typeof(BoxCollider2D))]
     public class Popup : MonoBehaviour
     {
         

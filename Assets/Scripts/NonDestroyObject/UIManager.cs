@@ -18,6 +18,11 @@ namespace NonDestroyObject
         Equip = 4,
         Enforcement = 5,
     }
+
+    public enum PopupType
+    {
+        Gatcha = 0,
+    }
     public class UIManager : Singleton<UIManager>
     {
         [FormerlySerializedAs("_updating")]
@@ -25,11 +30,12 @@ namespace NonDestroyObject
         [SerializeField] private int _updateCount;
         [SerializeField] private float _updatingInterval;
         [SerializeField] private float _updatingEndValue;
+        [Header("Popup")]
+        public Popup gatchaPopup;
         [Header("Components")] 
         public Transform titleTransform;
         public Transform stageHpTransform;
         public Button startButton;
-        public Popup gatchaPopup;
         public Button gatchaButton;
         [SerializeField] private TextMeshProUGUI _stage;
         [SerializeField] private TextMeshProUGUI _attackVal;
@@ -51,7 +57,6 @@ namespace NonDestroyObject
                 _updateCount -= 1;
             }
         }
-        
         public void UpdateEnemyHp(float end)
         {
             Debug.Log(Time.fixedDeltaTime);
@@ -60,12 +65,22 @@ namespace NonDestroyObject
             _updatingEndValue = end;
         }
 
-        public void ShowButtons(bool show)
+        public void ShowHideButtons(bool show)
         {
             startButton.gameObject.SetActive(show);
             gatchaButton.gameObject.SetActive(show);
         }
-        
+
+        public void HideAllPopup()
+        {
+            gatchaPopup.gameObject.SetActive(false);
+        }
+
+        public void ShowHideGatchaPopup(bool show)
+        {
+            gatchaPopup.gameObject.SetActive(show);
+        }
+
         public void UpdateStage(int stage)
         {
             _stage.text = stage.ToString();
