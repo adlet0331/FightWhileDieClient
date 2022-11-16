@@ -2,6 +2,7 @@
 using System.Collections;
 using Managers;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -28,6 +29,8 @@ namespace NonDestroyObject
         public Transform titleTransform;
         public Transform stageHpTransform;
         public Button startButton;
+        public Popup gatchaPopup;
+        public Button gatchaButton;
         [SerializeField] private TextMeshProUGUI _stage;
         [SerializeField] private TextMeshProUGUI _attackVal;
         [SerializeField] private TextMeshProUGUI _coinVal;
@@ -60,6 +63,7 @@ namespace NonDestroyObject
         public void ShowButtons(bool show)
         {
             startButton.gameObject.SetActive(show);
+            gatchaButton.gameObject.SetActive(show);
         }
         
         public void UpdateStage(int stage)
