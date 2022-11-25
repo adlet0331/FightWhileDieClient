@@ -51,7 +51,6 @@ namespace NonDestroyObject
         
         public void UpdateEnemyHp(float end)
         {
-            Debug.Log(Time.fixedDeltaTime);
             _updateCount = (int) (0.5f / Time.fixedDeltaTime);
             _updatingInterval = (float) Math.Round((_enemyHp.value - end)/ _updateCount, 3);
             _updatingEndValue = end;
