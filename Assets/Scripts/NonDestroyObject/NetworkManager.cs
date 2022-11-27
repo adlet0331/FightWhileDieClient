@@ -67,7 +67,7 @@ namespace NonDestroyObject
         {
             var json = new BaseRequest()
             {
-                id = playerId
+                id = SLManager.Instance.Id
             };
             var jsonString = json.ToString();
             Debug.Log(jsonString);
@@ -81,7 +81,12 @@ namespace NonDestroyObject
 
         private void CreateNewUserReq()
         {
-            
+            var json = new BaseRequest()
+            {
+                id = SLManager.Instance.Id
+            };
+            var jsonString = json.ToString();
+            Debug.Log(jsonString);
         }
         
     }
