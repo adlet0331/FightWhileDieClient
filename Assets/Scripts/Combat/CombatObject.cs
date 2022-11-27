@@ -91,7 +91,7 @@ namespace Combat
             SLManager.Instance.Load();
             if (type == ObjectType.Player)
             {
-                atk = SLManager.Instance.ATK;
+                atk = SLManager.Instance.Atk;
                 maxHp = 1;
             }
 

@@ -9,20 +9,22 @@ namespace NonDestroyObject
         public int Id => _id;
         public string Name => _name;
         public int Stage => _stage;
-        public int ATK => _atk;
+        public int BaseAtk => _baseAtk;
         public int EnemyHp => _enemyHp;
         public int Coin => _coin;
+        public int TopStage => _topStage;
+        public int Atk => _atk;
 
         [Header("Current Status")] 
         [SerializeField] private int _id;
         [SerializeField] private string _name;
         [SerializeField] private int _stage = 1;
+        [SerializeField] private int _baseAtk = 50;
         [SerializeField] private int _enemyHp = 50;
-        [SerializeField] private int _atk = 50;
         [SerializeField] private int _coin = 10;
         [Header("Update")]
         [SerializeField] private int _topStage;
-        [SerializeField] private int _baseAtk;
+        [SerializeField] private int _atk = 50;
         
         private void Start()
         {
@@ -40,6 +42,14 @@ namespace NonDestroyObject
             _stage = (int)(_topStage / 10.0f) + 1;
             _atk = _baseAtk;
             _enemyHp = (int)(_enemyHp * Math.Pow(1.2f, _stage));
+        }
+        
+        public void InitUser(int id, string name)
+        {
+            _id = id;
+            _name = name;
+            PlayerPrefs.SetInt("Id", id);
+            PlayerPrefs.SetString("Name", name);
         }
 
         public void Save()

@@ -11,7 +11,7 @@ namespace NonDestroyObject
 {
     public class BaseRequest
     {
-        public int id;
+        public int Id;
     }
 
     public class BaseResponse
@@ -23,6 +23,14 @@ namespace NonDestroyObject
     {
         
     }
+
+    public class CreateNewUserReq : BaseRequest
+    {
+        public string Name;
+        public int TopStage;
+        public int BaseAtk;
+        public int Coin;
+    }
     
     public class NetworkManager : Singleton<NetworkManager>
     {
@@ -32,7 +40,7 @@ namespace NonDestroyObject
 
         private void Start()
         {
-            
+            CheckConnection();
         }
 
         private string RequestPost(string url, string jsonString)
@@ -63,11 +71,11 @@ namespace NonDestroyObject
             }
         }
         
-        private void CheckConnectionReq()
+        private void CheckConnection()
         {
             var json = new BaseRequest()
             {
-                id = SLManager.Instance.Id
+                Id = SLManager.Instance.Id
             };
             var jsonString = json.ToString();
             Debug.Log(jsonString);
@@ -79,15 +87,29 @@ namespace NonDestroyObject
             connectable = res is { success: true } ? true : false;
         }
 
-        private void CreateNewUserReq()
+        public bool CreateNewUser(string userName)
         {
-            var json = new BaseRequest()
+            if (!connectable) return false;
+            
+            var json = new CreateNewUserReq()
             {
-                id = SLManager.Instance.Id
+                Id = SLManager.Instance.Id,
+                TopStage = SLManager.Instance.TopStage,
+                Name = userName,
+                BaseAtk = SLManager.Instance.BaseAtk,
+                Coin = SLManager.Instance.Coin
             };
             var jsonString = json.ToString();
-            Debug.Log(jsonString);
+
+            var resultJson = RequestPost("/playerserver/createnewuser", jsonString);
+            if (resultJson == string.Empty)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
-        
     }
 }

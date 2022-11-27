@@ -32,6 +32,7 @@ namespace NonDestroyObject
         [SerializeField] private float _updatingEndValue;
         [Header("Popup")]
         public Popup gatchaPopup;
+        public Popup enterYourNamePopup;
         [Header("Components")] 
         public Transform titleTransform;
         public Transform stageHpTransform;
@@ -72,12 +73,7 @@ namespace NonDestroyObject
 
         public void HideAllPopup()
         {
-            gatchaPopup.gameObject.SetActive(false);
-        }
-
-        public void ShowHideGatchaPopup(bool show)
-        {
-            gatchaPopup.gameObject.SetActive(show);
+            gatchaPopup.Close();
         }
 
         public void UpdateStage(int stage)
