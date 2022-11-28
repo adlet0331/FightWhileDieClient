@@ -907,6 +907,7 @@ Transform:
   - {fileID: 203944402}
   - {fileID: 1334480102}
   - {fileID: 555325796}
+  - {fileID: 1887054073}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1343,7 +1344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   touched: 0
-  Blocked: 0
+  Blocked: 1
 --- !u!4 &447832328
 Transform:
   m_ObjectHideFlags: 0
@@ -2949,7 +2950,6 @@ Transform:
   - {fileID: 2132246010}
   - {fileID: 406682329}
   - {fileID: 854003417}
-  - {fileID: 1887054073}
   - {fileID: 1804785327}
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -5042,7 +5042,7 @@ Transform:
   m_Children:
   - {fileID: 376148100}
   m_Father: {fileID: 1042355074}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1804785328
 BoxCollider2D:
@@ -5308,8 +5308,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2125027778}
-  m_Father: {fileID: 1042355074}
-  m_RootOrder: 6
+  m_Father: {fileID: 322276782}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1887054074
 MonoBehaviour:
@@ -5323,7 +5323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f0beab425844b48916bbba3e7a1bc00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 0}
+  Player: {fileID: 1887054077}
 --- !u!61 &1887054075
 BoxCollider2D:
   m_ObjectHideFlags: 0

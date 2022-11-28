@@ -1,5 +1,3 @@
-using Managers;
-
 namespace NonDestroyObject
 {
     public interface ITrait

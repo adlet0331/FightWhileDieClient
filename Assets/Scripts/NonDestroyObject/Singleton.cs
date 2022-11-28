@@ -4,7 +4,7 @@
  * 씬이 넘어가도 파괴 안됨
  * 
  */
-namespace Managers
+namespace NonDestroyObject
 {
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour {
         private static bool _shutdown = false;

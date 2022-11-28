@@ -5,17 +5,9 @@ using UnityEngine;
 
 namespace NonDestroyObject
 {
-    public class PlayerCombatManager : Managers.Singleton<PlayerCombatManager>
+    public class PlayerCombatManager : Singleton<PlayerCombatManager>
     {
         public CombatObject Player;
-
-        private void Start()
-        {
-            if (Player.IsUnityNull())
-            {
-                Player = GetComponent<CombatObject>();
-            }
-        }
 
         public void PlayerDie()
         {

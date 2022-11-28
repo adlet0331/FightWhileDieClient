@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using Combat;
-using Managers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;

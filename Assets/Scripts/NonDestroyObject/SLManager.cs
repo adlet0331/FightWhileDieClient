@@ -1,8 +1,8 @@
 ﻿ using System;
- using Managers;
-using UnityEngine;
+ using UnityEngine;
+ using UnityEngine.PlayerLoop;
 
-namespace NonDestroyObject
+ namespace NonDestroyObject
 {
     public class SLManager : Singleton<SLManager>
     {
@@ -52,9 +52,9 @@ namespace NonDestroyObject
             _topStage = PlayerPrefs.GetInt("TopStage", 1);
             _baseAtk = PlayerPrefs.GetInt("BaseAtk", 50);
             _coin = PlayerPrefs.GetInt("Coin", 10);
-            _stage = (int)(_topStage / 10.0f) + 1;
-            _atk = _baseAtk;
-            _enemyHp = (int)(_enemyHp * Math.Pow(1.2f, _stage));
+            _stage = ((int)(_topStage / 10.0f) * 10) + 1;
+            UpdateAtk();
+            UpdateEnemyHp();
         }
         
         public void InitUser(int id, string userName)
@@ -64,6 +64,18 @@ namespace NonDestroyObject
             PlayerPrefs.SetInt("Id", id);
             PlayerPrefs.SetString("Name", userName);
             UIManager.Instance.UpdateUserName(_name);
+        }
+
+        public void UpdateAtk()
+        {
+            _atk = _baseAtk;
+            PlayerCombatManager.Instance.Player.UpdateStatus(1, _atk);
+        }
+
+        public void UpdateEnemyHp()
+        {
+            _enemyHp = (int)(50 * Math.Pow(1.2f, _stage));
+            CombatManager.Instance.AI.UpdateStatus(_enemyHp, 1);
         }
 
         private void UpdateUI()
@@ -77,10 +89,9 @@ namespace NonDestroyObject
 
         public void StageReset()
         {
-            _stage = (int)(_topStage / 10.0f) + 1;
-            _enemyHp = 50;
-            // _atk = 50;
-            CombatManager.Instance.AI.UpdateStatus(_enemyHp, 1);
+            _stage = ((int)(_topStage / 10.0f) * 10) + 1;
+            UpdateAtk();
+            UpdateEnemyHp();
             SavePrefs();
             UpdateUI();
         }
@@ -88,11 +99,10 @@ namespace NonDestroyObject
         public void StageCleared()
         {
             _stage += 1;
-            _enemyHp = (int)(_enemyHp * 1.2f);
             _baseAtk += 10;
             _coin += _stage;
-            PlayerCombatManager.Instance.Player.UpdateStatus(1, _atk);
-            CombatManager.Instance.AI.UpdateStatus(_enemyHp, 1);
+            UpdateAtk();
+            UpdateEnemyHp();
             UpdateUI();
             SavePrefs();
         }

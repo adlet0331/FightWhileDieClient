@@ -219,7 +219,7 @@ namespace Combat
                     return;
                 }
             }
-            SwitchStatus(ObjectStatus.Idle);
+            //SwitchStatus(ObjectStatus.Idle);
         }
         
         public void UpdateStatus(int mhp, int at)
