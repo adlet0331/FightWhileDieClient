@@ -13,7 +13,7 @@ namespace NonDestroyObject
         [SerializeField] private Canvas MainCanvas;
         private void Start()
         {
-            Debug.Log(MainCamera.aspect);
+            // Debug.Log(MainCamera.aspect);
             MainCamera.orthographicSize = FixedWidth / ((float)Screen.width / Screen.height) > HeightBottomBound ? FixedWidth / ((float)Screen.width / Screen.height) : HeightBottomBound;
         }
     }

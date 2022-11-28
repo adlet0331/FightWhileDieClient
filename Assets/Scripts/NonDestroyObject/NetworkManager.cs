@@ -9,6 +9,7 @@ using UnityEngine.PlayerLoop;
 
 namespace NonDestroyObject
 {
+    [Serializable]
     public class BaseRequest
     {
         public int Id;
@@ -24,6 +25,7 @@ namespace NonDestroyObject
         
     }
 
+    [Serializable]
     public class CreateNewUserReq : BaseRequest
     {
         public string Name;
@@ -50,10 +52,13 @@ namespace NonDestroyObject
             request.Timeout = 3 * 1000;
             request.ContentType = "text/json";
 
+            Debug.Log(jsonString);
             var jsonByte = Encoding.UTF8.GetBytes(jsonString);
             
             Stream streamRequest = request.GetRequestStream();
             streamRequest.Write(jsonByte, 0, jsonByte.Length);
+            streamRequest.Flush();
+            streamRequest.Close();
             
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
@@ -62,7 +67,6 @@ namespace NonDestroyObject
                 if (statusCode != HttpStatusCode.OK)
                     return string.Empty;
                 
-                Debug.Log(statusCode);
                 Stream respStream = response.GetResponseStream();
                 using (StreamReader streamReader = new StreamReader(respStream))
                 {
@@ -73,15 +77,13 @@ namespace NonDestroyObject
         
         private void CheckConnection()
         {
-            var json = new BaseRequest()
+            var req = new BaseRequest()
             {
                 Id = SLManager.Instance.Id
             };
-            var jsonString = json.ToString();
-            Debug.Log(jsonString);
+            var reqJson = JsonConvert.SerializeObject(req);
 
-            var resultJson = RequestPost("/playerserver/checkconnection", jsonString);
-            Debug.Log(resultJson);
+            var resultJson = RequestPost("/playerserver/checkconnection/", reqJson);
             CheckConnectionRes res = JsonConvert.DeserializeObject<CheckConnectionRes>(resultJson);
 
             connectable = res is { success: true } ? true : false;
@@ -91,7 +93,7 @@ namespace NonDestroyObject
         {
             if (!connectable) return false;
             
-            var json = new CreateNewUserReq()
+            var request = new CreateNewUserReq()
             {
                 Id = SLManager.Instance.Id,
                 TopStage = SLManager.Instance.TopStage,
@@ -99,9 +101,9 @@ namespace NonDestroyObject
                 BaseAtk = SLManager.Instance.BaseAtk,
                 Coin = SLManager.Instance.Coin
             };
-            var jsonString = json.ToString();
+            var reqJson = JsonConvert.SerializeObject(request);
 
-            var resultJson = RequestPost("/playerserver/createnewuser", jsonString);
+            var resultJson = RequestPost("/playerserver/createnewuser/", reqJson);
             if (resultJson == string.Empty)
             {
                 return false;
