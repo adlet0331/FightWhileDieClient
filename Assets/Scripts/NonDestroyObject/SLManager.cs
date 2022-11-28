@@ -28,31 +28,12 @@ namespace NonDestroyObject
         
         private void Start()
         {
-            Load();
+            LoadPrefs();
             UpdateUI();
-        }
-
-        public void Load()
-        {
-            _id = PlayerPrefs.GetInt("Id", -1);
-            _name = PlayerPrefs.GetString("Name", "");
-            _topStage = PlayerPrefs.GetInt("TopStage", 1);
-            _baseAtk = PlayerPrefs.GetInt("BaseAtk", 50);
-            _coin = PlayerPrefs.GetInt("Coin", 10);
-            _stage = (int)(_topStage / 10.0f) + 1;
-            _atk = _baseAtk;
-            _enemyHp = (int)(_enemyHp * Math.Pow(1.2f, _stage));
+            NetworkManager.Instance.CheckConnection();
         }
         
-        public void InitUser(int id, string name)
-        {
-            _id = id;
-            _name = name;
-            PlayerPrefs.SetInt("Id", id);
-            PlayerPrefs.SetString("Name", name);
-        }
-
-        public void Save()
+        public void SavePrefs()
         {
             if (_stage > _topStage)
             {
@@ -63,8 +44,31 @@ namespace NonDestroyObject
             PlayerPrefs.SetInt("Coin", _coin);
         }
 
+        public void LoadPrefs()
+        {
+            _name = PlayerPrefs.GetString("Name", String.Empty);
+            _id = PlayerPrefs.GetInt("Id", -1);
+            _name = PlayerPrefs.GetString("Name", "");
+            _topStage = PlayerPrefs.GetInt("TopStage", 1);
+            _baseAtk = PlayerPrefs.GetInt("BaseAtk", 50);
+            _coin = PlayerPrefs.GetInt("Coin", 10);
+            _stage = (int)(_topStage / 10.0f) + 1;
+            _atk = _baseAtk;
+            _enemyHp = (int)(_enemyHp * Math.Pow(1.2f, _stage));
+        }
+        
+        public void InitUser(int id, string userName)
+        {
+            _id = id;
+            _name = userName;
+            PlayerPrefs.SetInt("Id", id);
+            PlayerPrefs.SetString("Name", userName);
+            UIManager.Instance.UpdateUserName(_name);
+        }
+
         private void UpdateUI()
         {
+            UIManager.Instance.UpdateUserName(_name);
             UIManager.Instance.UpdateStage(_stage);
             UIManager.Instance.UpdateEnemyHp(_enemyHp);
             UIManager.Instance.UpdateAttackVal(_atk);
@@ -77,7 +81,7 @@ namespace NonDestroyObject
             _enemyHp = 50;
             // _atk = 50;
             CombatManager.Instance.AI.UpdateStatus(_enemyHp, 1);
-            Save();
+            SavePrefs();
             UpdateUI();
         }
         
@@ -90,7 +94,7 @@ namespace NonDestroyObject
             PlayerCombatManager.Instance.Player.UpdateStatus(1, _atk);
             CombatManager.Instance.AI.UpdateStatus(_enemyHp, 1);
             UpdateUI();
-            Save();
+            SavePrefs();
         }
     }
 }

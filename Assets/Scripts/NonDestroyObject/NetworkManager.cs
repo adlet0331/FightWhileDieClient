@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Managers;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -22,7 +24,7 @@ namespace NonDestroyObject
 
     public class CheckConnectionRes : BaseResponse
     {
-        
+        public bool NeedInit;
     }
 
     [Serializable]
@@ -33,17 +35,18 @@ namespace NonDestroyObject
         public int BaseAtk;
         public int Coin;
     }
+
+    [Serializable]
+    public class CreateNewUserRes : BaseResponse
+    {
+        public int Id;
+    }
     
     public class NetworkManager : Singleton<NetworkManager>
     {
         public int playerId;
-        public string _rootURL = "http://localhost:8000";
+        [SerializeField] private string _rootURL;
         public bool connectable;
-
-        private void Start()
-        {
-            CheckConnection();
-        }
 
         private string RequestPost(string url, string jsonString)
         {
@@ -59,23 +62,21 @@ namespace NonDestroyObject
             streamRequest.Write(jsonByte, 0, jsonByte.Length);
             streamRequest.Flush();
             streamRequest.Close();
-            
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            {
-                HttpStatusCode statusCode = response.StatusCode;
-                Debug.Log(statusCode);
-                if (statusCode != HttpStatusCode.OK)
-                    return string.Empty;
+
+            var response = (HttpWebResponse)request.GetResponse();
+            HttpStatusCode statusCode = response.StatusCode;
+            Debug.Log(statusCode);
+            if (statusCode != HttpStatusCode.OK)
+                return string.Empty;
                 
-                Stream respStream = response.GetResponseStream();
-                using (StreamReader streamReader = new StreamReader(respStream))
-                {
-                    return streamReader.ReadToEnd();
-                }
+            Stream respStream = response.GetResponseStream();
+            using (StreamReader streamReader = new StreamReader(respStream))
+            {
+                return streamReader.ReadToEnd();
             }
         }
         
-        private void CheckConnection()
+        public void CheckConnection()
         {
             var req = new BaseRequest()
             {
@@ -86,7 +87,19 @@ namespace NonDestroyObject
             var resultJson = RequestPost("/playerserver/checkconnection/", reqJson);
             CheckConnectionRes res = JsonConvert.DeserializeObject<CheckConnectionRes>(resultJson);
 
-            connectable = res is { success: true } ? true : false;
+            try
+            {
+                connectable = res.success;
+                if (connectable && res.NeedInit)
+                {
+                    UIManager.Instance.ShowPopupEnterYourNickname();
+                }
+            }
+            catch (NullReferenceException e)
+            {
+                connectable = false;
+                return;
+            }
         }
 
         public bool CreateNewUser(string userName)
@@ -102,15 +115,34 @@ namespace NonDestroyObject
                 Coin = SLManager.Instance.Coin
             };
             var reqJson = JsonConvert.SerializeObject(request);
-
+            
             var resultJson = RequestPost("/playerserver/createnewuser/", reqJson);
+            Debug.Log(resultJson);
             if (resultJson == string.Empty)
             {
                 return false;
             }
             else
             {
-                return true;
+                try
+                {
+                    var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
+                    if (!result.success)
+                    {
+                        Debug.LogAssertion("CreateNewUser Failed");
+                        return false;
+                    }
+                    else
+                    {
+                        playerId = result.Id;
+                        return true;
+                    }
+                }
+                catch (NullReferenceException e)
+                {
+                    Console.WriteLine(e);
+                    return false;
+                }
             }
         }
     }

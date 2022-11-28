@@ -1,4 +1,5 @@
-﻿using NonDestroyObject;
+﻿using System.Threading.Tasks;
+using NonDestroyObject;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,15 +13,30 @@ namespace UI
 
         public void OKButton()
         {
-            if (nameInputField.text.Length == 0 || nameInputField.text.Length > 20)
+            var userName = nameInputField.text;
+            if (userName.Length == 0 || userName.Length > 20)
             {
                 warning_text.text = "Please Check Nickname's length";
                 return;
             }
-            var success = NetworkManager.Instance.CreateNewUser(nameInputField.text);
-            if (success)
+
+            warning_text.text = "Internet Conecting...";
+
+            var task = Task.Run(() =>
             {
+                var success = NetworkManager.Instance.CreateNewUser(userName);
+                Debug.Log(success);
+                return success;
+            });
+            task.Wait();
+            if (task.Result)
+            {
+                SLManager.Instance.InitUser(NetworkManager.Instance.playerId, userName);
                 Close();
+            }
+            else
+            {
+                warning_text.text = "Something Wrong";
             }
         }
     }

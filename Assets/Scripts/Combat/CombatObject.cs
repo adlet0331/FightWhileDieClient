@@ -88,7 +88,7 @@ namespace Combat
             _waitAfterAction = null;
             _blockInput = null;
 
-            SLManager.Instance.Load();
+            SLManager.Instance.LoadPrefs();
             if (type == ObjectType.Player)
             {
                 atk = SLManager.Instance.Atk;
