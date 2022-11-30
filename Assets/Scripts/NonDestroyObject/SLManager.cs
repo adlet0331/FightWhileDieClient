@@ -1,8 +1,6 @@
 ﻿ using System;
  using System.Threading.Tasks;
- using UnityEditor.PackageManager;
  using UnityEngine;
- using UnityEngine.PlayerLoop;
 
  namespace NonDestroyObject
 {
