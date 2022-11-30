@@ -29,14 +29,14 @@ namespace UI
                 return success;
             });
             task.Wait();
-            if (task.Result)
+            if (task.Result == ResultStatus.Success)
             {
                 SLManager.Instance.InitUser(NetworkManager.Instance.playerId, userName);
                 Close();
             }
             else
             {
-                warning_text.text = "Something Wrong";
+                Debug.LogAssertion(task.Result.ToString());
             }
         }
     }

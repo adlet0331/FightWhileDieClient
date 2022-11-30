@@ -1,4 +1,6 @@
 ﻿ using System;
+ using System.Threading.Tasks;
+ using UnityEditor.PackageManager;
  using UnityEngine;
  using UnityEngine.PlayerLoop;
 
@@ -30,7 +32,21 @@
         {
             LoadPrefs();
             UpdateUI();
-            NetworkManager.Instance.CheckConnection();
+            Task.Run(() =>
+            {
+                try
+                {
+                    NetworkManager.Instance.CheckConnection();
+                    if (_id > 0)
+                    {
+                        NetworkManager.Instance.FetchUser();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(e);
+                }
+            });
         }
         
         public void SavePrefs()
@@ -94,6 +110,28 @@
             UpdateEnemyHp();
             SavePrefs();
             UpdateUI();
+            try
+            {
+                if (_id <= 0)
+                {
+                    NetworkManager.Instance.CreateNewUser(_name);
+                }
+                else
+                {
+                    try
+                    {
+                        NetworkManager.Instance.FetchUser();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log(e);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+            }
         }
         
         public void StageCleared()

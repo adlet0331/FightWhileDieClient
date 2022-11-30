@@ -10,37 +10,13 @@ using UnityEngine.PlayerLoop;
 
 namespace NonDestroyObject
 {
-    [Serializable]
-    public class BaseRequest
+    public enum ResultStatus
     {
-        public int Id;
+        Success = 0,
+        NoResponse = 1,
+        NotProperResponse = 2,
+        Failed = 3
     }
-
-    public class BaseResponse
-    {
-        public bool success;
-    }
-
-    public class CheckConnectionRes : BaseResponse
-    {
-        public bool NeedInit;
-    }
-
-    [Serializable]
-    public class CreateNewUserReq : BaseRequest
-    {
-        public string Name;
-        public int TopStage;
-        public int BaseAtk;
-        public int Coin;
-    }
-
-    [Serializable]
-    public class CreateNewUserRes : BaseResponse
-    {
-        public int Id;
-    }
-    
     public class NetworkManager : Singleton<NetworkManager>
     {
         public int playerId;
@@ -75,9 +51,9 @@ namespace NonDestroyObject
             }
         }
         
-        public void CheckConnection()
+        public ResultStatus CheckConnection()
         {
-            var req = new BaseRequest()
+            var req = new CheckConnectionReq()
             {
                 Id = SLManager.Instance.Id
             };
@@ -86,24 +62,18 @@ namespace NonDestroyObject
             var resultJson = RequestPost("/playerserver/checkconnection/", reqJson);
             CheckConnectionRes res = JsonConvert.DeserializeObject<CheckConnectionRes>(resultJson);
 
-            try
+            connectable = res.success;
+            if (connectable && res.NeedInit)
             {
-                connectable = res.success;
-                if (connectable && res.NeedInit)
-                {
-                    UIManager.Instance.ShowPopupEnterYourNickname();
-                }
+                UIManager.Instance.ShowPopupEnterYourNickname();
             }
-            catch (NullReferenceException e)
-            {
-                connectable = false;
-                return;
-            }
+
+            return ResultStatus.Success;
         }
 
-        public bool CreateNewUser(string userName)
+        public ResultStatus CreateNewUser(string userName)
         {
-            if (!connectable) return false;
+            if (!connectable) return ResultStatus.NoResponse;
             
             var request = new CreateNewUserReq()
             {
@@ -119,28 +89,54 @@ namespace NonDestroyObject
             Debug.Log(resultJson);
             if (resultJson == string.Empty)
             {
-                return false;
+                return ResultStatus.NotProperResponse;
             }
             else
             {
-                try
+                var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
+                if (!result.success)
                 {
-                    var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
-                    if (!result.success)
-                    {
-                        Debug.LogAssertion("CreateNewUser Failed");
-                        return false;
-                    }
-                    else
-                    {
-                        playerId = result.Id;
-                        return true;
-                    }
+                    return ResultStatus.Failed;
                 }
-                catch (NullReferenceException e)
+                else
                 {
-                    Console.WriteLine(e);
-                    return false;
+                    playerId = result.Id;
+                    return ResultStatus.Success;
+                }
+            }
+        }
+
+        public ResultStatus FetchUser()
+        {
+            if (!connectable) return ResultStatus.NoResponse;
+            
+            var request = new CreateNewUserReq()
+            {
+                Id = SLManager.Instance.Id,
+                TopStage = SLManager.Instance.TopStage,
+                Name = SLManager.Instance.Name,
+                BaseAtk = SLManager.Instance.BaseAtk,
+                Coin = SLManager.Instance.Coin
+            };
+            var reqJson = JsonConvert.SerializeObject(request);
+            
+            var resultJson = RequestPost("/playerserver/fetchuser/", reqJson);
+            Debug.Log(resultJson);
+            if (resultJson == string.Empty)
+            {
+                return ResultStatus.NotProperResponse;
+            }
+            else
+            {
+                var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
+                if (!result.success)
+                {
+                    return ResultStatus.Failed;
+                }
+                else
+                {
+                    playerId = result.Id;
+                    return ResultStatus.Success;
                 }
             }
         }
