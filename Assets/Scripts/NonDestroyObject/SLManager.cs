@@ -1,4 +1,4 @@
-﻿ using System;
+ using System;
  using System.Threading.Tasks;
  using UnityEngine;
 
@@ -30,21 +30,17 @@
         {
             LoadPrefs();
             UpdateUI();
-            Task.Run(() =>
-            {
-                try
-                {
+            try {
+                Task.Run(() => {
                     NetworkManager.Instance.CheckConnection();
-                    if (_id > 0)
-                    {
+                    if (_id > 0){
                         NetworkManager.Instance.FetchUser();
                     }
-                }
-                catch (Exception e)
-                {
-                    Debug.Log(e);
-                }
-            });
+                });
+            }
+            catch (Exception e){
+                Debug.Log(e);
+            }
         }
         
         public void SavePrefs()
