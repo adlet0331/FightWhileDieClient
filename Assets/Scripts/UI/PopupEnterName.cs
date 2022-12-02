@@ -22,12 +22,7 @@ namespace UI
 
             warning_text.text = "Internet Conecting...";
 
-            var task = Task.Run(() =>
-            {
-                var success = NetworkManager.Instance.CreateNewUser(userName);
-                Debug.Log(success);
-                return success;
-            });
+            var task = Task.Run(() =>NetworkManager.Instance.CreateNewUser(userName));
             task.Wait();
             if (task.Result == CreateNewUserResult.Success)
             {

@@ -7,11 +7,35 @@ using UnityEngine;
 
 namespace NonDestroyObject
 {
+    [Serializable]
+    public enum ClientCondition
+    {
+        Idle,
+        Localhost,
+        NoConnectionTest
+    }
     public class NetworkManager : Singleton<NetworkManager>
     {
         public int playerId;
+        [SerializeField] private ClientCondition _condition;
         [SerializeField] private string _rootURL;
         public bool connectable;
+
+        private void Start()
+        {
+            switch (_condition)
+            {
+                case ClientCondition.Idle:
+                    _rootURL = "http://fwt-server.haje.org";
+                    return;
+                case ClientCondition.Localhost:
+                    _rootURL = "http://localhost:8000";
+                    return;
+                case ClientCondition.NoConnectionTest:
+                    _rootURL = "http://NoConnectionTest:1234";
+                    return;
+            }
+        }
 
         private string RequestPost(string url, string jsonString)
         {

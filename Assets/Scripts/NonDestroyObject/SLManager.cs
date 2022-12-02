@@ -14,6 +14,7 @@
         public int Coin => _coin;
         public int TopStage => _topStage;
         public int Atk => _atk;
+        public int ClearCoin => _clearCoin;
 
         [Header("Current Status")] 
         [SerializeField] private int _id;
@@ -25,6 +26,7 @@
         [Header("Update")]
         [SerializeField] private int _topStage;
         [SerializeField] private int _atk = 50;
+        [SerializeField] private int _clearCoin;
         
         private void Start()
         {
@@ -32,30 +34,37 @@
             UpdateUI();
             try
             {
-                var task = Task.Run(() =>
+                var checkConnection = Task.Run(() => NetworkManager.Instance.CheckConnection());
+                checkConnection.Wait();
+                switch (checkConnection.Result)
                 {
-                    var result = NetworkManager.Instance.CheckConnection();
-                    switch (result)
-                    {
-                        case CheckConnectionResult.No_Connection_To_Server:
-                            return;
-                        case CheckConnectionResult.Success:
-                            NetworkManager.Instance.FetchUser();
-                            return;
-                        case CheckConnectionResult.Success_But_No_Id_In_Server:
-                            if (_name == String.Empty)
+                    case CheckConnectionResult.No_Connection_To_Server:
+                        break;
+                    case CheckConnectionResult.Success:
+                        var fetchUser = Task.Run(() => NetworkManager.Instance.FetchUser());
+                        fetchUser.Wait();
+
+                        break;
+                    case CheckConnectionResult.Success_But_No_Id_In_Server:
+                        if (_name == String.Empty)
+                        {
+                            UIManager.Instance.ShowPopupEnterYourNickname();
+                        }
+                        else
+                        {
+                            var createNewUser = Task.Run(() => NetworkManager.Instance.CreateNewUser(_name));
+                            createNewUser.Wait();
+
+                            switch (createNewUser.Result)
                             {
-                                UIManager.Instance.ShowPopupEnterYourNickname();
+                                case CreateNewUserResult.Success:
+                                    _id = NetworkManager.Instance.playerId;
+                                    PlayerPrefs.SetInt("Id", _id);
+                                    break;
                             }
-                            else
-                            {
-                                NetworkManager.Instance.CreateNewUser(_name);
-                            }
-                            return;
-                    }
-                    
-                });
-                task.Wait();
+                        }
+                        break;
+                }
             }
             catch (AggregateException e)
             {
@@ -85,6 +94,7 @@
             _stage = ((int)(_topStage / 10.0f) * 10) + 1;
             UpdateAtk();
             UpdateEnemyHp();
+            UpdateClearCoin();
         }
         
         public void InitUser(int id, string userName)
@@ -100,6 +110,11 @@
         {
             _atk = _baseAtk;
             PlayerCombatManager.Instance.Player.UpdateStatus(1, _atk);
+        }
+
+        public void UpdateClearCoin()
+        {
+            _clearCoin = _stage;
         }
 
         public void UpdateEnemyHp()
@@ -122,8 +137,9 @@
             _stage = ((int)(_topStage / 10.0f) * 10) + 1;
             UpdateAtk();
             UpdateEnemyHp();
-            SavePrefs();
+            UpdateClearCoin();
             UpdateUI();
+            SavePrefs();
         }
         
         public void StageCleared()
@@ -133,6 +149,7 @@
             _coin += _stage;
             UpdateAtk();
             UpdateEnemyHp();
+            UpdateClearCoin();
             UpdateUI();
             SavePrefs();
         }

@@ -84,6 +84,7 @@ namespace NonDestroyObject
         public void AIDie()
         {
             UpdateRandomSeed();
+            UIManager.Instance.ShowCoinEffect();
             SLManager.Instance.StageCleared();
             StageMoveManager.Instance.StopCombat(true);
         }

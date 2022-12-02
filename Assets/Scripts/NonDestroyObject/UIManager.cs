@@ -32,6 +32,7 @@ namespace NonDestroyObject
         [Header("Popup")]
         public Popup gatchaPopup;
         public Popup enterYourNamePopup;
+        public CoinEffect coinEffect;
         [Header("Components")] 
         public Transform titleTransform;
         public Transform stageHpTransform;
@@ -43,6 +44,8 @@ namespace NonDestroyObject
         [SerializeField] private TextMeshProUGUI _coinVal;
         [SerializeField] private Slider _enemyHp;
 
+        
+        
         private void FixedUpdate()
         {
             if (_updateCount > 0)
@@ -57,6 +60,11 @@ namespace NonDestroyObject
                 }
                 _updateCount -= 1;
             }
+        }
+
+        public void ShowCoinEffect()
+        {
+            coinEffect.ShowCoinEffect(SLManager.Instance.ClearCoin, 0.3f);
         }
 
         public void ShowPopupEnterYourNickname()

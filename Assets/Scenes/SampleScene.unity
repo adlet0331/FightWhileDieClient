@@ -869,7 +869,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerId: -1
-  _rootURL: http://fwt-server.haje.org1
+  _condition: 0
+  _rootURL: http://localhost:8000
   connectable: 0
 --- !u!1 &322276781
 GameObject:
@@ -1204,6 +1205,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &424327077
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 424327078}
+  m_Layer: 0
+  m_Name: Coin ShowPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &424327078
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424327077}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -200, z: 0}
+  m_LocalScale: {x: 192, y: 192, z: 192}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1510509760}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &428150854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1718,6 +1750,7 @@ MonoBehaviour:
   _updatingEndValue: 0
   gatchaPopup: {fileID: 563719618}
   enterYourNamePopup: {fileID: 1322455829}
+  coinEffect: {fileID: 913441177}
   titleTransform: {fileID: 428150855}
   stageHpTransform: {fileID: 1695623987}
   startButton: {fileID: 1092650148}
@@ -2793,13 +2826,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 913441176}
+  - component: {fileID: 913441177}
   m_Layer: 0
   m_Name: Coin Effect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &913441176
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2816,13 +2850,33 @@ RectTransform:
   - {fileID: 1954816896}
   - {fileID: 645388496}
   m_Father: {fileID: 1510509760}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -200}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &913441177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 913441175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbbfdd0ca5a84fca86e355feb0aaf433, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CoinImage: {fileID: 1848802913}
+  PlusText: {fileID: 1954816897}
+  CoinValText: {fileID: 645388497}
+  _initTransform: {fileID: 424327078}
+  movingInterval: 1.5
+  updating: 0
+  updateTotalTime: 0
+  updateTime: 0
 --- !u!1 &935286038
 GameObject:
   m_ObjectHideFlags: 0
@@ -4048,6 +4102,7 @@ MonoBehaviour:
   _coin: 10
   _topStage: 0
   _atk: 50
+  _clearCoin: 0
 --- !u!1 &1484660412
 GameObject:
   m_ObjectHideFlags: 0
@@ -4286,6 +4341,7 @@ RectTransform:
   - {fileID: 711793670}
   - {fileID: 1094523910}
   - {fileID: 1082271135}
+  - {fileID: 424327078}
   - {fileID: 913441176}
   m_Father: {fileID: 0}
   m_RootOrder: 2
