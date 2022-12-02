@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -6,13 +7,6 @@ using UnityEngine;
 
 namespace NonDestroyObject
 {
-    public enum ResultStatus
-    {
-        Success = 0,
-        NoResponse = 1,
-        NotProperResponse = 2,
-        Failed = 3
-    }
     public class NetworkManager : Singleton<NetworkManager>
     {
         public int playerId;
@@ -47,30 +41,38 @@ namespace NonDestroyObject
             }
         }
         
-        public ResultStatus CheckConnection()
+        public CheckConnectionResult CheckConnection()
         {
             var req = new CheckConnectionReq()
             {
                 Id = SLManager.Instance.Id
             };
             var reqJson = JsonConvert.SerializeObject(req);
-
-            var resultJson = RequestPost("/playerserver/checkconnection/", reqJson);
+            string resultJson;
+            
+            try
+            {
+                resultJson = RequestPost("/playerserver/checkconnection/", reqJson);
+            }
+            catch (TimeoutException e)
+            {
+                Console.WriteLine(e);
+                return CheckConnectionResult.No_Connection_To_Server;
+            }
+            
             CheckConnectionRes res = JsonConvert.DeserializeObject<CheckConnectionRes>(resultJson);
 
             connectable = res.success;
             if (connectable && res.NeedInit)
             {
-                UIManager.Instance.ShowPopupEnterYourNickname();
+                return CheckConnectionResult.Success_But_No_Id_In_Server;
             }
 
-            return ResultStatus.Success;
+            return CheckConnectionResult.Success;
         }
 
-        public ResultStatus CreateNewUser(string userName)
+        public CreateNewUserResult CreateNewUser(string userName)
         {
-            if (!connectable) return ResultStatus.NoResponse;
-            
             var request = new CreateNewUserReq()
             {
                 Id = SLManager.Instance.Id,
@@ -80,32 +82,32 @@ namespace NonDestroyObject
                 Coin = SLManager.Instance.Coin
             };
             var reqJson = JsonConvert.SerializeObject(request);
-            
-            var resultJson = RequestPost("/playerserver/createnewuser/", reqJson);
-            Debug.Log(resultJson);
-            if (resultJson == string.Empty)
+            string resultJson;
+
+            try
             {
-                return ResultStatus.NotProperResponse;
+                resultJson = RequestPost("/playerserver/createnewuser/", reqJson);
+            }
+            catch (TimeoutException e)
+            {
+                Console.WriteLine(e);
+                return CreateNewUserResult.No_Connection_To_Server;
+            }
+
+            var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
+            if (result.success)
+            {
+                playerId = result.Id;
+                return CreateNewUserResult.Success;
             }
             else
             {
-                var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
-                if (!result.success)
-                {
-                    return ResultStatus.Failed;
-                }
-                else
-                {
-                    playerId = result.Id;
-                    return ResultStatus.Success;
-                }
+                return CreateNewUserResult.Fail;
             }
         }
 
-        public ResultStatus FetchUser()
+        public FetchUserResult FetchUser()
         {
-            if (!connectable) return ResultStatus.NoResponse;
-            
             var request = new CreateNewUserReq()
             {
                 Id = SLManager.Instance.Id,
@@ -118,22 +120,15 @@ namespace NonDestroyObject
             
             var resultJson = RequestPost("/playerserver/fetchuser/", reqJson);
             Debug.Log(resultJson);
-            if (resultJson == string.Empty)
+            var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
+            if (result.success)
             {
-                return ResultStatus.NotProperResponse;
+                playerId = result.Id;
+                return FetchUserResult.Success;
             }
             else
             {
-                var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
-                if (!result.success)
-                {
-                    return ResultStatus.Failed;
-                }
-                else
-                {
-                    playerId = result.Id;
-                    return ResultStatus.Success;
-                }
+                return FetchUserResult.Fail;
             }
         }
     }

@@ -30,16 +30,37 @@
         {
             LoadPrefs();
             UpdateUI();
-            try {
-                Task.Run(() => {
-                    NetworkManager.Instance.CheckConnection();
-                    if (_id > 0){
-                        NetworkManager.Instance.FetchUser();
+            try
+            {
+                var task = Task.Run(() =>
+                {
+                    var result = NetworkManager.Instance.CheckConnection();
+                    switch (result)
+                    {
+                        case CheckConnectionResult.No_Connection_To_Server:
+                            return;
+                        case CheckConnectionResult.Success:
+                            NetworkManager.Instance.FetchUser();
+                            return;
+                        case CheckConnectionResult.Success_But_No_Id_In_Server:
+                            if (_name == String.Empty)
+                            {
+                                UIManager.Instance.ShowPopupEnterYourNickname();
+                            }
+                            else
+                            {
+                                NetworkManager.Instance.CreateNewUser(_name);
+                            }
+                            return;
                     }
+                    
                 });
+                task.Wait();
             }
-            catch (Exception e){
-                Debug.Log(e);
+            catch (AggregateException e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
         
@@ -104,28 +125,6 @@
             UpdateEnemyHp();
             SavePrefs();
             UpdateUI();
-            try
-            {
-                if (_id <= 0)
-                {
-                    NetworkManager.Instance.CreateNewUser(_name);
-                }
-                else
-                {
-                    try
-                    {
-                        NetworkManager.Instance.FetchUser();
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.Log(e);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e);
-            }
         }
         
         public void StageCleared()

@@ -29,7 +29,7 @@ namespace UI
                 return success;
             });
             task.Wait();
-            if (task.Result == ResultStatus.Success)
+            if (task.Result == CreateNewUserResult.Success)
             {
                 SLManager.Instance.InitUser(NetworkManager.Instance.playerId, userName);
                 Close();

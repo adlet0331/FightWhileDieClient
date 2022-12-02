@@ -22,7 +22,7 @@ namespace Combat
         {
             if (col.CompareTag("Player"))
             {
-                Debug.Log("Trigger In");
+                // Debug.Log("Trigger In");
                 enemyInRange = true;
             }
         }
@@ -30,7 +30,7 @@ namespace Combat
         {
             if (col.CompareTag("Player"))
             {
-                Debug.Log("Trigger Out");
+                // Debug.Log("Trigger Out");
                 enemyInRange = false;
             }
         }
