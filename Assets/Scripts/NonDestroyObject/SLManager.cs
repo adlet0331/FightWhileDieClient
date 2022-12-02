@@ -59,8 +59,7 @@
             }
             catch (AggregateException e)
             {
-                Console.WriteLine(e);
-                throw;
+                Debug.Log(e);
             }
         }
         
