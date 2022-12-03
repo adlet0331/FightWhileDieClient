@@ -131,9 +131,12 @@ namespace Combat
                     
                     PlayerCombatManager.Instance.Player.Action(ObjectStatus.Dead);
 
+                    InputManager.Instance.Blocked = true;
+                    CombatManager.Instance.Blocked = true;
                     StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(GetAnimationTime("Dead"),
                         () =>
                         {
+                            
                             PlayerCombatManager.Instance.PlayerDie();
                         }));
                 }

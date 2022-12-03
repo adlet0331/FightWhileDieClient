@@ -62,45 +62,32 @@ namespace NonDestroyObject
             }
         }
 
-        private void SpawnCombatAIAndWait()
+        private void ReSpawnCombatAI()
         {
-            float time = (enemyStartPosition.position.x - enemyStageStartPosition.position.x) /
-                         CombatManager.Instance.AI.RunningSpeed;
-            // 지정 위치까지 와서 멈춰있기
-            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(time, () =>
-            {
-                PlayerCombatManager.Instance.Player.Action(ObjectStatus.Idle);
-                // 움직임 막고 IDLE로 만들기
-                CombatManager.Instance.Blocked = true;
-                CombatManager.Instance.AI.Action(ObjectStatus.Idle);
-            }));
-            // Blocked 해제
-            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum((time > uiMovingTime ? time : uiMovingTime) + waitBeforeStartTime, () =>
-            {
-                InputManager.Instance.Blocked = false;
-                CombatManager.Instance.Blocked = false;
-            }));
+            // ReActive Input
+            InputManager.Instance.Blocked = false;
+            CombatManager.Instance.Blocked = false;
+            
             CombatManager.Instance.AI.Action(ObjectStatus.Idle);
             CombatManager.Instance.AI.transform.localPosition = enemyStartPosition.localPosition;
-            CombatManager.Instance.Blocked = false;
             PlayerCombatManager.Instance.Player.Action(ObjectStatus.Running);
         }
 
         public void StopCombat(bool startNextStage)
         {
-            // Block Input
-            InputManager.Instance.Blocked = true;
-            CombatManager.Instance.Blocked = true;
-            
             CombatManager.Instance.AI.Action(ObjectStatus.Idle);
             PlayerCombatManager.Instance.Player.Action(ObjectStatus.Idle);
             
             if (startNextStage)
             {
-                SpawnCombatAIAndWait();
+                ReSpawnCombatAI();
             }
             else
             {
+                // Block Input
+                InputManager.Instance.Blocked = true;
+                CombatManager.Instance.Blocked = true;
+                
                 CombatManager.Instance.AI.transform.localPosition = enemyStageStartPosition.localPosition;
                 UIManager.Instance.stageHpTransform.gameObject.SetActive(false);
                 StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.stageHpTransform, titleHidePosition));
@@ -111,7 +98,7 @@ namespace NonDestroyObject
 
         public void StartCombat()
         {
-            SpawnCombatAIAndWait();
+            ReSpawnCombatAI();
             
             UIManager.Instance.stageHpTransform.gameObject.SetActive(true);
             StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.stageHpTransform, titleShowPosition));
