@@ -31,7 +31,7 @@
         private void Start()
         {
             LoadPrefs();
-            SaveAllInfos();
+            Task.Run(() => SaveAllInfos());
         }
 
         public void LoadPrefs()

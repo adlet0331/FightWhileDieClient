@@ -31,6 +31,8 @@ namespace NonDestroyObject
         [SerializeField] private float _updatingEndValue;
         [Header("Popup")]
         public Popup gatchaPopup;
+        public Popup inventoryPopup;
+        public Popup rankingPopup;
         public Popup enterYourNamePopup;
         public CoinEffect coinEffect;
         [Header("Components")] 
@@ -75,6 +77,8 @@ namespace NonDestroyObject
         public void HideAllPopup()
         {
             gatchaPopup.Close();
+            inventoryPopup.Close();
+            rankingPopup.Close();
         }
         
         public void ShowHideButtons(bool show)

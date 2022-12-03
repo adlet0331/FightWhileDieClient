@@ -102,6 +102,7 @@ namespace NonDestroyObject
             else
             {
                 CombatManager.Instance.AI.transform.localPosition = enemyStageStartPosition.localPosition;
+                UIManager.Instance.stageHpTransform.gameObject.SetActive(false);
                 StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.stageHpTransform, titleHidePosition));
                 StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.titleTransform, titleShowPosition));
                 UIManager.Instance.ShowHideButtons(true);
@@ -112,6 +113,7 @@ namespace NonDestroyObject
         {
             SpawnCombatAIAndWait();
             
+            UIManager.Instance.stageHpTransform.gameObject.SetActive(true);
             StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.stageHpTransform, titleShowPosition));
             StartCoroutine(TransformMove(uiMovingTime, UIManager.Instance.titleTransform, titleHidePosition));
             UIManager.Instance.ShowHideButtons(false);
