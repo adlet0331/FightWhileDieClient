@@ -32,7 +32,7 @@
         private void Start()
         {
             StartLoadPrefs();
-            UpdateAllStatus();
+            UpdateAllStatus(true);
         }
 
         public void StartLoadPrefs()
@@ -137,7 +137,7 @@
             await UniTask.Yield();
         }
 
-        private void UpdateAllStatus()
+        private void UpdateAllStatus(bool sendServer)
         {
             // Update variables
             UpdateAtk();
@@ -147,12 +147,14 @@
             UpdateUI();
             // Update Prefs and Server
             SavePrefs();
-            SaveAllInfos().Forget();
+            if (sendServer)
+                SaveAllInfos().Forget();
         }
 
         public void StageReset()
         {
             _stage = ((int)(_topStage / 10.0f) * 10) + 1;
+            UpdateAllStatus(false);
         }
         
         public void StageCleared()
@@ -160,7 +162,7 @@
             _stage += 1;
             _baseAtk += 10;
             _coin += _stage;
-            UpdateAllStatus();
+            UpdateAllStatus(true);
         }
     }
 }
