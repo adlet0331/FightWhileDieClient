@@ -252,5 +252,6 @@ pages:
 
 workflow:
   rules:
-      # If not default branch OR Commit tag exist, Do not Start Pipeline
+      # 아래 조건 중 하나라도 True 여야 Pipeline이 생성됨
+      # If Default and tag does not exist, Create Pipeline
     - if: $CI_COMMIT_BRANCH =~ $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG =~ ""
