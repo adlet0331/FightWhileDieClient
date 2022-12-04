@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using NonDestroyObject;
 using TMPro;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace UI
         [SerializeField] private TMP_InputField nameInputField;
         [SerializeField] private TMP_Text warning_text;
 
-        public void OKButton()
+        public async void OKButton()
         {
             var userName = nameInputField.text;
             if (userName.Length == 0 || userName.Length > 20)
@@ -22,16 +23,16 @@ namespace UI
 
             warning_text.text = "Internet Conecting...";
 
-            var task = Task.Run(() =>NetworkManager.Instance.CreateNewUser(userName));
-            task.Wait();
-            if (task.Result == CreateNewUserResult.Success)
+            var createNewUser = await NetworkManager.Instance.CreateNewUser(userName);
+            if (createNewUser == CreateNewUserResult.Success)
             {
                 SLManager.Instance.InitUser(NetworkManager.Instance.playerId, userName);
                 Close();
             }
             else
             {
-                Debug.LogAssertion(task.Result.ToString());
+                SLManager.Instance.InitUser(-1, userName);
+                Close();
             }
         }
     }

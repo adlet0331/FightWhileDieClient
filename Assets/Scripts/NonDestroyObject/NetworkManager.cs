@@ -1,7 +1,10 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -19,10 +22,12 @@ namespace NonDestroyObject
         public int playerId;
         [SerializeField] private ClientCondition _condition;
         [SerializeField] private string _rootURL;
+        private HttpClient _httpClient;
         public bool connectable;
 
         private void Start()
         {
+            _httpClient = new HttpClient();
             switch (_condition)
             {
                 case ClientCondition.Idle:
@@ -37,57 +42,51 @@ namespace NonDestroyObject
             }
         }
 
-        private string RequestPost(string url, string jsonString)
+        private async UniTask<string> RequestPost(string url, string reqString)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_rootURL + url);
-            request.Method = "POST";
-            request.Timeout = 3 * 1000;
-            request.ContentType = "text/json";
+            Debug.Log(url + "\n" + reqString);
 
-            Debug.Log(jsonString);
-            var jsonByte = Encoding.UTF8.GetBytes(jsonString);
+            var httpContent = new StringContent(reqString, Encoding.UTF8, "text/json");
+            HttpResponseMessage response;
             
-            Stream streamRequest = request.GetRequestStream();
-            streamRequest.Write(jsonByte, 0, jsonByte.Length);
-            streamRequest.Flush();
-            streamRequest.Close();
-
-            var response = (HttpWebResponse)request.GetResponse();
+            try
+            {
+                response = await _httpClient.PostAsync(_rootURL + url, httpContent);
+            }
+            catch (WebException e)
+            {
+                Debug.Log("Error in Request Post");
+                Debug.Log(e);
+                return string.Empty;
+            }
             HttpStatusCode statusCode = response.StatusCode;
-            Debug.Log(statusCode);
             if (statusCode != HttpStatusCode.OK)
                 return string.Empty;
-                
-            Stream respStream = response.GetResponseStream();
-            using (StreamReader streamReader = new StreamReader(respStream))
-            {
-                return streamReader.ReadToEnd();
-            }
+            
+            var resString = await response.Content.ReadAsStringAsync();
+            Debug.Log(resString);
+            return resString;
         }
         
-        public CheckConnectionResult CheckConnection()
+        public async UniTask<CheckConnectionResult> CheckConnection()
         {
             var req = new CheckConnectionReq()
             {
                 Id = SLManager.Instance.Id
             };
             var reqJson = JsonConvert.SerializeObject(req);
-            string resultJson;
             
-            try
+            string resultJson;
+            resultJson = await RequestPost("/playerserver/checkconnection/", reqJson);
+            
+            if (resultJson == string.Empty)
             {
-                resultJson = RequestPost("/playerserver/checkconnection/", reqJson);
-            }
-            catch (TimeoutException e)
-            {
-                Console.WriteLine(e);
                 return CheckConnectionResult.No_Connection_To_Server;
             }
             
-            CheckConnectionRes res = JsonConvert.DeserializeObject<CheckConnectionRes>(resultJson);
+            CheckConnectionRes result = JsonConvert.DeserializeObject<CheckConnectionRes>(resultJson);
 
-            connectable = res.success;
-            if (connectable && res.NeedInit)
+            if (result is { success: true, NeedInit: true })
             {
                 return CheckConnectionResult.Success_But_No_Id_In_Server;
             }
@@ -95,7 +94,7 @@ namespace NonDestroyObject
             return CheckConnectionResult.Success;
         }
 
-        public CreateNewUserResult CreateNewUser(string userName)
+        public async UniTask<CreateNewUserResult> CreateNewUser(string userName)
         {
             var request = new CreateNewUserReq()
             {
@@ -108,18 +107,15 @@ namespace NonDestroyObject
             var reqJson = JsonConvert.SerializeObject(request);
             string resultJson;
 
-            try
+            resultJson = await RequestPost("/playerserver/createnewuser/", reqJson);
+
+            if (resultJson == string.Empty)
             {
-                resultJson = RequestPost("/playerserver/createnewuser/", reqJson);
-            }
-            catch (TimeoutException e)
-            {
-                Console.WriteLine(e);
                 return CreateNewUserResult.No_Connection_To_Server;
             }
 
             var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
-            if (result.success)
+            if (result is { success: true })
             {
                 playerId = result.Id;
                 return CreateNewUserResult.Success;
@@ -130,7 +126,7 @@ namespace NonDestroyObject
             }
         }
 
-        public FetchUserResult FetchUser()
+        public async UniTask<FetchUserResult> FetchUser()
         {
             var request = new CreateNewUserReq()
             {
@@ -142,10 +138,15 @@ namespace NonDestroyObject
             };
             var reqJson = JsonConvert.SerializeObject(request);
             
-            var resultJson = RequestPost("/playerserver/fetchuser/", reqJson);
-            Debug.Log(resultJson);
+            var resultJson = await RequestPost("/playerserver/fetchuser/", reqJson);
+
+            if (resultJson == String.Empty)
+            {
+                return FetchUserResult.No_Connection_To_Server;
+            }
+            
             var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
-            if (result.success)
+            if (result is { success: true })
             {
                 playerId = result.Id;
                 return FetchUserResult.Success;
