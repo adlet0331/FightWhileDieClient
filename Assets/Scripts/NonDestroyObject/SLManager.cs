@@ -58,7 +58,7 @@
         private void UpdateAtk()
         {
             _atk = _baseAtk;
-            PlayerCombatManager.Instance.Player.UpdateStatus(1, _atk);
+            CombatManager.Instance.Player.UpdateStatus(1, _atk);
         }
 
         private void UpdateClearCoin()

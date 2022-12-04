@@ -129,20 +129,18 @@ namespace Combat
                         _hittingJudgeAction = null;
                     }
                     
-                    PlayerCombatManager.Instance.Player.Action(ObjectStatus.Dead);
-
-                    InputManager.Instance.Blocked = true;
+                    CombatManager.Instance.Player.Action(ObjectStatus.Dead);
+                    
                     CombatManager.Instance.Blocked = true;
                     StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(GetAnimationTime("Dead"),
                         () =>
                         {
-                            
-                            PlayerCombatManager.Instance.PlayerDie();
+                            CombatManager.Instance.PlayerDie();
                         }));
                 }
                 else if (type == ObjectType.Player)
                 {
-                    CombatManager.Instance.AI.Damaged(PlayerCombatManager.Instance.Player.atk);
+                    CombatManager.Instance.AI.Damaged(CombatManager.Instance.Player.atk);
                 }
             }
         }
@@ -285,26 +283,12 @@ namespace Combat
 
         private void BlockInput(float sec, CoroutineUtils.AfterWaitOperation operation)
         {
-            if (type == ObjectType.AI)
-            {
-                CombatManager.Instance.Blocked = true;
-            }
-            else if (type == ObjectType.Player)
-            {
-                InputManager.Instance.Blocked = true;
-            }
+            CombatManager.Instance.Blocked = true;
             
             if (_blockInput != null) StopCoroutine(_blockInput);
             _blockInput = CoroutineUtils.WaitAndOperationIEnum(sec, () =>
             {
-                if (type == ObjectType.AI)
-                {
-                    CombatManager.Instance.Blocked = false;
-                }
-                else if (type == ObjectType.Player)
-                {
-                    InputManager.Instance.Blocked = false;
-                }
+                CombatManager.Instance.Blocked = false;
 
                 _blockInput = null;
                 operation();
@@ -325,7 +309,7 @@ namespace Combat
             // 죽음
             if (currentHp == 0)
             {
-                PlayerCombatManager.Instance.Player.ResetAfterDie();
+                CombatManager.Instance.Player.ResetAfterDie();
                 ResetAfterDie();
 
                 StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(GetAnimationTime("Dead"), () =>
@@ -375,11 +359,6 @@ namespace Combat
             {
                 // 공격
                 case ObjectStatus.Attack:
-                    // 공격중에는 액션 안 받음
-                    BlockInput(attackEnd + attackAfterDelay, () =>
-                    {
-                        attacking = false;
-                    });
                     // Hitting 변수
                     WaitAndChangeHitting();
                     // Idle로 리턴

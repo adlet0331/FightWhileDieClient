@@ -65,18 +65,17 @@ namespace NonDestroyObject
         private void ReSpawnCombatAI()
         {
             // ReActive Input
-            InputManager.Instance.Blocked = false;
             CombatManager.Instance.Blocked = false;
             
             CombatManager.Instance.AI.Action(ObjectStatus.Idle);
             CombatManager.Instance.AI.transform.localPosition = enemyStartPosition.localPosition;
-            PlayerCombatManager.Instance.Player.Action(ObjectStatus.Running);
+            CombatManager.Instance.Player.Action(ObjectStatus.Running);
         }
 
         public void StopCombat(bool startNextStage)
         {
             CombatManager.Instance.AI.Action(ObjectStatus.Idle);
-            PlayerCombatManager.Instance.Player.Action(ObjectStatus.Idle);
+            CombatManager.Instance.Player.Action(ObjectStatus.Idle);
             
             if (startNextStage)
             {
@@ -85,7 +84,6 @@ namespace NonDestroyObject
             else
             {
                 // Block Input
-                InputManager.Instance.Blocked = true;
                 CombatManager.Instance.Blocked = true;
                 
                 CombatManager.Instance.AI.transform.localPosition = enemyStageStartPosition.localPosition;
