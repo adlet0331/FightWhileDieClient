@@ -253,5 +253,5 @@ pages:
 workflow:
   rules:
       # Tag 가 build가 아닌 경우, 실행 X
-    - if: $CI_COMMIT_TAG =~ "build"
+    - if: $CI_COMMIT_DESCRIPTION =~ "build"
       when: never
