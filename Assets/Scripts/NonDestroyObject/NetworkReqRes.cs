@@ -42,6 +42,18 @@ namespace NonDestroyObject
     }
     
     [Serializable]
+    public class DeleteUserReq : BaseRequest
+    {
+        public int Id;
+    }
+
+    [Serializable]
+    public class DeleteUserRes : BaseResponse
+    {
+        public bool success;
+    }
+    
+    [Serializable]
     public class FetchUserReq : BaseRequest
     {
         public string Name;

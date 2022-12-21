@@ -42,27 +42,36 @@ namespace NonDestroyObject
             }
         }
 
-        private async UniTask<string> RequestPost(string url, string reqString)
+        private async UniTask<string> RequestPost(string url, string reqString, int retryNum = 3)
         {
             Debug.Log(url + "\n" + reqString);
 
             var httpContent = new StringContent(reqString, Encoding.UTF8, "text/json");
             HttpResponseMessage response;
-            
-            try
+            var cnt = 0;
+
+            while(true)
             {
-                response = await _httpClient.PostAsync(_rootURL + url, httpContent);
+                try
+                {
+                    response = await _httpClient.PostAsync(_rootURL + url, httpContent);
+                }
+                catch (WebException e)
+                {
+                    Debug.Log($"{cnt}" + e);
+                    return string.Empty;
+                }
+                HttpStatusCode statusCode = response.StatusCode;
+                if (statusCode == HttpStatusCode.OK)
+                {
+                    break;
+                }
+                // Retry $retryNum time
+                cnt += 1;
+                if (cnt > retryNum)
+                    return string.Empty;
             }
-            catch (WebException e)
-            {
-                Debug.Log("Error in Request Post");
-                Debug.Log(e);
-                return string.Empty;
-            }
-            HttpStatusCode statusCode = response.StatusCode;
-            if (statusCode != HttpStatusCode.OK)
-                return string.Empty;
-            
+
             var resString = await response.Content.ReadAsStringAsync();
             Debug.Log(resString);
             return resString;
@@ -76,7 +85,7 @@ namespace NonDestroyObject
             };
             var reqJson = JsonConvert.SerializeObject(req);
             
-            string resultJson;
+            string resultJson = string.Empty;
             resultJson = await RequestPost("/playerserver/checkconnection/", reqJson);
             
             if (resultJson == string.Empty)
@@ -105,8 +114,7 @@ namespace NonDestroyObject
                 Coin = SLManager.Instance.Coin
             };
             var reqJson = JsonConvert.SerializeObject(request);
-            string resultJson;
-
+            string resultJson = string.Empty;
             resultJson = await RequestPost("/playerserver/createnewuser/", reqJson);
 
             if (resultJson == string.Empty)
@@ -118,12 +126,30 @@ namespace NonDestroyObject
             if (result is { success: true })
             {
                 playerId = result.Id;
-                return CreateNewUserResult.Success;
-            }
-            else
-            {
                 return CreateNewUserResult.Fail;
             }
+            
+            return CreateNewUserResult.Success;
+        }
+
+        public async UniTask<DeleteUserResult> DeleteUser(int id)
+        {
+            var request = new DeleteUserReq()
+            {
+                Id = id,
+            };
+            var reqJson = JsonConvert.SerializeObject(request);
+            string resultJson = string.Empty;
+            resultJson = await RequestPost("playerserver/deleteuser/", reqJson);
+
+            if (resultJson == string.Empty) 
+                return DeleteUserResult.Fail;
+
+            var result = JsonConvert.DeserializeObject<DeleteUserRes>(resultJson);
+            if (result is { success: false })
+                return DeleteUserResult.No_User_In_Server;
+
+            return DeleteUserResult.Success;
         }
 
         public async UniTask<FetchUserResult> FetchUser()

@@ -80,6 +80,19 @@
             UIManager.Instance.UpdateAttackVal(_atk);
             UIManager.Instance.UpdateCoinVal(_coin);
         }
+
+        private void ClearAllPrefs()
+        {
+            NetworkManager.Instance.DeleteUser(_id).Forget();
+            _id = -1;
+            _name = string.Empty;
+            PlayerPrefs.SetInt("Id", -1);
+            PlayerPrefs.SetString("Name", string.Empty);
+            PlayerPrefs.SetInt("TopStage", 1);
+            PlayerPrefs.SetInt("BaseAtk", 50);
+            PlayerPrefs.SetInt("Coin", 10);
+            UpdateUI();
+        }
         
         private void SavePrefs()
         {

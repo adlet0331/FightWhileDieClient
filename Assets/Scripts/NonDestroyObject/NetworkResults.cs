@@ -19,6 +19,13 @@
         Fail
     }
 
+    public enum DeleteUserResult
+    {
+        No_User_In_Server,
+        Success,
+        Fail
+    }
+
     public enum FetchUserResult
     {
         No_Connection_To_Server,
