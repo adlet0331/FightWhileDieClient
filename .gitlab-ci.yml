@@ -252,6 +252,6 @@ pages:
 
 workflow:
   rules:
-      # 아래 조건 중 하나라도 True 여야 Pipeline이 생성됨
-      # If Default and tag does not exist, Create Pipeline
-    - if: $CI_COMMIT_BRANCH =~ $CI_DEFAULT_BRANCH && $CI_COMMIT_TAG =~ ""
+      # Tag 가 build가 아닌 경우, 실행 X
+    - if: $CI_COMMIT_TAG =~ "build"
+      when: never
