@@ -33,22 +33,25 @@ namespace Combat
         [SerializeField] private float attackAfterDelay;
         [SerializeField] private ObjectType type;
 
-        [Header("If AI, Need to be Initialized")] 
-        [SerializeField] private float runningSpeed;
-        [SerializeField] private float backJumpSpeed;
-        [SerializeField] private float knockBackXInterval;
-        [SerializeField] private float knockBackTime;
-        
+        [Header("If enemyAI, Need to be Initialized")] 
+        [SerializeField] public float runningSpeed;
+        [SerializeField] public float backJumpSpeed;
+        [SerializeField] public float knockBackXInterval;
+
         public bool EnemyInRange => attackHitBox.EnemyInRange;
+        // Status
+        public int Atk => atk;
+        // Current Status
         public bool Attacking => attacking;
+        public bool Hitting => hitting;
         public bool Dying => dying;
-        // Only For AI
+        // Only For enemyAI
         public bool Running => running;
-        public float RunningSpeed => runningSpeed;
         public bool BackJumping => backJumping;
         public bool Damaging => damaging;
 
-        [Header("Debugging")] [SerializeField] public ObjectStatus currentStatus;
+        [Header("Debugging")] 
+        [SerializeField] public ObjectStatus currentStatus;
         [SerializeField] private int currentHp;
         [SerializeField] private bool attacking;
         [SerializeField] private bool hitting;
@@ -64,7 +67,7 @@ namespace Combat
         [SerializeField] private AttackRangeObject attackHitBox;
         [SerializeField] private RuntimeAnimatorController runtimeAnimatorController;
 
-        #region Start, FixedUpdate
+        #region Start
         private void Start()
         {
             if (animator.IsUnityNull())
@@ -81,98 +84,61 @@ namespace Combat
             {
                 attackHitBox = GetComponentInChildren<AttackRangeObject>();
             }
-
+            
             currentHp = maxHp;
             runtimeAnimatorController = animator.runtimeAnimatorController;
 
-            _waitAfterAction = null;
-            _blockInput = null;
+            // Coroutines
+            _waitAndReturnToIdleCoroutine = null;
+            _hittingJudgeCoroutine = null;
             
-            if (type == ObjectType.Player)
-            {
-                atk = SLManager.Instance.Atk;
-                maxHp = 1;
-            }
-
-            if (type == ObjectType.AI)
-            {
-                atk = 1;
-                maxHp = SLManager.Instance.EnemyHp;
-            }
             currentStatus = ObjectStatus.Idle;
-        }
-
-        private void FixedUpdate()
-        {
-            if (damaging)
-            {
-                transform.position += Vector3.right * (knockBackXInterval * Time.fixedDeltaTime);
-            }
-            else if (running)
-            {
-                transform.position += Vector3.left * (runningSpeed * Time.fixedDeltaTime);
-            }
-            else if (backJumping)
-            {
-                transform.position += Vector3.right * (backJumpSpeed * Time.fixedDeltaTime);
-            }
-
-            if (attackHitBox.EnemyInRange && hitting)
-            {
-                hitting = false;
-                if (type == ObjectType.AI)
-                {
-                    if (_hittingJudgeAction != null)
-                    {
-                        StopCoroutine(_hittingJudgeAction);
-                        _hittingJudgeAction = null;
-                    }
-                    
-                    CombatManager.Instance.Player.Action(ObjectStatus.Dead);
-                    
-                    CombatManager.Instance.Blocked = true;
-                    StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(GetAnimationTime("Dead"),
-                        () =>
-                        {
-                            CombatManager.Instance.PlayerDie();
-                        }));
-                }
-                else if (type == ObjectType.Player)
-                {
-                    CombatManager.Instance.AI.Damaged(CombatManager.Instance.Player.atk);
-                }
-            }
         }
         #endregion
 
         #region IEnumerator
         // 기다렸다가 IDLE로 전환
-        private IEnumerator _waitAfterAction;
-        // Input Block 용
-        private IEnumerator _blockInput;
+        private IEnumerator _waitAndReturnToIdleCoroutine;
         private IEnumerator WaitAndReturnToIdleIEnum(float second)
         {
             yield return new WaitForSeconds(second);
             Action(ObjectStatus.Idle);
-            _waitAfterAction = null;
+            _waitAndReturnToIdleCoroutine = null;
         }
         private void WaitAndReturnToIdle(float sec)
         {
-            if (_waitAfterAction != null)
+            CancelWaitAndReturnToIdleCoroutine();
+            _waitAndReturnToIdleCoroutine = WaitAndReturnToIdleIEnum(sec);
+            StartCoroutine(_waitAndReturnToIdleCoroutine);
+        }
+
+        private void CancelWaitAndReturnToIdleCoroutine()
+        {
+            if (_waitAndReturnToIdleCoroutine != null)
             {
-                StopCoroutine(_waitAfterAction);
+                StopCoroutine(_waitAndReturnToIdleCoroutine);
             }
-            _waitAfterAction = WaitAndReturnToIdleIEnum(sec);
-            StartCoroutine(_waitAfterAction);
+            _waitAndReturnToIdleCoroutine = null;
         }
 
         // 공격 판정변수 설정
-        private IEnumerator _hittingJudgeAction;
+        private IEnumerator _hittingJudgeCoroutine;
         private void WaitAndChangeHitting()
         {
-            _hittingJudgeAction = CoroutineUtils.WaitAndOperationIEnum(attackDelay, () => { hitting = true; });
-            StartCoroutine(_hittingJudgeAction);
+            CancelHittingJudgeCoroutine();
+            _hittingJudgeCoroutine = CoroutineUtils.WaitAndOperationIEnum(attackDelay, () => { hitting = true; });
+            StartCoroutine(_hittingJudgeCoroutine);
             StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(attackEnd, () => { hitting = false; }));
+        }
+
+        public void CancelHittingJudgeCoroutine()
+        {
+            hitting = false;
+            if (_hittingJudgeCoroutine != null)
+            {
+                StopCoroutine(_hittingJudgeCoroutine);
+                _hittingJudgeCoroutine = null;
+            }
         }
         #endregion
         
@@ -194,32 +160,9 @@ namespace Combat
         public void ResetAfterDie()
         {
             attackHitBox.ResetInRange();
-            if (_blockInput != null)
-            {
-                StopCoroutine(_blockInput);
-                _blockInput = null;
-            }
-            if (_hittingJudgeAction != null)
-            {
-                StopCoroutine(_hittingJudgeAction);
-                _hittingJudgeAction = null;
-            }
-            if (_waitAfterAction != null)
-            {
-                StopCoroutine(_waitAfterAction);
-                _waitAfterAction = null;
-                // 플레이어 공격 모션 캔슬 안 되기 위함
-                if (type == ObjectType.Player)
-                {
-                    StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(attackAfterDelay, () =>
-                    {
-                        attacking = false;
-                        SwitchStatus(ObjectStatus.Idle);
-                    }));
-                    return;
-                }
-            }
-            //SwitchStatus(ObjectStatus.Idle);
+            CancelHittingJudgeCoroutine();
+            CancelWaitAndReturnToIdleCoroutine();
+            SwitchStatus(ObjectStatus.Idle);
         }
         
         public void UpdateStatus(int mhp, int at)
@@ -280,56 +223,28 @@ namespace Combat
             animator.SetBool(currentStatus.ToString(), true);
         }
 
-        private void BlockInput(float sec, CoroutineUtils.AfterWaitOperation operation)
+        public bool Damaged(int damage)
         {
-            CombatManager.Instance.Blocked = true;
-            
-            if (_blockInput != null) StopCoroutine(_blockInput);
-            _blockInput = CoroutineUtils.WaitAndOperationIEnum(sec, () =>
-            {
-                CombatManager.Instance.Blocked = false;
-
-                _blockInput = null;
-                operation();
-            });
-            StartCoroutine(_blockInput);
-        }
-
-        private void Damaged(int damage)
-        {
-            if (_hittingJudgeAction != null)
-            {
-                StopCoroutine(_hittingJudgeAction);
-                hitting = false;
-            }
+            CancelHittingJudgeCoroutine();
             
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
             UIManager.Instance.UpdateEnemyHp((float)currentHp / maxHp);
-            // 죽음
             if (currentHp == 0)
             {
-                CombatManager.Instance.Player.ResetAfterDie();
-                ResetAfterDie();
-
+                SwitchStatus(ObjectStatus.Dead);
                 StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(GetAnimationTime("Dead"), () =>
                 {
                     dying = false;
-                    CombatManager.Instance.AIDie();
                 }));
-                
-                SwitchStatus(ObjectStatus.Dead);
+                return true;
             }
-            // 안 죽고 넉백 당함
             else
             {
-                WaitAndReturnToIdle(knockBackTime);
-                UIManager.Instance.UpdateEnemyHp((float)currentHp / maxHp);
-                
-                BlockInput(knockBackTime, () =>
-                {
-                    damaging = false;
-                });
+                if (type == ObjectType.AI)
+                    UIManager.Instance.UpdateEnemyHp((float)currentHp / maxHp);
                 SwitchStatus(ObjectStatus.Damaged);
+                WaitAndReturnToIdle(GetAnimationTime("Damaged"));
+                return false;
             }
         }
 
@@ -346,11 +261,11 @@ namespace Combat
                 Debug.Log("Player Action Rejected");
                 return;
             }
-            // AI Action BlackList
+            // enemyAI Action BlackList
             if (type == ObjectType.AI && 
                 (objectStatus is ObjectStatus.Dead or ObjectStatus.Damaged))
             {
-                Debug.Log("AI Action Rejected");
+                Debug.Log("enemyAI Action Rejected");
                 return;
             }
 
@@ -367,18 +282,13 @@ namespace Combat
                 case ObjectStatus.Dead:
                     WaitAndReturnToIdle(GetAnimationTime("Dead"));
                     break;
-                // 아래는 AI 만 사용
+                // 아래는 enemyAI 만 사용
                 // 느리게 공격
                 case ObjectStatus.AttackSlow:
 
                     break;
                 // 움직임
                 case ObjectStatus.Running:
-                    float time = type == ObjectType.AI
-                        ? CombatManager.Instance.updateInterval
-                        : StageMoveManager.Instance.UIMovingTime;
-                    // Running 변수
-                    WaitAndReturnToIdle(time);
                     break;
                 case ObjectStatus.JumpBack:
                     float animationTime = GetAnimationTime("JumpBack");

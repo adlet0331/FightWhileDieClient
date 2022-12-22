@@ -1,5 +1,4 @@
  using System;
- using System.Threading.Tasks;
  using Cysharp.Threading.Tasks;
  using UnityEngine;
 
@@ -7,27 +6,27 @@
 {
     public class SLManager : Singleton<SLManager>
     {
-        public int Id => _id;
-        public string Name => _name;
-        public int Stage => _stage;
-        public int BaseAtk => _baseAtk;
-        public int EnemyHp => _enemyHp;
-        public int Coin => _coin;
-        public int TopStage => _topStage;
-        public int Atk => _atk;
-        public int ClearCoin => _clearCoin;
+        public int Id => id;
+        public string UserName => userName;
+        public int Stage => stage;
+        public int BaseAtk => baseAtk;
+        public int EnemyHp => enemyHp;
+        public int Coin => coin;
+        public int TopStage => topStage;
+        public int Atk => atk;
+        public int ClearCoin => clearCoin;
 
         [Header("Current Status")] 
-        [SerializeField] private int _id;
-        [SerializeField] private string _name;
-        [SerializeField] private int _stage = 1;
-        [SerializeField] private int _baseAtk = 50;
-        [SerializeField] private int _enemyHp = 50;
-        [SerializeField] private int _coin = 10;
+        [SerializeField] private int id;
+        [SerializeField] private string userName;
+        [SerializeField] private int stage = 1;
+        [SerializeField] private int baseAtk = 50;
+        [SerializeField] private int enemyHp = 50;
+        [SerializeField] private int coin = 10;
         [Header("Update")]
-        [SerializeField] private int _topStage;
-        [SerializeField] private int _atk = 50;
-        [SerializeField] private int _clearCoin;
+        [SerializeField] private int topStage;
+        [SerializeField] private int atk = 50;
+        [SerializeField] private int clearCoin;
         
         private void Start()
         {
@@ -35,57 +34,57 @@
             UpdateAllStatus(true);
         }
 
-        public void StartLoadPrefs()
+        private void StartLoadPrefs()
         {
-            _name = PlayerPrefs.GetString("Name", String.Empty);
-            _id = PlayerPrefs.GetInt("Id", -1);
-            _name = PlayerPrefs.GetString("Name", "");
-            _topStage = PlayerPrefs.GetInt("TopStage", 1);
-            _baseAtk = PlayerPrefs.GetInt("BaseAtk", 50);
-            _coin = PlayerPrefs.GetInt("Coin", 10);
-            _stage = ((int)(_topStage / 10.0f) * 10) + 1;
+            userName = PlayerPrefs.GetString("Name", String.Empty);
+            id = PlayerPrefs.GetInt("Id", -1);
+            userName = PlayerPrefs.GetString("Name", "");
+            topStage = PlayerPrefs.GetInt("TopStage", 1);
+            baseAtk = PlayerPrefs.GetInt("BaseAtk", 50);
+            coin = PlayerPrefs.GetInt("Coin", 10);
+            stage = ((int)(topStage / 10.0f) * 10) + 1;
         }
         
-        public void InitUser(int id, string userName)
+        public void InitUser(int idp, string userNameParam)
         {
-            _id = id;
-            _name = userName;
-            PlayerPrefs.SetInt("Id", id);
-            PlayerPrefs.SetString("Name", userName);
-            UIManager.Instance.UpdateUserName(_name);
+            this.id = idp;
+            this.userName = userNameParam;
+            PlayerPrefs.SetInt("Id", idp);
+            PlayerPrefs.SetString("Name", userNameParam);
+            UIManager.Instance.UpdateUserName(this.userName);
         }
 
         private void UpdateAtk()
         {
-            _atk = _baseAtk;
-            CombatManager.Instance.Player.UpdateStatus(1, _atk);
+            atk = baseAtk;
+            CombatManager.Instance.player.UpdateStatus(1, atk);
         }
 
         private void UpdateClearCoin()
         {
-            _clearCoin = _stage;
+            clearCoin = stage;
         }
 
         private void UpdateEnemyHp()
         {
-            _enemyHp = (int)(50 * Math.Pow(1.2f, _stage));
-            CombatManager.Instance.AI.UpdateStatus(_enemyHp, 1);
+            enemyHp = (int)(50 * Math.Pow(1.2f, stage));
+            CombatManager.Instance.enemyAI.UpdateStatus(enemyHp, 1);
         }
 
         private void UpdateUI()
         {
-            UIManager.Instance.UpdateUserName(_name);
-            UIManager.Instance.UpdateStage(_stage);
-            UIManager.Instance.UpdateEnemyHp(_enemyHp);
-            UIManager.Instance.UpdateAttackVal(_atk);
-            UIManager.Instance.UpdateCoinVal(_coin);
+            UIManager.Instance.UpdateUserName(userName);
+            UIManager.Instance.UpdateStage(stage);
+            UIManager.Instance.UpdateEnemyHp(enemyHp);
+            UIManager.Instance.UpdateAttackVal(atk);
+            UIManager.Instance.UpdateCoinVal(coin);
         }
 
         private void ClearAllPrefs()
         {
-            NetworkManager.Instance.DeleteUser(_id).Forget();
-            _id = -1;
-            _name = string.Empty;
+            NetworkManager.Instance.DeleteUser(id).Forget();
+            id = -1;
+            userName = string.Empty;
             PlayerPrefs.SetInt("Id", -1);
             PlayerPrefs.SetString("Name", string.Empty);
             PlayerPrefs.SetInt("TopStage", 1);
@@ -96,13 +95,13 @@
         
         private void SavePrefs()
         {
-            if (_stage > _topStage)
+            if (stage > topStage)
             {
-                _topStage = _stage;
-                PlayerPrefs.SetInt("TopStage", _topStage);
+                topStage = stage;
+                PlayerPrefs.SetInt("TopStage", topStage);
             }
-            PlayerPrefs.SetInt("BaseAtk", _baseAtk);
-            PlayerPrefs.SetInt("Coin", _coin);
+            PlayerPrefs.SetInt("BaseAtk", baseAtk);
+            PlayerPrefs.SetInt("Coin", coin);
         }
         
         private async UniTaskVoid SaveAllInfos()
@@ -120,7 +119,7 @@
                         NetworkManager.Instance.FetchUser().Forget();
                         break;
                     case CheckConnectionResult.Success_But_No_Id_In_Server:
-                        if (_name == String.Empty)
+                        if (userName == String.Empty)
                         {
                             await UniTask.SwitchToMainThread();
                             UIManager.Instance.ShowPopupEnterYourNickname();
@@ -128,14 +127,14 @@
                         }
                         else
                         {
-                            var createNewUser = await NetworkManager.Instance.CreateNewUser(_name);
+                            var createNewUser = await NetworkManager.Instance.CreateNewUser(userName);
 
                             switch (createNewUser)
                             {
                                 case CreateNewUserResult.Success:
                                     await UniTask.SwitchToMainThread();
-                                    _id = NetworkManager.Instance.playerId;
-                                    PlayerPrefs.SetInt("Id", _id);
+                                    id = NetworkManager.Instance.playerId;
+                                    PlayerPrefs.SetInt("Id", id);
                                     break;
                             }
                             break;
@@ -166,15 +165,15 @@
 
         public void StageReset()
         {
-            _stage = ((int)(_topStage / 10.0f) * 10) + 1;
+            stage = ((int)(topStage / 10.0f) * 10) + 1;
             UpdateAllStatus(false);
         }
         
         public void StageCleared()
         {
-            _stage += 1;
-            _baseAtk += 10;
-            _coin += _stage;
+            stage += 1;
+            baseAtk += 10;
+            coin += stage;
             UpdateAllStatus(true);
         }
     }

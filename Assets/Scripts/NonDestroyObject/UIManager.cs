@@ -5,6 +5,7 @@ using UI;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Utils;
 
 namespace NonDestroyObject
 {
@@ -25,7 +26,7 @@ namespace NonDestroyObject
     public class UIManager : Singleton<UIManager>
     {
         [FormerlySerializedAs("_updating")]
-        [Header("UI Update")] 
+        [Header("UI Enemy Hp Update")] 
         [SerializeField] private int _updateCount;
         [SerializeField] private float _updatingInterval;
         [SerializeField] private float _updatingEndValue;
@@ -40,14 +41,18 @@ namespace NonDestroyObject
         public Transform stageHpTransform;
         public Button startButton;
         public Button gatchaButton;
+        [Header("Transforms")] 
+        [SerializeField] private float uiMovingTime;
+        public float UiMovingTime => uiMovingTime;
+        [SerializeField] private Transform titleShowPosition;
+        [SerializeField] private Transform titleHidePosition;
+        
         [SerializeField] private TextMeshProUGUI _name;
         [SerializeField] private TextMeshProUGUI _stage;
         [SerializeField] private TextMeshProUGUI _attackVal;
         [SerializeField] private TextMeshProUGUI _coinVal;
         [SerializeField] private Slider _enemyHp;
 
-        
-        
         private void FixedUpdate()
         {
             if (_updateCount > 0)
@@ -119,6 +124,24 @@ namespace NonDestroyObject
         public void UpdateCoinVal(int coin)
         {
             _coinVal.text = coin.ToString();
+        }
+        
+        public void TitleEnemyHpSwitch(bool showHp)
+        {
+            if (showHp)
+            {
+                stageHpTransform.gameObject.SetActive(true);
+                StartCoroutine(CoroutineUtils.TransformMove(uiMovingTime, stageHpTransform, titleShowPosition));
+                StartCoroutine(CoroutineUtils.TransformMove(uiMovingTime, titleTransform, titleHidePosition));
+                ShowHideButtons(false);
+            }
+            else
+            {
+                stageHpTransform.gameObject.SetActive(false);
+                StartCoroutine(CoroutineUtils.TransformMove(uiMovingTime, stageHpTransform, titleHidePosition));
+                StartCoroutine(CoroutineUtils.TransformMove(uiMovingTime, titleTransform, titleShowPosition));
+                ShowHideButtons(true);
+            }
         }
     }
 }

@@ -158,7 +158,7 @@ namespace NonDestroyObject
             {
                 Id = SLManager.Instance.Id,
                 TopStage = SLManager.Instance.TopStage,
-                Name = SLManager.Instance.Name,
+                Name = SLManager.Instance.UserName,
                 BaseAtk = SLManager.Instance.BaseAtk,
                 Coin = SLManager.Instance.Coin
             };

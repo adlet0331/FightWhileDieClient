@@ -2,7 +2,6 @@
 using System.Collections;
 using Combat;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Utils;
 using Random = System.Random;
 
@@ -11,9 +10,11 @@ namespace NonDestroyObject
     public class CombatManager : Singleton<CombatManager>
     {
         [Header("Need Initialize In Unity")] 
-        public CombatObject Player;
-        public CombatObject AI;
-
+        public CombatObject player;
+        public CombatObject enemyAI;
+        [SerializeField] private Transform aiStartPosition;
+        [SerializeField] private Transform aiStandingPosition;
+        
         [Header("Debuging")]
         [SerializeField] private bool blocked;
         [SerializeField] public bool updateDelayed;
@@ -26,11 +27,15 @@ namespace NonDestroyObject
             set => blocked = value;
         }
         
-        private Random Random;
+        private Random _random;
         private void Start()
         {
+            // Coroutines
+            _afterDeadCoroutine = null;
+            _blockInputCoroutine = null;
+            // Random
             randomSeed = DateTime.Now.Millisecond * 103729;
-            Random = new Random(randomSeed);
+            _random = new Random(randomSeed);
             UpdateRandomSeed();
         }
         
@@ -38,18 +43,18 @@ namespace NonDestroyObject
         private void Update()
         {
             // Attack 중일 때는 막기
-            if (Blocked || Player.Attacking) return;
+            if (blocked || player.Attacking) return;
             foreach (var touch in Input.touches)
             {
                 if (touch.phase == TouchPhase.Began)
                 {
-                    Player.Action(ObjectStatus.Attack);
+                    player.Action(ObjectStatus.Attack);
                 }
             }
 
             if (Input.GetKeyDown(KeyCode.A))
             {
-                Player.Action(ObjectStatus.Attack);
+                player.Action(ObjectStatus.Attack);
             }
         }
 
@@ -62,14 +67,74 @@ namespace NonDestroyObject
 
         private void FixedUpdate()
         {
-            if (updateDelayed || blocked) return;
-            if (Player.Dying || Player.Damaging) return;
-            if (AI.Attacking || AI.Damaging || AI.BackJumping || AI.Running || AI.Dying) return;
+            if (blocked) return;
+             
+            // enemyAI 피격 판정 우선. 
+            if (player.Hitting && player.EnemyInRange)
+            {
+                player.CancelHittingJudgeCoroutine();
+                var dead = enemyAI.Damaged(player.Atk);
+                if (dead)
+                {
+                    // Update enemyAI's Random Seed
+                    UpdateRandomSeed();
+                    // 코인 이펙트
+                    UIManager.Instance.ShowCoinEffect();
+                    _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(enemyAI.GetAnimationTime("Dead"), () =>
+                    {
+                        player.ResetAfterDie();
+                        enemyAI.ResetAfterDie();
+                        EndCombat(true);
+                    });
+                    StartCoroutine(_afterDeadCoroutine);
+                }
+
+                return;
+            }
+
+            // Player 피격 판정
+            if (enemyAI.Hitting && enemyAI.EnemyInRange)
+            {
+                enemyAI.CancelHittingJudgeCoroutine();
+                var dead = player.Damaged(enemyAI.Atk);
+                if (dead)
+                {
+                    blocked = true;
+                    _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(player.GetAnimationTime("Dead"), () =>
+                    {
+                        player.ResetAfterDie();
+                        enemyAI.ResetAfterDie();
+                        EndCombat(false);
+                    });
+                    StartCoroutine(_afterDeadCoroutine);
+                }
+                else
+                    Debug.LogAssertion("Player MUST DIE in first hit!!");
+                
+                return;
+            }
             
+            // enemyAI Transform Moving
+            if (enemyAI.Damaging)
+            {
+                enemyAI.transform.position += Vector3.right * (enemyAI.knockBackXInterval * Time.fixedDeltaTime);
+            }
+            else if (enemyAI.Running)
+            {
+                enemyAI.transform.position += Vector3.left * (enemyAI.runningSpeed * Time.fixedDeltaTime);
+            }
+            else if (enemyAI.BackJumping)
+            {
+                enemyAI.transform.position += Vector3.right * (enemyAI.backJumpSpeed * Time.fixedDeltaTime);
+            }
+
+            if (enemyAI.Attacking || enemyAI.Damaging || enemyAI.BackJumping || enemyAI.Dying) return;
+
+            // enemyAI 행동 명령 전달
+            if (updateDelayed) return;
             updateDelayed = true;
 
             AIAction();
-
             if (_delayedCoroutine != null)
             {
                 StopCoroutine(_delayedCoroutine);
@@ -80,54 +145,88 @@ namespace NonDestroyObject
 
         private void AIAction()
         {
-            if (AI.EnemyInRange)
+            if (enemyAI.EnemyInRange)
             {
-                int rand = Random.Next(1, 3);
-                if (rand == 2)
+                int rand = _random.Next(1, 100);
+                if (rand <= _random.Next(1, 100))
                 {
-                    AI.Action(ObjectStatus.Attack);
+                    enemyAI.Action(ObjectStatus.Attack);
                 }
                 else
                 {
-                    AI.Action(ObjectStatus.JumpBack);
+                    enemyAI.Action(ObjectStatus.JumpBack);
                 }
                 UpdateRandomSeed();
             }
             else
             {
-                AI.Action(ObjectStatus.Running);
+                enemyAI.Action(ObjectStatus.Running);
             }
         }
 
-        public void PlayerAction()
+        private void InitAiPos(bool standing)
         {
-            
+            if (standing)
+                enemyAI.transform.SetLocalPositionAndRotation(aiStandingPosition.localPosition, aiStandingPosition.rotation);
+            else
+                enemyAI.transform.SetLocalPositionAndRotation(aiStartPosition.localPosition, aiStartPosition.rotation);
+        }
+        
+        public void StartCombat()
+        {
+            blocked = false;
+            InitAiPos(false);
+            UIManager.Instance.TitleEnemyHpSwitch(true);
         }
 
-        public void PlayerDie()
+        private void EndCombat(bool cleared)
         {
-            // Range 처리 초기화
-            Player.ResetAfterDie();
-            CombatManager.Instance.AI.ResetAfterDie();
-            
-            // 스테이지 리셋
-            SLManager.Instance.StageReset();
-            // 다음 스테이지 X, Combat End
-            StageMoveManager.Instance.StopCombat(false);
+            if (cleared)
+            {
+                // 스테이지 클리어 처리
+                SLManager.Instance.StageCleared();
+                InitAiPos(false);
+            }
+            else
+            {
+                UIManager.Instance.TitleEnemyHpSwitch(false);
+                SLManager.Instance.StageReset();
+                InitAiPos(true);
+            }
         }
-        
-        public void AIDie()
-        {
-            UpdateRandomSeed();
-            UIManager.Instance.ShowCoinEffect();
-            SLManager.Instance.StageCleared();
-            StageMoveManager.Instance.StopCombat(true);
-        }
-        
+
         private void UpdateRandomSeed()
         {
-            randomSeed = Random.Next();
-            Random = new Random(randomSeed);
+            randomSeed = _random.Next();
+            _random = new Random(randomSeed);
+        }
+        
+        // IEnumerator
+        private IEnumerator _afterDeadCoroutine;
+        // Input Block 용
+        private IEnumerator _blockInputCoroutine;
+        
+        private void CancelBlockInputCoroutine()
+        {
+            if (_blockInputCoroutine != null)
+            {
+                StopCoroutine(_blockInputCoroutine);
+                _blockInputCoroutine = null;
+            }
+        }
+        private void BlockInput(float sec, CoroutineUtils.AfterWaitOperation operation)
+        {
+            CombatManager.Instance.Blocked = true;
+            
+            if (_blockInputCoroutine != null) StopCoroutine(_blockInputCoroutine);
+            _blockInputCoroutine = CoroutineUtils.WaitAndOperationIEnum(sec, () =>
+            {
+                CombatManager.Instance.Blocked = false;
+
+                _blockInputCoroutine = null;
+                operation();
+            });
+            StartCoroutine(_blockInputCoroutine);
         }
 
     }
