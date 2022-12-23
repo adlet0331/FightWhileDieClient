@@ -1623,6 +1623,7 @@ MonoBehaviour:
   stageHpTransform: {fileID: 1695623987}
   startButton: {fileID: 1092650148}
   gatchaButton: {fileID: 1333269096}
+  inventoryButton: {fileID: 1603540256}
   uiMovingTime: 1
   titleShowPosition: {fileID: 1094523910}
   titleHidePosition: {fileID: 1082271135}
