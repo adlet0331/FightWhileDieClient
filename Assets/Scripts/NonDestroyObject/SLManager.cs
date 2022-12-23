@@ -45,8 +45,14 @@
             stage = ((int)(topStage / 10.0f) * 10) + 1;
         }
         
+        /// <summary>
+        /// Must be called in Main Thread
+        /// </summary>
+        /// <param name="idp"></param>
+        /// <param name="userNameParam"></param>
         public void InitUser(int idp, string userNameParam)
         {
+            UniTask.SwitchToMainThread();
             this.id = idp;
             this.userName = userNameParam;
             PlayerPrefs.SetInt("Id", idp);
@@ -133,8 +139,6 @@
                             {
                                 case CreateNewUserResult.Success:
                                     await UniTask.SwitchToMainThread();
-                                    id = NetworkManager.Instance.playerId;
-                                    PlayerPrefs.SetInt("Id", id);
                                     break;
                             }
                             break;
@@ -149,7 +153,7 @@
             await UniTask.Yield();
         }
 
-        private void UpdateAllStatus(bool sendServer)
+        private void UpdateAllStatus(bool sendToServer)
         {
             // Update variables
             UpdateAtk();
@@ -159,7 +163,7 @@
             UpdateUI();
             // Update Prefs and Server
             SavePrefs();
-            if (sendServer)
+            if (sendToServer)
                 SaveAllInfos().Forget();
         }
 

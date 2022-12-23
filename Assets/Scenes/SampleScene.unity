@@ -813,8 +813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38f5ca530023d548bf464db8a030de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerId: -1
-  _condition: 2
+  _condition: 0
   _rootURL: 
   connectable: 0
 --- !u!1 &322276781

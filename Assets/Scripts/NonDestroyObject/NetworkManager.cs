@@ -19,7 +19,6 @@ namespace NonDestroyObject
     }
     public class NetworkManager : Singleton<NetworkManager>
     {
-        public int playerId;
         [SerializeField] private ClientCondition _condition;
         [SerializeField] private string _rootURL;
         private HttpClient _httpClient;
@@ -31,13 +30,13 @@ namespace NonDestroyObject
             switch (_condition)
             {
                 case ClientCondition.Idle:
-                    _rootURL = "https://fwt-server.haje.org/playerserver/";
+                    _rootURL = "http://fwt-server.haje.org/playerserver/";
                     return;
                 case ClientCondition.Localhost:
-                    _rootURL = "https://localhost:8000/playerserver/";
+                    _rootURL = "http://localhost:8000/playerserver/";
                     return;
                 case ClientCondition.NoConnectionTest:
-                    _rootURL = "https://NoConnectionTest:1234";
+                    _rootURL = "http://NoConnectionTest:1234";
                     return;
             }
         }
@@ -125,7 +124,8 @@ namespace NonDestroyObject
             var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
             if (result is { success: true })
             {
-                playerId = result.Id;
+                await UniTask.SwitchToMainThread();
+                SLManager.Instance.InitUser(result.Id, userName);
                 return CreateNewUserResult.Fail;
             }
             
@@ -171,10 +171,9 @@ namespace NonDestroyObject
                 return FetchUserResult.No_Connection_To_Server;
             }
             
-            var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
+            var result = JsonConvert.DeserializeObject<FetchUserRes>(resultJson);
             if (result is { success: true })
             {
-                playerId = result.Id;
                 return FetchUserResult.Success;
             }
             else

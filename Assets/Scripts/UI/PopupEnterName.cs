@@ -21,12 +21,11 @@ namespace UI
                 return;
             }
 
-            warning_text.text = "Internet Conecting...";
+            warning_text.text = "Sending to Server...";
 
             var createNewUser = await NetworkManager.Instance.CreateNewUser(userName);
             if (createNewUser == CreateNewUserResult.Success)
             {
-                SLManager.Instance.InitUser(NetworkManager.Instance.playerId, userName);
                 Close();
             }
             else
