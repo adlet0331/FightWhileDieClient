@@ -8,7 +8,7 @@ namespace UI.Touch
         protected override void OnTouch()
         {
             UIManager.Instance.HideAllPopup();
-            CombatManager.Instance.Blocked = false;
+            CombatManager.Instance.TimeBlocked = false;
         }
     }
 }

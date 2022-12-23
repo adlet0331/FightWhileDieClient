@@ -97,18 +97,37 @@ namespace Combat
         #endregion
 
         #region IEnumerator
+
+        public void StopAllCoroutines()
+        {
+            if (_waitAndReturnToIdleCoroutine != null)
+                StopCoroutine(_waitAndReturnToIdleCoroutine);
+            if (_hittingJudgeCoroutine != null)
+                StopCoroutine(_hittingJudgeCoroutine);
+        }
+
+        public void RestartAllCoroutines()
+        {
+            if (_waitAndReturnToIdleCoroutine != null)
+                StartCoroutine(_waitAndReturnToIdleCoroutine);
+            if (_hittingJudgeCoroutine != null)
+                StartCoroutine(_hittingJudgeCoroutine);
+        }
+        
         // 기다렸다가 IDLE로 전환
         private IEnumerator _waitAndReturnToIdleCoroutine;
-        private IEnumerator WaitAndReturnToIdleIEnum(float second)
-        {
-            yield return new WaitForSeconds(second);
-            Action(ObjectStatus.Idle);
-            _waitAndReturnToIdleCoroutine = null;
-        }
-        private void WaitAndReturnToIdle(float sec)
+        // 공격 판정변수 설정
+        private IEnumerator _hittingJudgeCoroutine;
+        private delegate void OperationWaitAndReturnToIdle();
+        private void WaitAndReturnToIdleWithOperation(float sec, OperationWaitAndReturnToIdle operation = null)
         {
             CancelWaitAndReturnToIdleCoroutine();
-            _waitAndReturnToIdleCoroutine = WaitAndReturnToIdleIEnum(sec);
+            _waitAndReturnToIdleCoroutine = CoroutineUtils.WaitAndOperationIEnum(sec, () =>
+            {
+                Action(ObjectStatus.Idle);
+                _waitAndReturnToIdleCoroutine = null;
+                operation?.Invoke();
+            });
             StartCoroutine(_waitAndReturnToIdleCoroutine);
         }
 
@@ -120,13 +139,14 @@ namespace Combat
             }
             _waitAndReturnToIdleCoroutine = null;
         }
-
-        // 공격 판정변수 설정
-        private IEnumerator _hittingJudgeCoroutine;
         private void WaitAndChangeHitting()
         {
             CancelHittingJudgeCoroutine();
-            _hittingJudgeCoroutine = CoroutineUtils.WaitAndOperationIEnum(attackDelay, () => { hitting = true; });
+            _hittingJudgeCoroutine = CoroutineUtils.WaitAndOperationIEnum(attackDelay, () =>
+            {
+                hitting = true;
+                _hittingJudgeCoroutine = null;
+            });
             StartCoroutine(_hittingJudgeCoroutine);
             StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(attackEnd, () => { hitting = false; }));
         }
@@ -141,6 +161,11 @@ namespace Combat
             }
         }
         #endregion
+
+        public void EnableAnimation(bool enable)
+        {
+            animator.speed = enable ? 1.0f : 0.0f;
+        }
         
         // Animation 시간 이름으로 받아오기
         public float GetAnimationTime(string animationName)
@@ -175,27 +200,11 @@ namespace Combat
         private void SwitchStatus(ObjectStatus newStatus)
         {
             if (currentStatus == newStatus) return;
-            switch (currentStatus)
-            {
-                case ObjectStatus.Attack:
-                    attacking = false;
-                    break;
-                case ObjectStatus.AttackSlow:
-                    
-                    break;
-                case ObjectStatus.Damaged:
-                    damaging = false;
-                    break;
-                case ObjectStatus.Dead:
-                    dying = false;
-                    break;
-                case ObjectStatus.Running:
-                    running = false;
-                    break;
-                case ObjectStatus.JumpBack:
-                    backJumping = false;
-                    break;
-            }
+            attacking = false;
+            damaging = false;
+            dying = false;
+            running = false;
+            backJumping = false;
             animator.SetBool(currentStatus.ToString(), false);
             
             currentStatus = newStatus;
@@ -232,10 +241,10 @@ namespace Combat
             if (currentHp == 0)
             {
                 SwitchStatus(ObjectStatus.Dead);
-                StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(GetAnimationTime("Dead"), () =>
+                WaitAndReturnToIdleWithOperation(GetAnimationTime("Dead"), () =>
                 {
                     dying = false;
-                }));
+                });
                 return true;
             }
             else
@@ -243,7 +252,7 @@ namespace Combat
                 if (type == ObjectType.AI)
                     UIManager.Instance.UpdateEnemyHp((float)currentHp / maxHp);
                 SwitchStatus(ObjectStatus.Damaged);
-                WaitAndReturnToIdle(GetAnimationTime("Damaged"));
+                WaitAndReturnToIdleWithOperation(GetAnimationTime("Damaged"));
                 return false;
             }
         }
@@ -276,11 +285,11 @@ namespace Combat
                     // Hitting 변수
                     WaitAndChangeHitting();
                     // Idle로 리턴
-                    WaitAndReturnToIdle(attackEnd + attackAfterDelay);
+                    WaitAndReturnToIdleWithOperation(attackEnd + attackAfterDelay);
                     break;
                 // 죽음 (플레이어만)
                 case ObjectStatus.Dead:
-                    WaitAndReturnToIdle(GetAnimationTime("Dead"));
+                    WaitAndReturnToIdleWithOperation(GetAnimationTime("Dead"));
                     break;
                 // 아래는 enemyAI 만 사용
                 // 느리게 공격
@@ -292,8 +301,10 @@ namespace Combat
                     break;
                 case ObjectStatus.JumpBack:
                     float animationTime = GetAnimationTime("JumpBack");
-                    StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(animationTime, () => { backJumping = false; }));
-                    WaitAndReturnToIdle(animationTime);
+                    WaitAndReturnToIdleWithOperation(animationTime, () =>
+                    {
+                        backJumping = false;
+                    });
                     break;
             }
             

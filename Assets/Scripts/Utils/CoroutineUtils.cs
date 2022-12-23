@@ -14,7 +14,10 @@ namespace Utils
         /// <returns></returns>
         public static IEnumerator WaitAndOperationIEnum(float sec, AfterWaitOperation operation)
         {
-            yield return new WaitForSeconds(sec);
+            for (int i = 0; i < (int)(sec / Time.fixedDeltaTime); i++)
+            {
+                yield return new WaitForFixedUpdate();
+            }
             operation();
         }
         /// <summary>

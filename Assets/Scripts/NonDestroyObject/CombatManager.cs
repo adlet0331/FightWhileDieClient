@@ -14,22 +14,57 @@ namespace NonDestroyObject
         public CombatObject enemyAI;
         [SerializeField] private Transform aiStartPosition;
         [SerializeField] private Transform aiStandingPosition;
-        
-        [Header("Debuging")]
-        [SerializeField] private bool blocked;
+
+        [Header("Debuging")] 
+        [SerializeField] private bool inputBlocked;
+        [SerializeField] private bool timeBlocked;
         [SerializeField] public bool updateDelayed;
         [SerializeField] public float updateInterval;
         [SerializeField] private int randomSeed;
 
-        public bool Blocked
+        public bool InputBlocked
         {
-            get => blocked;
-            set => blocked = value;
+            get => inputBlocked;
+            set
+            {
+                inputBlocked = value;
+            }
         }
         
+        public bool TimeBlocked
+        {
+            get => timeBlocked;
+            set
+            {
+                timeBlocked = value;
+                player.EnableAnimation(!timeBlocked);
+                enemyAI.EnableAnimation(!timeBlocked);
+                // 시간이 멈춤
+                if (value)
+                {
+                    if (_afterDeadCoroutine != null)
+                    {
+                        StopCoroutine(_afterDeadCoroutine);
+                    }
+                    player.StopAllCoroutines();
+                    enemyAI.StopAllCoroutines();
+                }
+                else
+                {
+                    if (_afterDeadCoroutine != null)
+                    {
+                        StartCoroutine(_afterDeadCoroutine);
+                    }
+                    player.RestartAllCoroutines();
+                    enemyAI.RestartAllCoroutines();
+                }
+            }
+        }
+
         private Random _random;
         private void Start()
         {
+            inputBlocked = true;
             // Coroutines
             _afterDeadCoroutine = null;
             _blockInputCoroutine = null;
@@ -39,11 +74,11 @@ namespace NonDestroyObject
             UpdateRandomSeed();
         }
         
-        // Input
+        // Player Input
         private void Update()
         {
             // Attack 중일 때는 막기
-            if (blocked || player.Attacking) return;
+            if (timeBlocked || inputBlocked || player.Attacking || player.Dying) return;
             foreach (var touch in Input.touches)
             {
                 if (touch.phase == TouchPhase.Began)
@@ -67,7 +102,7 @@ namespace NonDestroyObject
 
         private void FixedUpdate()
         {
-            if (blocked) return;
+            if (timeBlocked) return;
              
             // enemyAI 피격 판정 우선. 
             if (player.Hitting && player.EnemyInRange)
@@ -85,6 +120,7 @@ namespace NonDestroyObject
                         player.ResetAfterDie();
                         enemyAI.ResetAfterDie();
                         EndCombat(true);
+                        _afterDeadCoroutine = null;
                     });
                     StartCoroutine(_afterDeadCoroutine);
                 }
@@ -99,12 +135,13 @@ namespace NonDestroyObject
                 var dead = player.Damaged(enemyAI.Atk);
                 if (dead)
                 {
-                    blocked = true;
+                    inputBlocked = true;
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(player.GetAnimationTime("Dead"), () =>
                     {
                         player.ResetAfterDie();
                         enemyAI.ResetAfterDie();
                         EndCombat(false);
+                        _afterDeadCoroutine = null;
                     });
                     StartCoroutine(_afterDeadCoroutine);
                 }
@@ -131,7 +168,7 @@ namespace NonDestroyObject
             if (enemyAI.Attacking || enemyAI.Damaging || enemyAI.BackJumping || enemyAI.Dying) return;
 
             // enemyAI 행동 명령 전달
-            if (updateDelayed) return;
+            if (updateDelayed || inputBlocked) return;
             updateDelayed = true;
 
             AIAction();
@@ -174,7 +211,7 @@ namespace NonDestroyObject
         
         public void StartCombat()
         {
-            blocked = false;
+            inputBlocked = false;
             InitAiPos(false);
             UIManager.Instance.TitleEnemyHpSwitch(true);
         }
@@ -216,12 +253,12 @@ namespace NonDestroyObject
         }
         private void BlockInput(float sec, CoroutineUtils.AfterWaitOperation operation)
         {
-            CombatManager.Instance.Blocked = true;
+            inputBlocked = true;
             
             if (_blockInputCoroutine != null) StopCoroutine(_blockInputCoroutine);
             _blockInputCoroutine = CoroutineUtils.WaitAndOperationIEnum(sec, () =>
             {
-                CombatManager.Instance.Blocked = false;
+                inputBlocked = false;
 
                 _blockInputCoroutine = null;
                 operation();
