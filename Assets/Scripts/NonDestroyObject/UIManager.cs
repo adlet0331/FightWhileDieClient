@@ -41,6 +41,7 @@ namespace NonDestroyObject
         public Transform stageHpTransform;
         public Button startButton;
         public Button gatchaButton;
+        public Button inventoryButton;
         [Header("Transforms")] 
         [SerializeField] private float uiMovingTime;
         public float UiMovingTime => uiMovingTime;
@@ -90,6 +91,7 @@ namespace NonDestroyObject
         {
             startButton.gameObject.SetActive(show);
             gatchaButton.gameObject.SetActive(show);
+            inventoryButton.gameObject.SetActive(show);
         }
         
         public void UpdateUserName(string name)
