@@ -31,13 +31,13 @@ namespace NonDestroyObject
             switch (_condition)
             {
                 case ClientCondition.Idle:
-                    _rootURL = "http://fwt-server.haje.org";
+                    _rootURL = "https://fwt-server.haje.org/playerserver/";
                     return;
                 case ClientCondition.Localhost:
-                    _rootURL = "http://localhost:8000";
+                    _rootURL = "https://localhost:8000/playerserver/";
                     return;
                 case ClientCondition.NoConnectionTest:
-                    _rootURL = "http://NoConnectionTest:1234";
+                    _rootURL = "https://NoConnectionTest:1234";
                     return;
             }
         }
@@ -86,7 +86,7 @@ namespace NonDestroyObject
             var reqJson = JsonConvert.SerializeObject(req);
             
             string resultJson = string.Empty;
-            resultJson = await RequestPost("/playerserver/checkconnection/", reqJson);
+            resultJson = await RequestPost("checkconnection/", reqJson);
             
             if (resultJson == string.Empty)
             {
@@ -115,7 +115,7 @@ namespace NonDestroyObject
             };
             var reqJson = JsonConvert.SerializeObject(request);
             string resultJson = string.Empty;
-            resultJson = await RequestPost("/playerserver/createnewuser/", reqJson);
+            resultJson = await RequestPost("createnewuser/", reqJson);
 
             if (resultJson == string.Empty)
             {
@@ -140,7 +140,7 @@ namespace NonDestroyObject
             };
             var reqJson = JsonConvert.SerializeObject(request);
             string resultJson = string.Empty;
-            resultJson = await RequestPost("playerserver/deleteuser/", reqJson);
+            resultJson = await RequestPost("deleteuser/", reqJson);
 
             if (resultJson == string.Empty) 
                 return DeleteUserResult.Fail;
@@ -164,7 +164,7 @@ namespace NonDestroyObject
             };
             var reqJson = JsonConvert.SerializeObject(request);
             
-            var resultJson = await RequestPost("/playerserver/fetchuser/", reqJson);
+            var resultJson = await RequestPost("fetchuser/", reqJson);
 
             if (resultJson == String.Empty)
             {
