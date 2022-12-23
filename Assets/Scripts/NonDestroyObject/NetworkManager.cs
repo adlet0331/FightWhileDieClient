@@ -122,13 +122,11 @@ namespace NonDestroyObject
             }
 
             var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
-            if (result is { success: true })
-            {
-                await UniTask.SwitchToMainThread();
-                SLManager.Instance.InitUser(result.Id, userName);
+            if (result is { success: false })
                 return CreateNewUserResult.Fail;
-            }
             
+            await UniTask.SwitchToMainThread();
+            SLManager.Instance.InitUser(result.Id, userName);
             return CreateNewUserResult.Success;
         }
 
