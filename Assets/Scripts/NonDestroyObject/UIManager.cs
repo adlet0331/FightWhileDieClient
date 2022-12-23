@@ -34,6 +34,7 @@ namespace NonDestroyObject
         public Popup gatchaPopup;
         public Popup inventoryPopup;
         public Popup rankingPopup;
+        public Popup pausePopup;
         public Popup enterYourNamePopup;
         public CoinEffect coinEffect;
         [Header("Components")] 
@@ -85,6 +86,7 @@ namespace NonDestroyObject
             gatchaPopup.Close();
             inventoryPopup.Close();
             rankingPopup.Close();
+            pausePopup.Close();
         }
         
         public void ShowHideButtons(bool show)
