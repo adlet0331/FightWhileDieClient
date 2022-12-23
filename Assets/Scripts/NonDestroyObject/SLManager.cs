@@ -60,6 +60,11 @@
             UIManager.Instance.UpdateUserName(this.userName);
         }
 
+        public void DeleteExistingUser()
+        {
+            ClearAllPrefs();
+        }
+
         private void UpdateAtk()
         {
             atk = baseAtk;
@@ -90,13 +95,16 @@
         {
             NetworkManager.Instance.DeleteUser(id).Forget();
             id = -1;
-            userName = string.Empty;
             PlayerPrefs.SetInt("Id", -1);
+            userName = string.Empty;
             PlayerPrefs.SetString("Name", string.Empty);
+            topStage = 1;
             PlayerPrefs.SetInt("TopStage", 1);
+            baseAtk = 50;
             PlayerPrefs.SetInt("BaseAtk", 50);
+            coin = 10;
             PlayerPrefs.SetInt("Coin", 10);
-            UpdateUI();
+            UpdateAllStatus(true);
         }
         
         private void SavePrefs()

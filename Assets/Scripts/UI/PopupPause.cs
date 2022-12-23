@@ -9,5 +9,16 @@ namespace UI
             base.Open();
             CombatManager.Instance.TimeBlocked = true;
         }
+
+        /// <summary>
+        /// 계정 초기화 하는 버튼
+        /// </summary>
+        public void ResetButton()
+        {
+            SLManager.Instance.DeleteExistingUser();
+            Close();
+            CombatManager.Instance.TimeBlocked = false;
+            UIManager.Instance.ShowPopupEnterYourNickname();
+        }
     }
 }

@@ -813,7 +813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38f5ca530023d548bf464db8a030de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _condition: 0
+  _condition: 1
   _rootURL: 
   connectable: 0
 --- !u!1 &322276781
@@ -4034,6 +4034,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1510509760}
     m_Modifications:
+    - target: {fileID: 3481212171752542304, guid: 6d15d28ea2b78164a92467cb1d6de5a4, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1515197417}
+    - target: {fileID: 3481212171752542304, guid: 6d15d28ea2b78164a92467cb1d6de5a4, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ResetButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 3481212171752542304, guid: 6d15d28ea2b78164a92467cb1d6de5a4, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI.PopupPause, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 5127581701286450438, guid: 6d15d28ea2b78164a92467cb1d6de5a4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -4125,6 +4137,10 @@ PrefabInstance:
     - target: {fileID: 5127581701286450439, guid: 6d15d28ea2b78164a92467cb1d6de5a4, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6438141798076125446, guid: 6d15d28ea2b78164a92467cb1d6de5a4, type: 3}
+      propertyPath: m_Name
+      value: Reset Button
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d15d28ea2b78164a92467cb1d6de5a4, type: 3}
