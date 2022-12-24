@@ -8,5 +8,6 @@ namespace Data
         public EquipmentKind kind;
         public Rare rare;
         public uint level;
+        public uint currExp;
     }
 }
