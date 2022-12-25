@@ -201,6 +201,15 @@ build-android:
   tags:
     - daegunju-docker
 
+build-android-apk:
+  <<: *build
+  image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
+  variables:
+    BUILD_TARGET: Android
+    BUILD_APP_BUNDLE: "false"
+  tags:
+    - daegunju-docker
+
 # build-android-il2cpp:
 #   <<: *build
 #   image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
