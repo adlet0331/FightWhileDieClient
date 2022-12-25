@@ -197,7 +197,7 @@ build-android:
   image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
   variables:
     BUILD_TARGET: Android
-    BUILD_APP_BUNDLE: "false"
+    BUILD_APP_BUNDLE: "true"
   tags:
     - daegunju-docker
 
