@@ -4,6 +4,10 @@
 
  namespace NonDestroyObject
 {
+    /// <summary>
+    /// Unity PlayerPrefs로 관리하는 데이터들을 다루는 매니저
+    /// </summary>
+    [Serializable] // TODO: 데이터 관리하는 애들을 클래스로 만든 후, 싱글톤의 오브젝트로 합쳐서 관리하기.
     public class SLManager : Singleton<SLManager>
     {
         public int Id => id;
@@ -127,12 +131,12 @@
                 switch (checkConnection)
                 {
                     // No Connection
-                    case CheckConnectionResult.No_Connection_To_Server:
+                    case CheckConnectionResult.NoConnectionToServer:
                         break;
                     case CheckConnectionResult.Success:
                         NetworkManager.Instance.FetchUser().Forget();
                         break;
-                    case CheckConnectionResult.Success_But_No_Id_In_Server:
+                    case CheckConnectionResult.SuccessButNoIdInServer:
                         if (userName == String.Empty)
                         {
                             await UniTask.SwitchToMainThread();

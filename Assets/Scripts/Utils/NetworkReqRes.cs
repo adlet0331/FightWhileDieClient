@@ -1,6 +1,6 @@
 using System;
 
-namespace NonDestroyObject
+namespace Utils
 {
     [Serializable]
     public class BaseRequest

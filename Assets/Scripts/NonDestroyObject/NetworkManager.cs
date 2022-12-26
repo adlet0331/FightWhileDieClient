@@ -1,12 +1,11 @@
 using System;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
+using Utils;
 
 namespace NonDestroyObject
 {
@@ -89,14 +88,14 @@ namespace NonDestroyObject
             
             if (resultJson == string.Empty)
             {
-                return CheckConnectionResult.No_Connection_To_Server;
+                return CheckConnectionResult.NoConnectionToServer;
             }
             
             CheckConnectionRes result = JsonConvert.DeserializeObject<CheckConnectionRes>(resultJson);
 
             if (result is { success: true, NeedInit: true })
             {
-                return CheckConnectionResult.Success_But_No_Id_In_Server;
+                return CheckConnectionResult.SuccessButNoIdInServer;
             }
 
             return CheckConnectionResult.Success;
@@ -118,7 +117,7 @@ namespace NonDestroyObject
 
             if (resultJson == string.Empty)
             {
-                return CreateNewUserResult.No_Connection_To_Server;
+                return CreateNewUserResult.NoConnectionToServer;
             }
 
             var result = JsonConvert.DeserializeObject<CreateNewUserRes>(resultJson);
@@ -145,7 +144,7 @@ namespace NonDestroyObject
 
             var result = JsonConvert.DeserializeObject<DeleteUserRes>(resultJson);
             if (result is { success: false })
-                return DeleteUserResult.No_User_In_Server;
+                return DeleteUserResult.NoUserInServer;
 
             return DeleteUserResult.Success;
         }
@@ -166,7 +165,7 @@ namespace NonDestroyObject
 
             if (resultJson == String.Empty)
             {
-                return FetchUserResult.No_Connection_To_Server;
+                return FetchUserResult.NoConnectionToServer;
             }
             
             var result = JsonConvert.DeserializeObject<FetchUserRes>(resultJson);

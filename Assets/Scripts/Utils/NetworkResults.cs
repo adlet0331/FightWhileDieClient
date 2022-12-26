@@ -1,34 +1,28 @@
 ﻿namespace NonDestroyObject
 {
-    public enum BaseResult
-    {
-        No_Connection_To_Server,
-        Success,
-        Fail
-    }
     public enum CheckConnectionResult
     {
-        No_Connection_To_Server,
+        NoConnectionToServer,
         Success,
-        Success_But_No_Id_In_Server
+        SuccessButNoIdInServer
     }
     public enum CreateNewUserResult
     {
-        No_Connection_To_Server,
+        NoConnectionToServer,
         Success,
         Fail
     }
 
     public enum DeleteUserResult
     {
-        No_User_In_Server,
+        NoUserInServer,
         Success,
         Fail
     }
 
     public enum FetchUserResult
     {
-        No_Connection_To_Server,
+        NoConnectionToServer,
         Success,
         Fail
     }
