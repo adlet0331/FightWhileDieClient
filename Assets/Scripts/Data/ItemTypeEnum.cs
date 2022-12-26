@@ -7,21 +7,32 @@ namespace Data
     {
         // 장비 가능한 아이템
         Equipment = 1,
-        // 장비 강화에 필요한 아이템 (강화재료)
-        Ingredient = 2,
+        // 강화석
+        ItemEnhancePiece = 2,
     }
 
     #region Equipment
+
     [Serializable]
-    public enum EquipmentKind
+    public enum EquipPart
     {
-        AtkAddValue = 1,
-        AtkAddPercent = 2,
-        BaseAtkGainAddPercent = 3,
-        CoinGainAddValue = 4,
-        CoinGainAddPercent = 5,
-        DelayDecreasePercent = 6,
-        RunningSpeedAddPercent = 7
+        Weapon = 1,
+        Cloak = 2,
+        Pendant = 3
+    }
+    public enum EquipmentOption
+    {
+        // 1. 오토
+        AutoUnlockAndDecreaseDebuff = 1,
+        // 2. 성장
+        AtkAddValue = 2,
+        AtkAddPercent = 3,
+        BaseAtkGainAddPercent = 4,
+        CoinGainAddValue = 5,
+        CoinGainAddPercent = 6,
+        // 3. 유틸
+        DelayDecreasePercent = 7,
+        RunningSpeedAddPercent = 8
     }
 
     [Serializable]

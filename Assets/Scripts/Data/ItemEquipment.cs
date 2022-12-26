@@ -1,13 +1,15 @@
 using System;
+using UnityEngine.Serialization;
 
 namespace Data
 {
     [Serializable]
-    public class ItemEquipment : AItem
+    public class ItemEquipment
     {
-        public EquipmentKind kind;
-        public Rare rare;
-        public uint level;
-        public uint currExp;
+        public uint Id;
+        public Rare Rare;
+        public uint Level;
+        public EquipmentOption Option;
+        public uint OptionValue;
     }
 }
