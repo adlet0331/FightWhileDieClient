@@ -1,4 +1,5 @@
 ﻿using NonDestroyObject;
+using NonDestroyObject.Data;
 
 namespace UI
 {
@@ -15,7 +16,7 @@ namespace UI
         /// </summary>
         public void ResetButton()
         {
-            SLManager.Instance.DeleteExistingUser();
+            DataManager.Instance.PlayerDataManager.DeleteExistingUser();
             Close();
             CombatManager.Instance.TimeBlocked = false;
             UIManager.Instance.ShowPopupEnterYourNickname();

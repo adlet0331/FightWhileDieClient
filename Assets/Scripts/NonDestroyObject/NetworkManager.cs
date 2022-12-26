@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
+using NonDestroyObject.Data;
 using UnityEngine;
 using Utils;
 
@@ -79,7 +80,7 @@ namespace NonDestroyObject
         {
             var req = new CheckConnectionReq()
             {
-                Id = SLManager.Instance.Id
+                Id = DataManager.Instance.PlayerDataManager.Id
             };
             var reqJson = JsonConvert.SerializeObject(req);
             
@@ -105,11 +106,11 @@ namespace NonDestroyObject
         {
             var request = new CreateNewUserReq()
             {
-                Id = SLManager.Instance.Id,
-                TopStage = SLManager.Instance.TopStage,
+                Id = DataManager.Instance.PlayerDataManager.Id,
+                TopStage = DataManager.Instance.PlayerDataManager.TopStage,
                 Name = userName,
-                BaseAtk = SLManager.Instance.BaseAtk,
-                Coin = SLManager.Instance.Coin
+                BaseAtk = DataManager.Instance.PlayerDataManager.BaseAtk,
+                Coin = DataManager.Instance.PlayerDataManager.Coin
             };
             var reqJson = JsonConvert.SerializeObject(request);
             string resultJson = string.Empty;
@@ -125,7 +126,7 @@ namespace NonDestroyObject
                 return CreateNewUserResult.Fail;
             
             await UniTask.SwitchToMainThread();
-            SLManager.Instance.InitUser(result.Id, userName);
+            DataManager.Instance.PlayerDataManager.InitUser(result.Id, userName);
             return CreateNewUserResult.Success;
         }
 
@@ -153,11 +154,11 @@ namespace NonDestroyObject
         {
             var request = new CreateNewUserReq()
             {
-                Id = SLManager.Instance.Id,
-                TopStage = SLManager.Instance.TopStage,
-                Name = SLManager.Instance.UserName,
-                BaseAtk = SLManager.Instance.BaseAtk,
-                Coin = SLManager.Instance.Coin
+                Id = DataManager.Instance.PlayerDataManager.Id,
+                TopStage = DataManager.Instance.PlayerDataManager.TopStage,
+                Name = DataManager.Instance.PlayerDataManager.UserName,
+                BaseAtk = DataManager.Instance.PlayerDataManager.BaseAtk,
+                Coin = DataManager.Instance.PlayerDataManager.Coin
             };
             var reqJson = JsonConvert.SerializeObject(request);
             

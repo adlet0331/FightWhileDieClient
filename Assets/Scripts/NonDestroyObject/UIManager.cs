@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using NonDestroyObject.Data;
 using TMPro;
 using UI;
 using UnityEngine;
@@ -73,7 +74,7 @@ namespace NonDestroyObject
 
         public void ShowCoinEffect()
         {
-            coinEffect.ShowCoinEffect(SLManager.Instance.ClearCoin, 0.3f);
+            coinEffect.ShowCoinEffect(DataManager.Instance.PlayerDataManager.ClearCoin, 0.3f);
         }
 
         public void ShowPopupEnterYourNickname()

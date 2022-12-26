@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Combat;
+using NonDestroyObject.Data;
 using UnityEngine;
 using Utils;
 using Random = System.Random;
@@ -221,13 +222,13 @@ namespace NonDestroyObject
             if (cleared)
             {
                 // 스테이지 클리어 처리
-                SLManager.Instance.StageCleared();
+                DataManager.Instance.PlayerDataManager.StageCleared();
                 InitAiPos(false);
             }
             else
             {
                 UIManager.Instance.TitleEnemyHpSwitch(false);
-                SLManager.Instance.StageReset();
+                DataManager.Instance.PlayerDataManager.StageReset();
                 InitAiPos(true);
             }
         }
