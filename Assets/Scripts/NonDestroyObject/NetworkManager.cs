@@ -79,7 +79,7 @@ namespace NonDestroyObject
         {
             var req = new CheckConnectionReq()
             {
-                Id = DataManager.Instance.PlayerDataManager.Id
+                id = DataManager.Instance.PlayerDataManager.Id
             };
             var reqJson = JsonConvert.SerializeObject(req);
             
@@ -93,7 +93,7 @@ namespace NonDestroyObject
             
             CheckConnectionRes result = JsonConvert.DeserializeObject<CheckConnectionRes>(resultJson);
 
-            if (result is { success: true, NeedInit: true })
+            if (result is { success: true, needInit: true })
             {
                 return CheckConnectionResult.SuccessButNoIdInServer;
             }
@@ -105,11 +105,11 @@ namespace NonDestroyObject
         {
             var request = new CreateNewUserReq()
             {
-                Id = DataManager.Instance.PlayerDataManager.Id,
-                TopStage = DataManager.Instance.PlayerDataManager.TopStage,
-                Name = userName,
-                BaseAtk = DataManager.Instance.PlayerDataManager.BaseAtk,
-                Coin = DataManager.Instance.PlayerDataManager.Coin
+                id = DataManager.Instance.PlayerDataManager.Id,
+                topStage = DataManager.Instance.PlayerDataManager.TopStage,
+                name = userName,
+                baseAtk = DataManager.Instance.PlayerDataManager.BaseAtk,
+                coin = DataManager.Instance.PlayerDataManager.Coin
             };
             var reqJson = JsonConvert.SerializeObject(request);
             string resultJson = string.Empty;
@@ -125,7 +125,7 @@ namespace NonDestroyObject
                 return CreateNewUserResult.Fail;
             
             await UniTask.SwitchToMainThread();
-            DataManager.Instance.PlayerDataManager.InitUser(result.Id, userName);
+            DataManager.Instance.PlayerDataManager.InitUser(result.id, userName);
             return CreateNewUserResult.Success;
         }
 
@@ -133,7 +133,7 @@ namespace NonDestroyObject
         {
             var request = new DeleteUserReq()
             {
-                Id = id,
+                id = id,
             };
             var reqJson = JsonConvert.SerializeObject(request);
             string resultJson = string.Empty;
@@ -153,11 +153,11 @@ namespace NonDestroyObject
         {
             var request = new CreateNewUserReq()
             {
-                Id = DataManager.Instance.PlayerDataManager.Id,
-                TopStage = DataManager.Instance.PlayerDataManager.TopStage,
-                Name = DataManager.Instance.PlayerDataManager.UserName,
-                BaseAtk = DataManager.Instance.PlayerDataManager.BaseAtk,
-                Coin = DataManager.Instance.PlayerDataManager.Coin
+                id = DataManager.Instance.PlayerDataManager.Id,
+                topStage = DataManager.Instance.PlayerDataManager.TopStage,
+                name = DataManager.Instance.PlayerDataManager.UserName,
+                baseAtk = DataManager.Instance.PlayerDataManager.BaseAtk,
+                coin = DataManager.Instance.PlayerDataManager.Coin
             };
             var reqJson = JsonConvert.SerializeObject(request);
             
