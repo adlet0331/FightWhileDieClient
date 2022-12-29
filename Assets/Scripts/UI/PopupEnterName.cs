@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using NonDestroyObject;
-using NonDestroyObject.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

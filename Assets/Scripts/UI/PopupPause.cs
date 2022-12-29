@@ -1,5 +1,4 @@
 ﻿using NonDestroyObject;
-using NonDestroyObject.Data;
 
 namespace UI
 {

@@ -2,12 +2,12 @@ using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace NonDestroyObject.Data
+namespace NonDestroyObject.DataManage
 {
     /// <summary>
     /// Unity PlayerPrefs로 관리하는 데이터들을 다루는 매니저
     /// </summary>
-    [Serializable] // TODO: 데이터 관리하는 애들을 클래스로 만든 후, 싱글톤의 오브젝트로 합쳐서 관리하기.
+    [Serializable]
     public class PlayerDataManager
     {
         public int Id => id;

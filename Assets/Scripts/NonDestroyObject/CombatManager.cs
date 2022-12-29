@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using Combat;
-using NonDestroyObject.Data;
 using UnityEngine;
 using Utils;
 using Random = System.Random;

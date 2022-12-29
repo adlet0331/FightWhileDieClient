@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Text;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
-using NonDestroyObject.Data;
 using UnityEngine;
 using Utils;
 

@@ -3751,9 +3751,6 @@ MonoBehaviour:
     atk: 50
     clearCoin: 0
   ItemManager:
-    ItemList:
-    - Id: 0
-      Type: 0
     ItemEquipmentList: []
     ItemEnhancePieceList: []
 --- !u!1 &1484660412

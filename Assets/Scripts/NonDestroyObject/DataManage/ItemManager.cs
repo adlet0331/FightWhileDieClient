@@ -2,17 +2,26 @@ using System;
 using System.Collections.Generic;
 using Data;
 using UnityEngine;
+using Utils;
 
-namespace NonDestroyObject.Data
+namespace NonDestroyObject.DataManage
 {
-    
     [Serializable]
     public class ItemManager
     {
-        [SerializeField] private List<Item> ItemList;
+#if UNITY_EDITOR
+        [ArrayElementTitle("Id")]
+#endif
         [SerializeField] private List<ItemEquipment> ItemEquipmentList;
-        [SerializeField] private List<ItemEnhancePiece> ItemEnhancePieceList;
-        
-        
+
+        public void Start()
+        { 
+            ItemEquipmentList = new List<ItemEquipment>();
+        }
+
+        public void AddNewItem()
+        {
+            
+        }
     }
 }

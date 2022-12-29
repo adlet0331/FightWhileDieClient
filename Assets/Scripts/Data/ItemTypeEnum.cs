@@ -2,15 +2,6 @@ using System;
 
 namespace Data
 {
-    [Serializable]
-    public enum ItemType
-    {
-        // 장비 가능한 아이템
-        Equipment = 1,
-        // 강화석
-        ItemEnhancePiece = 2,
-    }
-
     #region Equipment
 
     [Serializable]
