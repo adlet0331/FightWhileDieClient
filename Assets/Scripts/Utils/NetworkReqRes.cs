@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Utils
 {
@@ -30,6 +31,7 @@ namespace Utils
         public int topStage;
         public int baseAtk;
         public int coin;
+        public List<int> enhanceIngredientList;
     }
 
     [Serializable]
@@ -51,6 +53,7 @@ namespace Utils
         public int topStage;
         public int baseAtk;
         public int coin;
+        public List<int> enhanceIngredientList;
     }
 
     [Serializable]

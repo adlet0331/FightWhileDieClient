@@ -12,11 +12,11 @@ namespace NonDestroyObject.DataManage
 #if UNITY_EDITOR
         [ArrayElementTitle("Id")]
 #endif
-        [SerializeField] private List<ItemEquipment> ItemEquipmentList;
+        [SerializeField] private List<ItemEquipment> itemEquipmentList;
 
         public void Start()
         { 
-            ItemEquipmentList = new List<ItemEquipment>();
+            itemEquipmentList = new List<ItemEquipment>();
         }
 
         public void AddNewItem()

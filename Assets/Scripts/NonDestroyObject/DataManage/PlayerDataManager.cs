@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ namespace NonDestroyObject.DataManage
         public int TopStage => topStage;
         public int Atk => atk;
         public int ClearCoin => clearCoin;
+        public List<int> EnhanceIngredientList => enhanceIngredientList;
 
         [Header("Current Status")] 
         [SerializeField] private int id;
@@ -27,6 +29,7 @@ namespace NonDestroyObject.DataManage
         [SerializeField] private int baseAtk = 50;
         [SerializeField] private int enemyHp = 50;
         [SerializeField] private int coin = 10;
+        [SerializeField] private List<int> enhanceIngredientList;
         [Header("Update")]
         [SerializeField] private int topStage;
         [SerializeField] private int atk = 50;
@@ -47,6 +50,10 @@ namespace NonDestroyObject.DataManage
             baseAtk = PlayerPrefs.GetInt("BaseAtk", 50);
             coin = PlayerPrefs.GetInt("Coin", 10);
             stage = ((int)(topStage / 10.0f) * 10) + 1;
+            enhanceIngredientList = new List<int>();
+            enhanceIngredientList.Add(0);
+            for (int i = 1; i <=8; i++)
+                enhanceIngredientList.Add(PlayerPrefs.GetInt($"enhanceIngredient{i}", i));
         }
         
         /// <summary>
@@ -108,6 +115,11 @@ namespace NonDestroyObject.DataManage
             PlayerPrefs.SetInt("BaseAtk", 50);
             coin = 10;
             PlayerPrefs.SetInt("Coin", 10);
+            for (int i = 1; i <= 8; i++)
+            {
+                enhanceIngredientList[i] = 0;
+                PlayerPrefs.SetInt($"enhanceIngredient{i}", 0);
+            }
             UpdateAllStatus(true);
         }
         
@@ -120,6 +132,8 @@ namespace NonDestroyObject.DataManage
             }
             PlayerPrefs.SetInt("BaseAtk", baseAtk);
             PlayerPrefs.SetInt("Coin", coin);
+            for (int i = 1; i <=8; i++)
+                PlayerPrefs.SetInt($"enhanceIngredient{i}", enhanceIngredientList[i]);
         }
         
         private async UniTaskVoid SaveAllInfos()

@@ -109,7 +109,8 @@ namespace NonDestroyObject
                 topStage = DataManager.Instance.PlayerDataManager.TopStage,
                 name = userName,
                 baseAtk = DataManager.Instance.PlayerDataManager.BaseAtk,
-                coin = DataManager.Instance.PlayerDataManager.Coin
+                coin = DataManager.Instance.PlayerDataManager.Coin,
+                enhanceIngredientList = DataManager.Instance.PlayerDataManager.EnhanceIngredientList,
             };
             var reqJson = JsonConvert.SerializeObject(request);
             string resultJson = string.Empty;
@@ -151,13 +152,14 @@ namespace NonDestroyObject
 
         public async UniTask<FetchUserResult> FetchUser()
         {
-            var request = new CreateNewUserReq()
+            var request = new FetchUserReq()
             {
                 id = DataManager.Instance.PlayerDataManager.Id,
                 topStage = DataManager.Instance.PlayerDataManager.TopStage,
                 name = DataManager.Instance.PlayerDataManager.UserName,
                 baseAtk = DataManager.Instance.PlayerDataManager.BaseAtk,
-                coin = DataManager.Instance.PlayerDataManager.Coin
+                coin = DataManager.Instance.PlayerDataManager.Coin,
+                enhanceIngredientList = DataManager.Instance.PlayerDataManager.EnhanceIngredientList,
             };
             var reqJson = JsonConvert.SerializeObject(request);
             
