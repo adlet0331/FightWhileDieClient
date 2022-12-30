@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Data;
 
 namespace Utils
 {
@@ -58,4 +59,16 @@ namespace Utils
 
     [Serializable]
     public class FetchUserRes : BaseResponse { }
+
+    [Serializable]
+    public class AddEquipItemsReq : BaseRequest
+    {
+        public uint count;
+    }
+
+    [Serializable]
+    public class AddEquipItemsRes : BaseResponse
+    {
+        public List<ItemEquipment> itemList;
+    }
 }

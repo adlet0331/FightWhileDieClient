@@ -1,4 +1,7 @@
-﻿namespace NonDestroyObject
+﻿using System.Collections.Generic;
+using Data;
+
+namespace NonDestroyObject
 {
     public enum CheckConnectionResult
     {
@@ -25,5 +28,11 @@
         NoConnectionToServer,
         Success,
         Fail
+    }
+
+    public class AddItemsResult
+    {
+        public bool Success;
+        public List<ItemEquipment> ItemEquipmentList;
     }
 }

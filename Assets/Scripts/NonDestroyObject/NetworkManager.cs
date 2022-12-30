@@ -180,5 +180,36 @@ namespace NonDestroyObject
                 return FetchUserResult.Fail;
             }
         }
+
+        /// <summary>
+        /// Cannot Triggered in non-internet environment
+        /// </summary>
+        /// <returns></returns>
+        public async UniTask<AddItemsResult> AddEquipItems(uint count)
+        {
+            var request = new AddEquipItemsReq()
+            {
+                id = DataManager.Instance.PlayerDataManager.Id,
+                count = count
+            };
+            var reqJson = JsonConvert.SerializeObject(request);
+
+            var resultJson = await RequestPost("addEquipmentItems/", reqJson);
+
+            var returnResult = new AddItemsResult();
+
+            if (resultJson == String.Empty)
+            {
+                returnResult.Success = false;
+                return returnResult;
+            }
+
+            var result = JsonConvert.DeserializeObject<AddEquipItemsRes>(resultJson);
+
+            returnResult.Success = true;
+            returnResult.ItemEquipmentList = result.itemList;
+            
+            return returnResult;
+        }
     }
 }
