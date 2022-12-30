@@ -6,10 +6,10 @@ namespace Data
     [Serializable]
     public class ItemEquipment
     {
-        public uint Id;
-        public Rare Rare;
-        public uint Level;
-        public EquipmentOption Option;
-        public uint OptionValue;
+        public uint id;
+        public Rare rare;
+        public uint level;
+        public EquipmentOption option;
+        public uint optionValue;
     }
 }

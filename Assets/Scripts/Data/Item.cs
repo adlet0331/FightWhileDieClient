@@ -8,6 +8,6 @@ namespace Data
     [Serializable]
     public abstract class Item
     {
-        public uint Id;
+        public uint id;
     }
 }
