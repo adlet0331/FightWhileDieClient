@@ -170,16 +170,7 @@ namespace Combat
         // Animation 시간 이름으로 받아오기
         public float GetAnimationTime(string animationName)
         {
-            foreach (var t in runtimeAnimatorController.animationClips)
-            {
-                if(t.name == animationName) //If it has the same animationName as your clip
-                {
-                    return t.length; // Because For Delay
-                }
-            }
-
-            Debug.LogAssertion("No Animation Named " + animationName);
-            return 0.0f;
+            return AnimatorUtil.GetAnimationTime(animationName, runtimeAnimatorController);
         }
 
         public void ResetAfterDie()
