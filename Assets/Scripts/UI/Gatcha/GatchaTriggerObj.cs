@@ -1,3 +1,5 @@
+using Cysharp.Threading.Tasks;
+using Data;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Utils;
@@ -11,8 +13,15 @@ namespace UI.Gatcha
         [Header("Components")]
         [SerializeField] private Animator animator;
         [SerializeField] private RuntimeAnimatorController runtimeAnimatorController;
-        private readonly static int Clicked = Animator.StringToHash("Clicked");
+        [SerializeField] private ItemEquipment itemEquipment;
+        private readonly static int Clicked = Animator.StringToHash("TriggeredRare");
 
+        public void Initiate(bool openable, ItemEquipment info)
+        {
+            isOpenable = openable;
+            itemEquipment = info;
+        }
+        
         private void Start()
         {
             runtimeAnimatorController = animator.runtimeAnimatorController;
@@ -22,8 +31,17 @@ namespace UI.Gatcha
         {
             if (!isOpenable) return;
             
-            animator.SetBool(Clicked, true);
-            var openAnimationTime = AnimatorUtil.GetAnimationTime("GatchaTrigger", runtimeAnimatorController);
+            animator.SetInteger(Clicked, (int)itemEquipment.rare);
+
+            CoroutineUtils.WaitAndOperationIEnum(1.0f, () =>
+            {
+                //animator.SetInteger(Clicked, 0);
+            });
+        }
+
+        public void OpenAndShowItem()
+        {
+            
         }
     }
 }

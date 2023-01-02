@@ -15,7 +15,6 @@ namespace UI.Gatcha
         //TODO: Server에는 안 보내도 되나? 안 보내도 되지 않나? 
         [SerializeField] private int spendCoin;
         [Header("GameObjects")]
-        [SerializeField] private List<GameObject> particles;
         [SerializeField] private GameObject gatchaStartPage;
         [SerializeField] private GameObject gatchaOpeningPage;
         [Header("Components")]

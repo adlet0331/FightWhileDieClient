@@ -5579,21 +5579,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1510509760}
     m_Modifications:
-    - target: {fileID: 1273844872994066002, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3621198106364937800, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5046846771491707045, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5086894047533995917, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
-      propertyPath: m_IsActive
-      value: 0
+    - target: {fileID: 2281343441185860056, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
+      propertyPath: isOpenable
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5127581701286450438, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
       propertyPath: m_Pivot.x
@@ -5682,14 +5670,6 @@ PrefabInstance:
     - target: {fileID: 5127581701286450439, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
       propertyPath: m_Name
       value: Gatcha Popup
-      objectReference: {fileID: 0}
-    - target: {fileID: 6047184254953344023, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7148230113565005970, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
