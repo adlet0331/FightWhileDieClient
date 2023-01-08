@@ -813,7 +813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38f5ca530023d548bf464db8a030de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _condition: 1
+  _condition: 0
   _rootURL: 
   connectable: 0
 --- !u!1 &322276781
@@ -1613,7 +1613,7 @@ MonoBehaviour:
   _updateCount: 0
   _updatingInterval: 0
   _updatingEndValue: 0
-  gatchaPopup: {fileID: 0}
+  gatchaPopup: {fileID: 5127581700722882747}
   inventoryPopup: {fileID: 689189123}
   rankingPopup: {fileID: 1610530285}
   pausePopup: {fileID: 1515197417}
@@ -3456,8 +3456,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UI.Popup, Assembly-CSharp
+      - m_Target: {fileID: 5127581700722882747}
+        m_TargetAssemblyTypeName: UI.Gatcha.GatchaPopup, Assembly-CSharp
         m_MethodName: Open
         m_Mode: 1
         m_Arguments:
@@ -3557,12 +3557,21 @@ MonoBehaviour:
     baseAtk: 50
     enemyHp: 50
     coin: 10
+    dailyGatchaNum: 0
     enhanceIngredientList: 
     topStage: 0
     atk: 50
     clearCoin: 0
   ItemManager:
     itemEquipmentList: []
+    rareColorList:
+    - {r: 0, g: 0, b: 0, a: 1}
+    - {r: 0.5377358, g: 0.5377358, b: 0.5377358, a: 1}
+    - {r: 0, g: 0.07450981, b: 1, a: 1}
+    - {r: 0.7647059, g: 0, b: 1, a: 1}
+    - {r: 1, g: 0, b: 0, a: 1}
+    - {r: 1, g: 0.8980392, b: 0, a: 1}
+    - {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &1484660412
 GameObject:
   m_ObjectHideFlags: 0
@@ -5579,10 +5588,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1510509760}
     m_Modifications:
-    - target: {fileID: 2281343441185860056, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
-      propertyPath: isOpenable
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5127581701286450438, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -5613,7 +5618,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5127581701286450438, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -200
+      value: -300
       objectReference: {fileID: 0}
     - target: {fileID: 5127581701286450438, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
       propertyPath: m_SizeDelta.y
@@ -5671,8 +5676,27 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gatcha Popup
       objectReference: {fileID: 0}
+    - target: {fileID: 5127581701286450439, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7039971873714646299, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 219.99994
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
+--- !u!114 &5127581700722882747 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5210440436870955080, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
+  m_PrefabInstance: {fileID: 5127581700722882745}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2d51acbf54e47e6b1bc602807de58a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5506268039942995402
 PrefabInstance:
   m_ObjectHideFlags: 0

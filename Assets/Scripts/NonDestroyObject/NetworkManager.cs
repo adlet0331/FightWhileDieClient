@@ -185,7 +185,7 @@ namespace NonDestroyObject
         /// Cannot Triggered in non-internet environment
         /// </summary>
         /// <returns></returns>
-        public async UniTask<AddItemsResult> AddEquipItems(uint count)
+        public async UniTask<AddItemsResult> AddRandomEquipItems(uint count)
         {
             var request = new AddEquipItemsReq()
             {
@@ -194,7 +194,7 @@ namespace NonDestroyObject
             };
             var reqJson = JsonConvert.SerializeObject(request);
 
-            var resultJson = await RequestPost("addEquipmentItems/", reqJson);
+            var resultJson = await RequestPost("addrandomequipmentitems/", reqJson);
 
             var returnResult = new AddItemsResult();
 

@@ -13,6 +13,9 @@ namespace NonDestroyObject.DataManage
         [ArrayElementTitle("Id")]
 #endif
         [SerializeField] private List<ItemEquipment> itemEquipmentList;
+        [SerializeField] private List<Color> rareColorList;
+
+        public List<Color> RareColorList => rareColorList;
 
         public void Start()
         { 

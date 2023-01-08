@@ -20,6 +20,7 @@ namespace NonDestroyObject.DataManage
         public int TopStage => topStage;
         public int Atk => atk;
         public int ClearCoin => clearCoin;
+        public int DailyGatchaNum => dailyGatchaNum;
         public List<int> EnhanceIngredientList => enhanceIngredientList;
 
         [Header("Current Status")] 
@@ -29,6 +30,7 @@ namespace NonDestroyObject.DataManage
         [SerializeField] private int baseAtk = 50;
         [SerializeField] private int enemyHp = 50;
         [SerializeField] private int coin = 10;
+        [SerializeField] private int dailyGatchaNum;
         [SerializeField] private List<int> enhanceIngredientList;
         [Header("Update")]
         [SerializeField] private int topStage;
@@ -63,6 +65,12 @@ namespace NonDestroyObject.DataManage
             ClearAllPrefs();
         }
 
+        public void GatchaIncrement()
+        {
+            dailyGatchaNum += 1;
+            PlayerPrefs.SetInt("DailyGatchaNum", dailyGatchaNum);
+        }
+
         /// <summary>
         /// Try Spending "amount" of coin.
         /// Return True if success, False if failed.
@@ -79,6 +87,20 @@ namespace NonDestroyObject.DataManage
             return true;
         }
         
+        public void StageReset()
+        {
+            stage = ((int)(topStage / 10.0f) * 10) + 1;
+            UpdateAllStatus(false);
+        }
+        
+        public void StageCleared()
+        {
+            stage += 1;
+            baseAtk += 10;
+            coin += stage;
+            UpdateAllStatus(true);
+        }
+        
         #endregion
 
         private void StartLoadPrefs()
@@ -90,12 +112,50 @@ namespace NonDestroyObject.DataManage
             baseAtk = PlayerPrefs.GetInt("BaseAtk", 50);
             coin = PlayerPrefs.GetInt("Coin", 10);
             stage = ((int)(topStage / 10.0f) * 10) + 1;
+            dailyGatchaNum = PlayerPrefs.GetInt("DailyGatchaNum", 0);
             enhanceIngredientList = new List<int>();
             enhanceIngredientList.Add(0);
             for (int i = 1; i <=8; i++)
                 enhanceIngredientList.Add(PlayerPrefs.GetInt($"enhanceIngredient{i}", i));
         }
+
+        private void ClearAllPrefs()
+        {
+            NetworkManager.Instance.DeleteUser(id).Forget();
+            id = -1;
+            PlayerPrefs.SetInt("Id", -1);
+            userName = string.Empty;
+            PlayerPrefs.SetString("Name", string.Empty);
+            topStage = 1;
+            PlayerPrefs.SetInt("TopStage", 1);
+            baseAtk = 50;
+            PlayerPrefs.SetInt("BaseAtk", 50);
+            coin = 10;
+            PlayerPrefs.SetInt("Coin", 10);
+            dailyGatchaNum = 0;
+            PlayerPrefs.SetInt("DailyGatchaNum", 0);
+            for (int i = 1; i <= 8; i++)
+            {
+                enhanceIngredientList[i] = 0;
+                PlayerPrefs.SetInt($"enhanceIngredient{i}", 0);
+            }
+            UpdateAllStatus(true);
+        }
         
+        private void SavePrefs()
+        {
+            if (stage > topStage)
+            {
+                topStage = stage;
+                PlayerPrefs.SetInt("TopStage", topStage);
+            }
+            PlayerPrefs.SetInt("BaseAtk", baseAtk);
+            PlayerPrefs.SetInt("Coin", coin);
+            PlayerPrefs.SetInt("DailyGatchaNum", dailyGatchaNum);
+            for (int i = 1; i <=8; i++)
+                PlayerPrefs.SetInt($"enhanceIngredient{i}", enhanceIngredientList[i]);
+        }
+
         private void UpdateAtk()
         {
             atk = baseAtk;
@@ -120,40 +180,6 @@ namespace NonDestroyObject.DataManage
             UIManager.Instance.UpdateEnemyHp(enemyHp);
             UIManager.Instance.UpdateAttackVal(atk);
             UIManager.Instance.UpdateCoinVal(coin);
-        }
-
-        private void ClearAllPrefs()
-        {
-            NetworkManager.Instance.DeleteUser(id).Forget();
-            id = -1;
-            PlayerPrefs.SetInt("Id", -1);
-            userName = string.Empty;
-            PlayerPrefs.SetString("Name", string.Empty);
-            topStage = 1;
-            PlayerPrefs.SetInt("TopStage", 1);
-            baseAtk = 50;
-            PlayerPrefs.SetInt("BaseAtk", 50);
-            coin = 10;
-            PlayerPrefs.SetInt("Coin", 10);
-            for (int i = 1; i <= 8; i++)
-            {
-                enhanceIngredientList[i] = 0;
-                PlayerPrefs.SetInt($"enhanceIngredient{i}", 0);
-            }
-            UpdateAllStatus(true);
-        }
-        
-        private void SavePrefs()
-        {
-            if (stage > topStage)
-            {
-                topStage = stage;
-                PlayerPrefs.SetInt("TopStage", topStage);
-            }
-            PlayerPrefs.SetInt("BaseAtk", baseAtk);
-            PlayerPrefs.SetInt("Coin", coin);
-            for (int i = 1; i <=8; i++)
-                PlayerPrefs.SetInt($"enhanceIngredient{i}", enhanceIngredientList[i]);
         }
         
         private async UniTaskVoid SaveAllInfosServer()
@@ -211,20 +237,6 @@ namespace NonDestroyObject.DataManage
             SavePrefs();
             if (sendToServer)
                 SaveAllInfosServer().Forget();
-        }
-
-        public void StageReset()
-        {
-            stage = ((int)(topStage / 10.0f) * 10) + 1;
-            UpdateAllStatus(false);
-        }
-        
-        public void StageCleared()
-        {
-            stage += 1;
-            baseAtk += 10;
-            coin += stage;
-            UpdateAllStatus(true);
         }
     }
 }

@@ -23,8 +23,8 @@ namespace Data
         CoinGainAddPercent = 6,
         // 3. 유틸
         DelayDecreasePercent = 7,
-        RunningSpeedAddPercent = 8
     }
+    #endregion
 
     [Serializable]
     public enum Rare
@@ -36,5 +36,5 @@ namespace Data
         Legend = 5,
         God = 6,
     }
-    #endregion
+    
 }

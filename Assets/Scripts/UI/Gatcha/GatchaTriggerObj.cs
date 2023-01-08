@@ -1,7 +1,9 @@
 using Cysharp.Threading.Tasks;
 using Data;
+using NonDestroyObject;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using Utils;
 
 namespace UI.Gatcha
@@ -10,6 +12,7 @@ namespace UI.Gatcha
     {
         [Header("Need Init")]
         [SerializeField] private bool isOpenable;
+        [SerializeField] private Image[] images; 
         [Header("Components")]
         [SerializeField] private Animator animator;
         [SerializeField] private RuntimeAnimatorController runtimeAnimatorController;
@@ -20,6 +23,11 @@ namespace UI.Gatcha
         {
             isOpenable = openable;
             itemEquipment = info;
+            
+            foreach (var image in images)
+            {
+                image.color = DataManager.Instance.ItemManager.RareColorList[itemEquipment.rare];
+            }
         }
         
         private void Start()
@@ -29,14 +37,11 @@ namespace UI.Gatcha
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (!isOpenable) return;
+            Debug.Log("Clicked");
             
-            animator.SetInteger(Clicked, (int)itemEquipment.rare);
+            if (!isOpenable) return;
 
-            CoroutineUtils.WaitAndOperationIEnum(1.0f, () =>
-            {
-                //animator.SetInteger(Clicked, 0);
-            });
+            animator.SetInteger(Clicked, itemEquipment.rare);
         }
 
         public void OpenAndShowItem()
