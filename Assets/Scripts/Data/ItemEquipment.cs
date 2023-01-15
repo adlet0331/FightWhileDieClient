@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -22,8 +23,8 @@ namespace Data
                 Rare = (Rare)value;
             }
         }
-        [SerializeField] private int level;
-        public EquipmentOption Option;
+        public int level;
+        [SerializeField]public EquipmentOption Option;
         public int option
         {
             get

@@ -10,26 +10,26 @@ namespace Utils
     /// </summary>
     public class JsonSL
     {
-        public static string basePath = Application.dataPath;
+        public static string basePath = Application.persistentDataPath;
         public static string LoadJson(string path)
         {
-            var filePath = Path.Combine(basePath, path, ".json");
+            var filePath = Path.Combine(basePath, path + ".json");
             if (!File.Exists(filePath))
                 return string.Empty;
-            string logJsonString;
+            string jsonString;
 #if UNITY_EDITOR
-            logJsonString = File.ReadAllText(filePath);
+            jsonString = File.ReadAllText(filePath);
 #elif UNITY_ANDROID
-            logJsonString = File.ReadAllText(filePath);
+            jsonString = File.ReadAllText(filePath);
 #elif UNITY_IPHONE
-            logJsonString = File.ReadAllText(filePath);
+            jsonString = File.ReadAllText(filePath);
 #endif
-            return logJsonString;
+            return jsonString;
         }
 
         public static async UniTaskVoid SaveJson(string path, string content)
         {
-            var filePath = Path.Combine(basePath, path, ".json");
+            var filePath = Path.Combine(basePath, path + ".json");
             try
             {
                 await UniTask.RunOnThreadPool(() =>

@@ -1521,8 +1521,9 @@ MonoBehaviour:
   gatchaStartinbGoButton: {fileID: 6297834574856538874}
   playerCoinUI: {fileID: 3960815622401139890}
   afterUseCoinUI: {fileID: 262487431871172245}
-  valueCoinUI: {fileID: 8931470383078166493}
+  priceCoinUI: {fileID: 8931470383078166493}
   inStartingPage: {fileID: 1774063671713343902}
+  buttonImage: {fileID: 1776536538046481832}
 --- !u!1 &5127581701693988414
 GameObject:
   m_ObjectHideFlags: 0

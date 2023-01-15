@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Data;
 using NonDestroyObject;
+using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI.Gatcha
 {
@@ -23,29 +25,34 @@ namespace UI.Gatcha
         [Header("Components")]
         [SerializeField] private CoinUI playerCoinUI;
         [SerializeField] private CoinUI afterUseCoinUI;
-        [SerializeField] private CoinUI valueCoinUI;
+        [SerializeField] private CoinUI priceCoinUI;
         [SerializeField] private GatchaTriggerObj inStartingPage;
+        [SerializeField] private Image buttonImage;
         //[SerializeField] private GatchaTriggerObj gatchaTriggerObjAnimator;
 
         public void StartGatchaButton()
         {
+            var gatchaValue = DataManager.Instance.PlayerDataManager.GatchaStartCoin * (int) Math.Pow(2, DataManager.Instance.PlayerDataManager.DailyGatchaCount);
+            if (!DataManager.Instance.PlayerDataManager.SpendCoin(gatchaValue))
+                return;
             StartGatcha(10).Forget();
+            DataManager.Instance.PlayerDataManager.GatchaIncrement();
         }
 
         public void StartingGatchaButton()
         {
-            if (!gatchaLoaded) return;
             StartOpening().Forget();
         }
         
         private async UniTaskVoid StartGatcha(int count)
         {
+            gatchaLoaded = false;
             gatchaStartPage.SetActive(false);
             gatchaStartinbGoButton.SetActive(false);
             gatchaStartingPage.SetActive(true);
-            gatchaLoaded = false;
             
             var gatchaResult = await NetworkManager.Instance.AddRandomEquipItems(10);
+            DataManager.Instance.ItemManager.AddItems(gatchaResult.ItemEquipmentList);
 
             if (!gatchaResult.Success)
             {
@@ -77,8 +84,8 @@ namespace UI.Gatcha
             var prefab = Resources.Load("Prefabs/UI/Gatcha/GatchaTrigger") as GameObject;
             for (var i = 0; i < count; i++)
             {
-                GameObject gameObject = Instantiate(prefab, gatchaOpeningPage.transform);
-                gameObject.GetComponent<GatchaTriggerObj>().Initiate(true, gatchaResult.ItemEquipmentList[i]);
+                GameObject obj = Instantiate(prefab, gatchaOpeningPage.transform);
+                obj.GetComponent<GatchaTriggerObj>().Initiate(true, gatchaResult.ItemEquipmentList[i]);
             }
             gatchaStartinbGoButton.SetActive(true);
             gatchaLoaded = true;
@@ -96,6 +103,19 @@ namespace UI.Gatcha
             gatchaStartPage.SetActive(true);
             gatchaStartingPage.SetActive(false);
             gatchaOpeningPage.SetActive(false);
+            var playerCoin = DataManager.Instance.PlayerDataManager.Coin;
+            var price = 100 * (int) Math.Pow(2 , DataManager.Instance.PlayerDataManager.DailyGatchaCount);
+            playerCoinUI.SetCoinValue(playerCoin);
+            priceCoinUI.SetCoinValue(price);
+            afterUseCoinUI.SetCoinValue(playerCoin - price);
+            if (playerCoin < price)
+            {
+                buttonImage.color = Color.gray;
+            }
+            else
+            {
+                buttonImage.color = Color.white;
+            }
             base.Open();
         }
 

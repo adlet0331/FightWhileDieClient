@@ -17,11 +17,13 @@ namespace NonDestroyObject.DataManage
         public int BaseAtk => baseAtk;
         public int EnemyHp => enemyHp;
         public int Coin => coin;
+        public int DailyGatchaCount => dailyGatchaCount;
+        public List<int> EnhanceIngredientList => enhanceIngredientList;
         public int TopStage => topStage;
         public int Atk => atk;
         public int ClearCoin => clearCoin;
-        public int DailyGatchaNum => dailyGatchaNum;
-        public List<int> EnhanceIngredientList => enhanceIngredientList;
+
+        public int GatchaStartCoin = 100;
 
         [Header("Current Status")] 
         [SerializeField] private int id;
@@ -30,18 +32,16 @@ namespace NonDestroyObject.DataManage
         [SerializeField] private int baseAtk = 50;
         [SerializeField] private int enemyHp = 50;
         [SerializeField] private int coin = 10;
-        [SerializeField] private int dailyGatchaNum;
+        [SerializeField] private int dailyGatchaCount;
         [SerializeField] private List<int> enhanceIngredientList;
         [Header("Update")]
         [SerializeField] private int topStage;
         [SerializeField] private int atk = 50;
         [SerializeField] private int clearCoin;
         
-        # region PUBLIC
-        
         public void Start()
         {
-            StartLoadPrefs();
+            LoadAllPrefs();
             UpdateAllStatus(true);
         }
         
@@ -67,8 +67,8 @@ namespace NonDestroyObject.DataManage
 
         public void GatchaIncrement()
         {
-            dailyGatchaNum += 1;
-            PlayerPrefs.SetInt("DailyGatchaNum", dailyGatchaNum);
+            dailyGatchaCount += 1;
+            PlayerPrefs.SetInt("DailyGatchaNum", dailyGatchaCount);
         }
 
         /// <summary>
@@ -96,64 +96,116 @@ namespace NonDestroyObject.DataManage
         public void StageCleared()
         {
             stage += 1;
+            if (stage > topStage)
+                topStage = stage;
             baseAtk += 10;
             coin += stage;
             UpdateAllStatus(true);
         }
-        
-        #endregion
 
-        private void StartLoadPrefs()
+        private enum IntPlayerPrefName
         {
-            userName = PlayerPrefs.GetString("Name", String.Empty);
-            id = PlayerPrefs.GetInt("Id", -1);
-            userName = PlayerPrefs.GetString("Name", "");
-            topStage = PlayerPrefs.GetInt("TopStage", 1);
-            baseAtk = PlayerPrefs.GetInt("BaseAtk", 50);
-            coin = PlayerPrefs.GetInt("Coin", 10);
-            stage = ((int)(topStage / 10.0f) * 10) + 1;
-            dailyGatchaNum = PlayerPrefs.GetInt("DailyGatchaNum", 0);
+            Id,
+            TopStage,
+            BaseAtk,
+            Coin,
+            DailyGatchaNum,
+            EnhanceIngredient1,
+            EnhanceIngredient2,
+            EnhanceIngredient3,
+            EnhanceIngredient4,
+            EnhanceIngredient5,
+            EnhanceIngredient6,
+            EnhanceIngredient7,
+            EnhanceIngredient8,
+        }
+
+        private enum StringPlayerPrefName
+        {
+            Name
+        }
+
+        private void SaveIntPrefs(IntPlayerPrefName name, int val)
+        {
+            PlayerPrefs.SetInt(name.ToString(), val);
+        }
+
+        private void SaveStringPrefs(StringPlayerPrefName name, string val)
+        {
+            PlayerPrefs.SetString(name.ToString(), val);
+        }
+
+        private int LoadIntPrefs(IntPlayerPrefName name)
+        {
+            return PlayerPrefs.GetInt(name.ToString(), 0);
+        }
+        
+        private string LoadStringPrefs(StringPlayerPrefName name)
+        {
+            return PlayerPrefs.GetString(name.ToString(), String.Empty);
+        }
+
+
+        private void LoadAllPrefs()
+        {
+            userName = LoadStringPrefs(StringPlayerPrefName.Name);
+            
+            id = LoadIntPrefs(IntPlayerPrefName.Id);
+            topStage = LoadIntPrefs(IntPlayerPrefName.TopStage);
+            baseAtk = LoadIntPrefs(IntPlayerPrefName.BaseAtk);
+            coin = LoadIntPrefs(IntPlayerPrefName.Coin);
+            dailyGatchaCount = LoadIntPrefs(IntPlayerPrefName.DailyGatchaNum);
+            
             enhanceIngredientList = new List<int>();
             enhanceIngredientList.Add(0);
-            for (int i = 1; i <=8; i++)
-                enhanceIngredientList.Add(PlayerPrefs.GetInt($"enhanceIngredient{i}", i));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient1));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient2));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient3));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient4));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient5));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient6));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient7));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient8));
+        }
+        
+        private void SaveAllInfoPrefs()
+        {
+            SaveStringPrefs(StringPlayerPrefName.Name, userName);
+            
+            SaveIntPrefs(IntPlayerPrefName.Id, id);
+            SaveIntPrefs(IntPlayerPrefName.TopStage, topStage);
+            SaveIntPrefs(IntPlayerPrefName.BaseAtk, baseAtk);
+            SaveIntPrefs(IntPlayerPrefName.Coin, coin);
+            SaveIntPrefs(IntPlayerPrefName.DailyGatchaNum, dailyGatchaCount);
+            
+            SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient1, enhanceIngredientList[1]);
+            SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient2, enhanceIngredientList[2]);
+            SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient3, enhanceIngredientList[3]);
+            SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient4, enhanceIngredientList[4]);
+            SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient5, enhanceIngredientList[5]);
+            SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient6, enhanceIngredientList[6]);
+            SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient7, enhanceIngredientList[7]);
+            SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient8, enhanceIngredientList[8]);
         }
 
         private void ClearAllPrefs()
         {
             NetworkManager.Instance.DeleteUser(id).Forget();
-            id = -1;
-            PlayerPrefs.SetInt("Id", -1);
+            
+
             userName = string.Empty;
-            PlayerPrefs.SetString("Name", string.Empty);
+            id = 0;
             topStage = 1;
-            PlayerPrefs.SetInt("TopStage", 1);
             baseAtk = 50;
-            PlayerPrefs.SetInt("BaseAtk", 50);
             coin = 10;
-            PlayerPrefs.SetInt("Coin", 10);
-            dailyGatchaNum = 0;
-            PlayerPrefs.SetInt("DailyGatchaNum", 0);
+            dailyGatchaCount = 0;
+
             for (int i = 1; i <= 8; i++)
             {
                 enhanceIngredientList[i] = 0;
-                PlayerPrefs.SetInt($"enhanceIngredient{i}", 0);
             }
+
             UpdateAllStatus(true);
-        }
-        
-        private void SavePrefs()
-        {
-            if (stage > topStage)
-            {
-                topStage = stage;
-                PlayerPrefs.SetInt("TopStage", topStage);
-            }
-            PlayerPrefs.SetInt("BaseAtk", baseAtk);
-            PlayerPrefs.SetInt("Coin", coin);
-            PlayerPrefs.SetInt("DailyGatchaNum", dailyGatchaNum);
-            for (int i = 1; i <=8; i++)
-                PlayerPrefs.SetInt($"enhanceIngredient{i}", enhanceIngredientList[i]);
         }
 
         private void UpdateAtk()
@@ -162,15 +214,15 @@ namespace NonDestroyObject.DataManage
             CombatManager.Instance.player.UpdateStatus(1, atk);
         }
 
-        private void UpdateClearCoin()
-        {
-            clearCoin = stage;
-        }
-
         private void UpdateEnemyHp()
         {
             enemyHp = (int)(50 * Math.Pow(1.2f, stage));
             CombatManager.Instance.enemyAI.UpdateStatus(enemyHp, 1);
+        }
+
+        private void UpdateClearCoin()
+        {
+            clearCoin = stage;
         }
 
         private void UpdateMainUI()
@@ -222,7 +274,6 @@ namespace NonDestroyObject.DataManage
                 Debug.Log("Error in SaveAllInfos");
                 Debug.Log(e);
             }
-            await UniTask.Yield();
         }
 
         private void UpdateAllStatus(bool sendToServer)
@@ -234,7 +285,7 @@ namespace NonDestroyObject.DataManage
             // Update UI
             UpdateMainUI();
             // Update Prefs and Server
-            SavePrefs();
+            SaveAllInfoPrefs();
             if (sendToServer)
                 SaveAllInfosServer().Forget();
         }

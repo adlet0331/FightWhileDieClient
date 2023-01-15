@@ -2,6 +2,8 @@
 using System.Collections;
 using TMPro;
 using UI;
+using UI.Gatcha;
+using UI.Inventory;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -31,11 +33,11 @@ namespace NonDestroyObject
         [SerializeField] private float _updatingInterval;
         [SerializeField] private float _updatingEndValue;
         [Header("Popup")]
-        public Popup gatchaPopup;
-        public Popup inventoryPopup;
+        public GatchaPopup gatchaPopup;
+        public InventoryPopup inventoryPopup;
         public Popup rankingPopup;
         public Popup pausePopup;
-        public Popup enterYourNamePopup;
+        public PopupEnterName enterYourNamePopup;
         public CoinEffect coinEffect;
         [Header("Components")] 
         public Transform titleTransform;
