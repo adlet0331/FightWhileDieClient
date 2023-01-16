@@ -5,15 +5,20 @@ using UnityEngine;
 
 namespace Utils
 {
+    public enum JsonTitle
+    {
+        CustomLog,
+        ItemEquipment
+    }
     /// <summary>
     /// Json Read/Write를 지원하는 Util
     /// </summary>
     public class JsonSL
     {
         public static string basePath = Application.persistentDataPath;
-        public static string LoadJson(string path)
+        public static string LoadJson(JsonTitle path)
         {
-            var filePath = Path.Combine(basePath, path + ".json");
+            var filePath = Path.Combine(basePath, path.ToString() + ".json");
             if (!File.Exists(filePath))
                 return string.Empty;
             string jsonString;
@@ -27,9 +32,9 @@ namespace Utils
             return jsonString;
         }
 
-        public static async UniTaskVoid SaveJson(string path, string content)
+        public static async UniTaskVoid SaveJson(JsonTitle path, string content)
         {
-            var filePath = Path.Combine(basePath, path + ".json");
+            var filePath = Path.Combine(basePath, path.ToString() + ".json");
             try
             {
                 await UniTask.RunOnThreadPool(() =>

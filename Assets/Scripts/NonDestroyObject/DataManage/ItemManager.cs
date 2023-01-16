@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Data;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -21,8 +22,15 @@ namespace NonDestroyObject.DataManage
 
         public void Start()
         {
-            var jsonString = JsonSL.LoadJson("ItemEquipmentList");
-            itemEquipmentList = JsonConvert.DeserializeObject<List<ItemEquipment>>(jsonString);
+            var jsonString = JsonSL.LoadJson(JsonTitle.ItemEquipment);
+            if (jsonString == String.Empty)
+            {
+                itemEquipmentList = new List<ItemEquipment>();
+            }
+            else
+            {
+                itemEquipmentList = JsonConvert.DeserializeObject<List<ItemEquipment>>(jsonString);
+            }
         }
 
         public void AddItems(List<ItemEquipment> itemEquipments)
@@ -32,7 +40,7 @@ namespace NonDestroyObject.DataManage
                 itemEquipmentList.Add(item);
             }
             var jsonString = JsonConvert.SerializeObject(itemEquipmentList);
-            JsonSL.SaveJson("ItemEquipmentList", jsonString).Forget();
+            JsonSL.SaveJson(JsonTitle.ItemEquipment, jsonString).Forget();
         }
 
         public bool DeleteItems(List<ItemEquipment> itemIdList)

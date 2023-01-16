@@ -12,7 +12,6 @@ namespace NonDestroyObject
     /// </summary>
     public class CustomLogManager : Singleton<CustomLogManager>
     {
-        [SerializeField] private string fileName;
         [SerializeField] private List<CustomLog> CustomLogList;
 
         private void Start()
@@ -22,7 +21,7 @@ namespace NonDestroyObject
 
         private void LoadLog()
         {
-            var logJsonString = JsonSL.LoadJson(fileName);
+            var logJsonString = JsonSL.LoadJson(JsonTitle.CustomLog);
             try
             {
                 CustomLogList = JsonConvert.DeserializeObject<List<CustomLog>>(logJsonString);
@@ -51,7 +50,7 @@ namespace NonDestroyObject
         public void SaveLog(bool sendServer)
         {
             var jsonString = JsonConvert.SerializeObject(CustomLogList);
-            JsonSL.SaveJson(fileName, jsonString).Forget();
+            JsonSL.SaveJson(JsonTitle.CustomLog, jsonString).Forget();
             if (sendServer)
             {
                 // TODO: Send Log To Server

@@ -74,7 +74,7 @@ public class ItemView : View
         var optionSort = optionToggle.isOn;
 
         if (!rareSort && !levelSort && !optionSort) return;
-        
+
         QuickSort(0, itemSlotList.Count - 1, rareSort, levelSort, optionSort);
     }
 
@@ -88,6 +88,9 @@ public class ItemView : View
     }
     private void QuickSort(int minIndex, int maxIndex, bool rareSort, bool levelSort, bool optionSort)
     {
+        if (minIndex >= maxIndex)
+            return;
+        
         var asc = isAsc ? 1 : -1;
         
         var pivot = itemSlotList[minIndex];
