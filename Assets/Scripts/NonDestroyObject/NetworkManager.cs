@@ -21,8 +21,9 @@ namespace NonDestroyObject
         [SerializeField] private ClientCondition _condition;
         [SerializeField] private string _rootURL;
         private HttpClient _httpClient;
-        public bool connectable;
-
+        private bool connectable;
+        public bool Connectable => connectable;
+        
         private void Start()
         {
             _httpClient = new HttpClient();
@@ -35,43 +36,58 @@ namespace NonDestroyObject
                     _rootURL = "http://localhost:8000/playerserver/";
                     return;
                 case ClientCondition.NoConnectionTest:
-                    _rootURL = "http://NoConnectionTest:1234";
+                    _rootURL = "http://for-no-connection.haje.org/";
                     return;
             }
         }
 
-        private async UniTask<string> RequestPost(string url, string reqString, int retryNum = 3)
+        private async UniTask<string> RequestPost(string url, string reqString, bool triggeredInThreadPool = true, int retryNum = 0)
         {
-            Debug.Log(url + "\n" + reqString);
+            if (!triggeredInThreadPool)
+            {
+                await UniTask.SwitchToMainThread();
+                UIManager.Instance.LoadingPopup.Open();
+                Debug.Log(url + "\n" + reqString);
+            }
+            await UniTask.SwitchToThreadPool();
 
             var httpContent = new StringContent(reqString, Encoding.UTF8, "text/json");
-            HttpResponseMessage response;
+            HttpResponseMessage response = new HttpResponseMessage();
+            var connectable = false;
             var cnt = 0;
+            var resString = string.Empty;
 
-            while(true)
+            while(cnt <= retryNum)
             {
                 try
                 {
                     response = await _httpClient.PostAsync(_rootURL + url, httpContent);
                 }
-                catch (WebException e)
+                catch (Exception e)
                 {
-                    Debug.Log($"{cnt}" + e);
-                    return string.Empty;
+                    Debug.Log($"{url}, {cnt}\n" + e);
+                    cnt += 1;
+                    continue;
                 }
                 HttpStatusCode statusCode = response.StatusCode;
                 if (statusCode == HttpStatusCode.OK)
                 {
+                    connectable = true;
                     break;
                 }
                 // Retry $retryNum time
                 cnt += 1;
-                if (cnt > retryNum)
-                    return string.Empty;
             }
+            if (connectable)
+                resString = await response.Content.ReadAsStringAsync();
 
-            var resString = await response.Content.ReadAsStringAsync();
-            Debug.Log(resString);
+            await UniTask.SwitchToMainThread();
+            if (!triggeredInThreadPool)
+            {
+                UIManager.Instance.LoadingPopup.Close();
+                Debug.Log(resString);
+            }
+            
             return resString;
         }
         
@@ -85,9 +101,10 @@ namespace NonDestroyObject
             
             string resultJson = string.Empty;
             resultJson = await RequestPost("checkconnection/", reqJson);
-            
+
             if (resultJson == string.Empty)
             {
+                connectable = false;
                 return CheckConnectionResult.NoConnectionToServer;
             }
             
@@ -95,9 +112,11 @@ namespace NonDestroyObject
 
             if (result is { success: true, needInit: true })
             {
+                connectable = true;
                 return CheckConnectionResult.SuccessButNoIdInServer;
             }
 
+            connectable = true;
             return CheckConnectionResult.Success;
         }
 
@@ -114,7 +133,7 @@ namespace NonDestroyObject
             };
             var reqJson = JsonConvert.SerializeObject(request);
             string resultJson = string.Empty;
-            resultJson = await RequestPost("createnewuser/", reqJson);
+            resultJson = await RequestPost("createnewuser/", reqJson, false, 1);
 
             if (resultJson == string.Empty)
             {
@@ -138,7 +157,7 @@ namespace NonDestroyObject
             };
             var reqJson = JsonConvert.SerializeObject(request);
             string resultJson = string.Empty;
-            resultJson = await RequestPost("deleteuser/", reqJson);
+            resultJson = await RequestPost("deleteuser/", reqJson, false, 1);
 
             if (resultJson == string.Empty) 
                 return DeleteUserResult.Fail;
@@ -194,7 +213,7 @@ namespace NonDestroyObject
             };
             var reqJson = JsonConvert.SerializeObject(request);
 
-            var resultJson = await RequestPost("addrandomequipmentitems/", reqJson);
+            var resultJson = await RequestPost("addrandomequipmentitems/", reqJson, false);
 
             var returnResult = new AddItemsResult();
 

@@ -12,8 +12,6 @@ namespace UI.Gatcha
     public class GatchaPopup : Popup
     {
         [Header("Debugging")]
-        //TODO: PlayerDataManager에 가챠한 횟수 추가하기. 
-        //TODO: Server에는 안 보내도 되나? 안 보내도 되지 않나? 
         [SerializeField] private int spendCoin;
         [SerializeField] private bool gatchaLoaded;
         [Header("GameObjects")]
@@ -32,11 +30,11 @@ namespace UI.Gatcha
 
         public void StartGatchaButton()
         {
-            var gatchaValue = DataManager.Instance.PlayerDataManager.GatchaStartCoin * (int) Math.Pow(2, DataManager.Instance.PlayerDataManager.DailyGatchaCount);
-            if (!DataManager.Instance.PlayerDataManager.SpendCoin(gatchaValue))
+            var gatchaValue = DataManager.Instance.PlayerDataManager.GatchaStartCoin * 
+                              (int) Math.Pow(2, DataManager.Instance.PlayerDataManager.DailyGatchaCount);
+            if (DataManager.Instance.PlayerDataManager.Coin < gatchaValue)
                 return;
             StartGatcha(10).Forget();
-            DataManager.Instance.PlayerDataManager.GatchaIncrement();
         }
 
         public void StartingGatchaButton()
@@ -46,19 +44,26 @@ namespace UI.Gatcha
         
         private async UniTaskVoid StartGatcha(int count)
         {
-            gatchaLoaded = false;
-            gatchaStartPage.SetActive(false);
-            gatchaStartinbGoButton.SetActive(false);
-            gatchaStartingPage.SetActive(true);
-            
-            var gatchaResult = await NetworkManager.Instance.AddRandomEquipItems(10);
-            DataManager.Instance.ItemManager.AddItems(gatchaResult.ItemEquipmentList);
-
-            if (!gatchaResult.Success)
+            if (!NetworkManager.Instance.Connectable)
             {
                 NoInternetPopup.Open();
                 return;
             }
+            
+            gatchaLoaded = false;
+            gatchaStartPage.SetActive(false);
+            gatchaStartinbGoButton.SetActive(false);
+            gatchaStartingPage.SetActive(true);
+
+            var gatchaResult = await NetworkManager.Instance.AddRandomEquipItems(10);
+
+            var gatchaValue = DataManager.Instance.PlayerDataManager.GatchaStartCoin * 
+                              (int) Math.Pow(2, DataManager.Instance.PlayerDataManager.DailyGatchaCount);
+            
+            DataManager.Instance.PlayerDataManager.SpendCoin(gatchaValue);
+            DataManager.Instance.PlayerDataManager.GatchaIncrement();
+            
+            DataManager.Instance.ItemManager.AddItems(gatchaResult.ItemEquipmentList);
 
             var highestRare = 1;
             foreach (var item in gatchaResult.ItemEquipmentList)
@@ -100,6 +105,8 @@ namespace UI.Gatcha
         
         public new void Open()
         {
+            NetworkManager.Instance.CheckConnection().Forget();
+            
             gatchaStartPage.SetActive(true);
             gatchaStartingPage.SetActive(false);
             gatchaOpeningPage.SetActive(false);

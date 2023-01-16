@@ -42,7 +42,7 @@ namespace NonDestroyObject.DataManage
         public void Start()
         {
             LoadAllPrefs();
-            UpdateAllStatus(true);
+            UpdateAllStatus(false);
         }
         
         /// <summary>
@@ -191,7 +191,6 @@ namespace NonDestroyObject.DataManage
         private void ClearAllPrefs()
         {
             NetworkManager.Instance.DeleteUser(id).Forget();
-            
 
             userName = string.Empty;
             id = 0;
@@ -236,43 +235,31 @@ namespace NonDestroyObject.DataManage
         
         private async UniTaskVoid SaveAllInfosServer()
         {
-            await UniTask.SwitchToThreadPool();
-            try
+            var checkConnection = await NetworkManager.Instance.CheckConnection();
+            switch (checkConnection)
             {
-                var checkConnection = await NetworkManager.Instance.CheckConnection();
-                switch (checkConnection)
-                {
-                    // No Connection
-                    case CheckConnectionResult.NoConnectionToServer:
+                // No Connection
+                case CheckConnectionResult.NoConnectionToServer:
+                    break;
+                case CheckConnectionResult.Success:
+                    NetworkManager.Instance.FetchUser().Forget();
+                    break;
+                case CheckConnectionResult.SuccessButNoIdInServer:
+                    if (userName == String.Empty)
+                    {
+                        await UniTask.SwitchToMainThread();
+                        UIManager.Instance.ShowPopupEnterYourNickname();
                         break;
-                    case CheckConnectionResult.Success:
-                        NetworkManager.Instance.FetchUser().Forget();
-                        break;
-                    case CheckConnectionResult.SuccessButNoIdInServer:
-                        if (userName == String.Empty)
-                        {
-                            await UniTask.SwitchToMainThread();
-                            UIManager.Instance.ShowPopupEnterYourNickname();
-                            break;
-                        }
-                        else
-                        {
-                            var createNewUser = await NetworkManager.Instance.CreateNewUser(userName);
+                    }
+                    var createNewUser = await NetworkManager.Instance.CreateNewUser(userName);
 
-                            switch (createNewUser)
-                            {
-                                case CreateNewUserResult.Success:
-                                    await UniTask.SwitchToMainThread();
-                                    break;
-                            }
+                    switch (createNewUser)
+                    {
+                        case CreateNewUserResult.Success:
+                            await UniTask.SwitchToMainThread();
                             break;
-                        }
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.Log("Error in SaveAllInfos");
-                Debug.Log(e);
+                    }
+                    break;
             }
         }
 

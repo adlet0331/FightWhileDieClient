@@ -34,10 +34,14 @@ namespace NonDestroyObject
         [SerializeField] private float _updatingEndValue;
         [Header("Popup")]
         public GatchaPopup gatchaPopup;
+        public Popup NoInternetInGatchaPopup;
         public InventoryPopup inventoryPopup;
         public Popup rankingPopup;
         public Popup pausePopup;
         public PopupEnterName enterYourNamePopup;
+        public LoadingPopup LoadingPopup;
+        public NeedInternetPopup NeedInternetPopup;
+        [Header("Effect")]
         public CoinEffect coinEffect;
         [Header("Components")] 
         public Transform titleTransform;
@@ -86,9 +90,12 @@ namespace NonDestroyObject
         public void HideAllPopup()
         {
             gatchaPopup.Close();
+            NoInternetInGatchaPopup.Close();
             inventoryPopup.Close();
             rankingPopup.Close();
             pausePopup.Close();
+            enterYourNamePopup.Close();
+            NeedInternetPopup.Close();
         }
         
         public void ShowHideButtons(bool show)
