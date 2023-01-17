@@ -12,6 +12,12 @@ namespace NonDestroyObject
         public StaticDataManager StaticDataManager;
         public ItemManager ItemManager;
 
+        public void DeleteUser()
+        {
+            PlayerDataManager.DeleteUser();
+            ItemManager.Clear();
+        }
+        
         private void Start()
         {
             PlayerDataManager = new PlayerDataManager();

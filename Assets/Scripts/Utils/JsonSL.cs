@@ -47,5 +47,14 @@ namespace Utils
                 Debug.LogAssertion(e);
             }
         }
+
+        public static async UniTaskVoid DeleteJsonFile(JsonTitle path)
+        {
+            var filePath = Path.Combine(basePath, path.ToString() + ".json");
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+        }
     }
 }

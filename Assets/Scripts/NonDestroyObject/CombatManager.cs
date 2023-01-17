@@ -15,7 +15,9 @@ namespace NonDestroyObject
         [SerializeField] private Transform aiStartPosition;
         [SerializeField] private Transform aiStandingPosition;
 
-        [Header("Debuging")] 
+        [Header("Flags")]
+        public bool isInCombat;
+        [Header("Debuging")]
         [SerializeField] private bool inputBlocked;
         [SerializeField] private bool timeBlocked;
         [SerializeField] public bool updateDelayed;
@@ -64,6 +66,7 @@ namespace NonDestroyObject
         private Random _random;
         private void Start()
         {
+            isInCombat = false;
             inputBlocked = true;
             // Coroutines
             _afterDeadCoroutine = null;
@@ -108,7 +111,7 @@ namespace NonDestroyObject
             if (player.Hitting && player.EnemyInRange)
             {
                 player.CancelHittingJudgeCoroutine();
-                var dead = enemyAI.Damaged(player.Atk);
+                var dead = enemyAI.Damaged(DataManager.Instance.PlayerDataManager.Atk);
                 if (dead)
                 {
                     // Update enemyAI's Random Seed
@@ -132,9 +135,11 @@ namespace NonDestroyObject
             if (enemyAI.Hitting && enemyAI.EnemyInRange)
             {
                 enemyAI.CancelHittingJudgeCoroutine();
-                var dead = player.Damaged(enemyAI.Atk);
+                // Player's Hp is always 1
+                var dead = player.Damaged(1);
                 if (dead)
                 {
+                    isInCombat = false;
                     inputBlocked = true;
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(player.GetAnimationTime("Dead"), () =>
                     {
@@ -201,16 +206,26 @@ namespace NonDestroyObject
             }
         }
 
-        private void InitAiPos(bool standing)
+        private void InitAiPos(bool playerDie)
         {
-            if (standing)
+            if (playerDie)
                 enemyAI.transform.SetLocalPositionAndRotation(aiStandingPosition.localPosition, aiStandingPosition.rotation);
             else
                 enemyAI.transform.SetLocalPositionAndRotation(aiStartPosition.localPosition, aiStartPosition.rotation);
         }
+
+        private void InitPlayerEnemyHp()
+        {
+            player.SetHp(1);
+            enemyAI.SetHp(DataManager.Instance.PlayerDataManager.CurrentEnemyHp);
+        }
         
         public void StartCombat()
         {
+            DataManager.Instance.PlayerDataManager.StageReset();
+            InitPlayerEnemyHp();
+
+            isInCombat = true;
             inputBlocked = false;
             InitAiPos(false);
             UIManager.Instance.TitleEnemyHpSwitch(true);
@@ -230,6 +245,7 @@ namespace NonDestroyObject
                 DataManager.Instance.PlayerDataManager.StageReset();
                 InitAiPos(true);
             }
+            InitPlayerEnemyHp();
         }
 
         private void UpdateRandomSeed()

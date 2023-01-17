@@ -95,7 +95,7 @@ namespace UI.Inventory
 
         public new void Open()
         {
-        
+            SwitchStatus(upperViewStatus, downViewStatus);
 
             base.Open();
         }

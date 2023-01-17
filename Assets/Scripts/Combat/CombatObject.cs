@@ -26,7 +26,6 @@ namespace Combat
     public class CombatObject : MonoBehaviour
     {
         [Header("Initial Setting")]
-        [SerializeField] private int atk;
         [SerializeField] private int maxHp;
         [SerializeField] private float attackDelay;
         [SerializeField] private float attackEnd;
@@ -39,8 +38,6 @@ namespace Combat
         [SerializeField] public float knockBackXInterval;
 
         public bool EnemyInRange => attackHitBox.EnemyInRange;
-        // Status
-        public int Atk => atk;
         // Current Status
         public bool Attacking => attacking;
         public bool Hitting => hitting;
@@ -181,11 +178,10 @@ namespace Combat
             SwitchStatus(ObjectStatus.Idle);
         }
         
-        public void UpdateStatus(int mhp, int at)
+        public void SetHp(int mhp)
         {
             currentHp = mhp;
             maxHp = mhp;
-            atk = at;
         }
 
         private void SwitchStatus(ObjectStatus newStatus)

@@ -53,7 +53,7 @@ namespace NonDestroyObject
 
             var httpContent = new StringContent(reqString, Encoding.UTF8, "text/json");
             HttpResponseMessage response = new HttpResponseMessage();
-            var connectable = false;
+            var success = false;
             var cnt = 0;
             var resString = string.Empty;
 
@@ -72,13 +72,13 @@ namespace NonDestroyObject
                 HttpStatusCode statusCode = response.StatusCode;
                 if (statusCode == HttpStatusCode.OK)
                 {
-                    connectable = true;
+                    success = true;
                     break;
                 }
                 // Retry $retryNum time
                 cnt += 1;
             }
-            if (connectable)
+            if (success)
                 resString = await response.Content.ReadAsStringAsync();
 
             await UniTask.SwitchToMainThread();

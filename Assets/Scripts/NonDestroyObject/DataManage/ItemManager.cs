@@ -15,7 +15,7 @@ namespace NonDestroyObject.DataManage
         [ArrayElementTitle("id")]
 #endif
         [SerializeField] private List<ItemEquipment> itemEquipmentList;
-        [SerializeField] private List<Color> rareColorList;
+        [SerializeField] private List<Color> rareColorList; // TODO: Move to StaticDataManager 
 
         public List<ItemEquipment> ItemEquipments => new List<ItemEquipment>(itemEquipmentList);
         public List<Color> RareColorList => rareColorList;
@@ -31,6 +31,12 @@ namespace NonDestroyObject.DataManage
             {
                 itemEquipmentList = JsonConvert.DeserializeObject<List<ItemEquipment>>(jsonString);
             }
+        }
+
+        public void Clear()
+        {
+            JsonSL.DeleteJsonFile(JsonTitle.ItemEquipment).Forget();
+            itemEquipmentList = new List<ItemEquipment>();
         }
 
         public void AddItems(List<ItemEquipment> itemEquipments)

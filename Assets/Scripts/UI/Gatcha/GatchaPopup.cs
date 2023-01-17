@@ -30,8 +30,7 @@ namespace UI.Gatcha
 
         public void StartGatchaButton()
         {
-            var gatchaValue = DataManager.Instance.PlayerDataManager.GatchaStartCoin * 
-                              (int) Math.Pow(2, DataManager.Instance.PlayerDataManager.DailyGatchaCount);
+            var gatchaValue = DataManager.Instance.PlayerDataManager.GatchaCosts;
             if (DataManager.Instance.PlayerDataManager.Coin < gatchaValue)
                 return;
             StartGatcha(10).Forget();
@@ -57,8 +56,7 @@ namespace UI.Gatcha
 
             var gatchaResult = await NetworkManager.Instance.AddRandomEquipItems(10);
 
-            var gatchaValue = DataManager.Instance.PlayerDataManager.GatchaStartCoin * 
-                              (int) Math.Pow(2, DataManager.Instance.PlayerDataManager.DailyGatchaCount);
+            var gatchaValue = DataManager.Instance.PlayerDataManager.GatchaCosts;
             
             DataManager.Instance.PlayerDataManager.SpendCoin(gatchaValue);
             DataManager.Instance.PlayerDataManager.GatchaIncrement();
@@ -111,7 +109,7 @@ namespace UI.Gatcha
             gatchaStartingPage.SetActive(false);
             gatchaOpeningPage.SetActive(false);
             var playerCoin = DataManager.Instance.PlayerDataManager.Coin;
-            var price = 100 * (int) Math.Pow(2 , DataManager.Instance.PlayerDataManager.DailyGatchaCount);
+            var price = DataManager.Instance.PlayerDataManager.GatchaCosts;
             playerCoinUI.SetCoinValue(playerCoin);
             priceCoinUI.SetCoinValue(price);
             afterUseCoinUI.SetCoinValue(playerCoin - price);

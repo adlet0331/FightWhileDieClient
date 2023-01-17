@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Utils;
 
 namespace NonDestroyObject.DataManage
 {
     /// <summary>
-    /// Unity PlayerPrefs로 관리하는 데이터들을 다루는 매니저
+    /// Unity PlayerPrefs로 관리하는 데이터들을 다루는 매니저 //TODO PlayerManager에 있는 DataManager 전체에 대한 Dependency 말아 올리기 
     /// </summary>
     [Serializable]
     public class PlayerDataManager
@@ -15,22 +16,26 @@ namespace NonDestroyObject.DataManage
         public string UserName => userName;
         public int Stage => stage;
         public int BaseAtk => baseAtk;
-        public int EnemyHp => enemyHp;
+        public int CurrentEnemyHp => (int) (enemyStartHp * Math.Pow(enemyHpMultiplier, stage));
         public int Coin => coin;
-        public int DailyGatchaCount => dailyGatchaCount;
+        public int GatchaCosts => gatchaStartCoin * (int)Math.Pow(2, dailyGatchaCount);
+        // public int DailyGatchaCount => dailyGatchaCount;
         public List<int> EnhanceIngredientList => enhanceIngredientList;
         public int TopStage => topStage;
         public int Atk => atk;
         public int ClearCoin => clearCoin;
 
-        public int GatchaStartCoin = 100;
+
+        [Header("Static Values")]
+        [SerializeField] private int enemyStartHp = 50;
+        [SerializeField] private float enemyHpMultiplier = 1.2f;
+        [SerializeField] private int gatchaStartCoin = 100;
 
         [Header("Current Status")] 
         [SerializeField] private int id;
         [SerializeField] private string userName;
         [SerializeField] private int stage = 1;
         [SerializeField] private int baseAtk = 50;
-        [SerializeField] private int enemyHp = 50;
         [SerializeField] private int coin = 10;
         [SerializeField] private int dailyGatchaCount;
         [SerializeField] private List<int> enhanceIngredientList;
@@ -53,15 +58,12 @@ namespace NonDestroyObject.DataManage
         public void InitUser(int idp, string userNameParam)
         {
             UniTask.SwitchToMainThread();
-            this.id = idp;
-            this.userName = userNameParam;
-            PlayerPrefs.SetInt("Id", idp);
-            PlayerPrefs.SetString("Name", userNameParam);
-            UIManager.Instance.UpdateUserName(this.userName);
+            ClearAllPrefs(idp, userNameParam);
         }
         
-        public void DeleteExistingUser()
+        public void DeleteUser()
         {
+            NetworkManager.Instance.DeleteUser(id).Forget();
             ClearAllPrefs();
         }
 
@@ -145,7 +147,11 @@ namespace NonDestroyObject.DataManage
             return PlayerPrefs.GetString(name.ToString(), String.Empty);
         }
 
-
+        /// <summary>
+        /// Check Initialize User If No Name Exist!
+        /// TODO: Project Manager-> Script Execution Order Dependency! (Resolve?)
+        /// UIManager -> NetworkManager -> DataManager
+        /// </summary>
         private void LoadAllPrefs()
         {
             userName = LoadStringPrefs(StringPlayerPrefName.Name);
@@ -166,6 +172,12 @@ namespace NonDestroyObject.DataManage
             enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient6));
             enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient7));
             enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient8));
+            
+             
+            if (userName == string.Empty)
+            {
+                UIManager.Instance.enterYourNamePopup.Open();
+            }
         }
         
         private void SaveAllInfoPrefs()
@@ -188,12 +200,10 @@ namespace NonDestroyObject.DataManage
             SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient8, enhanceIngredientList[8]);
         }
 
-        private void ClearAllPrefs()
+        private void ClearAllPrefs(int pid = 0, string name = "")
         {
-            NetworkManager.Instance.DeleteUser(id).Forget();
-
-            userName = string.Empty;
-            id = 0;
+            userName = name;
+            id = pid;
             topStage = 1;
             baseAtk = 50;
             coin = 10;
@@ -210,15 +220,8 @@ namespace NonDestroyObject.DataManage
         private void UpdateAtk()
         {
             atk = baseAtk;
-            CombatManager.Instance.player.UpdateStatus(1, atk);
         }
-
-        private void UpdateEnemyHp()
-        {
-            enemyHp = (int)(50 * Math.Pow(1.2f, stage));
-            CombatManager.Instance.enemyAI.UpdateStatus(enemyHp, 1);
-        }
-
+        
         private void UpdateClearCoin()
         {
             clearCoin = stage;
@@ -228,7 +231,7 @@ namespace NonDestroyObject.DataManage
         {
             UIManager.Instance.UpdateUserName(userName);
             UIManager.Instance.UpdateStage(stage);
-            UIManager.Instance.UpdateEnemyHp(enemyHp);
+            UIManager.Instance.UpdateEnemyHp(CurrentEnemyHp);
             UIManager.Instance.UpdateAttackVal(atk);
             UIManager.Instance.UpdateCoinVal(coin);
         }
@@ -267,7 +270,6 @@ namespace NonDestroyObject.DataManage
         {
             // Update variables
             UpdateAtk();
-            UpdateEnemyHp();
             UpdateClearCoin();
             // Update UI
             UpdateMainUI();

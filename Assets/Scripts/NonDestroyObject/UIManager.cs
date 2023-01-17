@@ -40,7 +40,7 @@ namespace NonDestroyObject
         public Popup pausePopup;
         public PopupEnterName enterYourNamePopup;
         public LoadingPopup LoadingPopup;
-        public NeedInternetPopup NeedInternetPopup;
+        public SimpleTextPopup simpleTextPopup;
         [Header("Effect")]
         public CoinEffect coinEffect;
         [Header("Components")] 
@@ -95,7 +95,7 @@ namespace NonDestroyObject
             rankingPopup.Close();
             pausePopup.Close();
             enterYourNamePopup.Close();
-            NeedInternetPopup.Close();
+            simpleTextPopup.Close();
         }
         
         public void ShowHideButtons(bool show)
