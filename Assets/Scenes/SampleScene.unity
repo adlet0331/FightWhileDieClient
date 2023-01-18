@@ -3870,14 +3870,7 @@ MonoBehaviour:
     clearCoin: 0
   ItemManager:
     itemEquipmentList: []
-    rareColorList:
-    - {r: 0, g: 0, b: 0, a: 1}
-    - {r: 0.5377358, g: 0.5377358, b: 0.5377358, a: 1}
-    - {r: 0, g: 0.07450981, b: 1, a: 1}
-    - {r: 0.7647059, g: 0, b: 1, a: 1}
-    - {r: 1, g: 0, b: 0, a: 1}
-    - {r: 1, g: 0.8980392, b: 0, a: 1}
-    - {r: 0, g: 0, b: 0, a: 1}
+    rareColorList: []
 --- !u!1 &1484660412
 GameObject:
   m_ObjectHideFlags: 0

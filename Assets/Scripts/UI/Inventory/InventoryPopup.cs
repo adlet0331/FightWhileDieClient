@@ -28,6 +28,11 @@ namespace UI.Inventory
         [Header("Status")]
         [SerializeField] private UpperViewStatus upperViewStatus;
         [SerializeField] private DownViewStatus downViewStatus;
+        private void Awake()
+        {
+            upperViewStatus = UpperViewStatus.Equip;
+            downViewStatus = DownViewStatus.ItemView;
+        }
         [Header("TopView")]
         [SerializeField] private EquipView equipView;
         [SerializeField] private View enhanceView;
@@ -80,11 +85,6 @@ namespace UI.Inventory
                     itemView.Activate();
                     break;
             }
-        }
-
-        private void Start()
-        {
-            SwitchStatus(upperViewStatus, downViewStatus);
         }
 
         private void ItemViewSlotClicked(int index)

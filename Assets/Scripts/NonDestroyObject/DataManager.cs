@@ -22,7 +22,8 @@ namespace NonDestroyObject
         {
             PlayerDataManager = new PlayerDataManager();
             PlayerDataManager.Start();
-            
+
+            ItemManager = new ItemManager();
             ItemManager.Start();
         }
     }

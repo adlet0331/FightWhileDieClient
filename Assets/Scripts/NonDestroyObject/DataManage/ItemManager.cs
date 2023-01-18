@@ -18,7 +18,7 @@ namespace NonDestroyObject.DataManage
         [SerializeField] private List<Color> rareColorList; // TODO: Move to StaticDataManager 
 
         public List<ItemEquipment> ItemEquipments => new List<ItemEquipment>(itemEquipmentList);
-        public List<Color> RareColorList => rareColorList;
+        public List<Color> RareColorList => new List<Color>(rareColorList);
 
         public void Start()
         {
@@ -31,6 +31,14 @@ namespace NonDestroyObject.DataManage
             {
                 itemEquipmentList = JsonConvert.DeserializeObject<List<ItemEquipment>>(jsonString);
             }
+            rareColorList = new List<Color>();
+            rareColorList.Add(new Color(0,0,0, 255));
+            rareColorList.Add(new Color(137,137,137, 255));
+            rareColorList.Add(new Color(0,19,255, 255));
+            rareColorList.Add(new Color(195,0,255, 255));
+            rareColorList.Add(new Color(255,0,0, 255));
+            rareColorList.Add(new Color(255,229,0, 255));
+            rareColorList.Add(new Color(0,0,0, 255));
         }
 
         public void Clear()

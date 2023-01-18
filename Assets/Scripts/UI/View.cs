@@ -14,8 +14,8 @@ namespace UI
 
         public void Activate()
         {
-            gameObject.SetActive(true);
             Init();
+            gameObject.SetActive(true);
         }
 
         public void DeActivate()
