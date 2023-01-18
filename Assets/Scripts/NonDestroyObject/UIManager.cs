@@ -61,6 +61,12 @@ namespace NonDestroyObject
         [SerializeField] private TextMeshProUGUI _coinVal;
         [SerializeField] private Slider _enemyHp;
 
+        private void Start()
+        {
+            _stageHpMoveCoroutine = null;
+            _titleMoveCoroutine = null;
+        }
+
         private void FixedUpdate()
         {
             if (_updateCount > 0)
@@ -138,23 +144,40 @@ namespace NonDestroyObject
         {
             _coinVal.text = coin.ToString();
         }
+
+        private IEnumerator _stageHpMoveCoroutine;
+        private IEnumerator _titleMoveCoroutine;
         
         public void TitleEnemyHpSwitch(bool showHp)
         {
+            if (_stageHpMoveCoroutine != null)
+            {
+                StopCoroutine(_stageHpMoveCoroutine);
+            }
+            if (_titleMoveCoroutine != null)
+            {
+                StopCoroutine(_titleMoveCoroutine);
+            }
+            
             if (showHp)
             {
                 stageHpTransform.gameObject.SetActive(true);
-                StartCoroutine(CoroutineUtils.TransformMove(uiMovingTime, stageHpTransform, titleShowPosition));
-                StartCoroutine(CoroutineUtils.TransformMove(uiMovingTime, titleTransform, titleHidePosition));
+                _stageHpMoveCoroutine = CoroutineUtils.TransformMove(uiMovingTime, stageHpTransform, titleShowPosition, () => { _stageHpMoveCoroutine = null; });
+                _titleMoveCoroutine = CoroutineUtils.TransformMove(uiMovingTime, titleTransform, titleHidePosition, () => { _titleMoveCoroutine = null; });
+                
                 ShowHideButtons(false);
             }
             else
             {
                 stageHpTransform.gameObject.SetActive(false);
-                StartCoroutine(CoroutineUtils.TransformMove(uiMovingTime, stageHpTransform, titleHidePosition));
-                StartCoroutine(CoroutineUtils.TransformMove(uiMovingTime, titleTransform, titleShowPosition));
+                _stageHpMoveCoroutine = CoroutineUtils.TransformMove(uiMovingTime, stageHpTransform, titleHidePosition, () => { _stageHpMoveCoroutine = null; });
+                _titleMoveCoroutine = CoroutineUtils.TransformMove(uiMovingTime, titleTransform, titleShowPosition, () => { _titleMoveCoroutine = null; });
+                
                 ShowHideButtons(true);
             }
+            
+            StartCoroutine(_stageHpMoveCoroutine);
+            StartCoroutine(_titleMoveCoroutine);
         }
     }
 }

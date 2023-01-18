@@ -27,16 +27,16 @@ namespace Utils
         /// <param name="source"></param>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static IEnumerator TransformMove(float time, Transform source, Transform target)
+        public static IEnumerator TransformMove(float time, Transform source, Transform target, AfterWaitOperation afterEndOperation)
         {
-            int count = (int)(time / (Time.deltaTime * 2));
-            Vector3 interval = (target.position - source.position) / count;
+            int count = (int)(time / (Time.fixedDeltaTime));
+            Vector3 interval = (target.localPosition - source.localPosition) / count;
             for (int i = 0; i < count; i++)
             {
-                yield return new WaitForSeconds(Time.deltaTime * 2);
-                source.position += interval;
-                
+                yield return new WaitForSeconds(Time.fixedDeltaTime);
+                source.localPosition += interval;
             }
+            afterEndOperation();
         }
     }
 }
