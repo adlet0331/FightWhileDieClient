@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using NonDestroyObject.DataManage;
 
 namespace NonDestroyObject
@@ -8,23 +9,26 @@ namespace NonDestroyObject
     /// </summary>
     public class DataManager : Singleton<DataManager>
     {
-        public PlayerDataManager PlayerDataManager;
-        public StaticDataManager StaticDataManager;
-        public ItemManager ItemManager;
+        public PlayerDataManager playerDataManager;
+        public StaticDataManager staticDataManager; 
+        public ItemManager itemManager;
 
         public void DeleteUser()
         {
-            PlayerDataManager.DeleteUser();
-            ItemManager.Clear();
+            playerDataManager.DeleteUser();
+            itemManager.Clear();
         }
         
         private void Start()
         {
-            PlayerDataManager = new PlayerDataManager();
-            PlayerDataManager.Start();
+            playerDataManager = new PlayerDataManager();
+            playerDataManager.Start();
 
-            ItemManager = new ItemManager();
-            ItemManager.Start();
+            staticDataManager = new StaticDataManager();
+            staticDataManager.Start();
+
+            itemManager = new ItemManager();
+            itemManager.Start();
         }
     }
 }

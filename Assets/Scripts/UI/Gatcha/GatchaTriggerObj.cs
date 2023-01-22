@@ -16,17 +16,17 @@ namespace UI.Gatcha
         [Header("Components")]
         [SerializeField] private Animator animator;
         [SerializeField] private RuntimeAnimatorController runtimeAnimatorController;
-        [SerializeField] private ItemEquipment itemEquipment;
+        [SerializeField] private EquipItemObject equipItemObject;
         private readonly static int Clicked = Animator.StringToHash("TriggeredRare");
 
-        public void Initiate(bool openable, ItemEquipment info)
+        public void Initiate(bool openable, EquipItemObject info)
         {
             isOpenable = openable;
-            itemEquipment = info;
+            equipItemObject = info;
             
             foreach (var image in images)
             {
-                image.color = DataManager.Instance.ItemManager.RareColorList[itemEquipment.rare];
+                image.color = DataManager.Instance.itemManager.RareColorList[equipItemObject.rare];
             }
         }
         
@@ -41,7 +41,7 @@ namespace UI.Gatcha
             
             if (!isOpenable) return;
 
-            animator.SetInteger(Clicked, itemEquipment.rare);
+            animator.SetInteger(Clicked, equipItemObject.rare);
         }
 
         public void OpenAndShowItem()

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Data;
+using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Utils
 {
@@ -69,6 +71,19 @@ namespace Utils
     [Serializable]
     public class AddEquipItemsRes : BaseResponse
     {
-        public List<ItemEquipment> itemList;
+        public List<EquipItemObject> itemList;
     }
+
+    [Serializable]
+    public class StaticDataJsonReq : BaseRequest
+    {
+        public List<string> staticDataNameList;
+    }
+    
+    [Serializable]
+    public class StaticDataJsonRes : BaseResponse
+    {
+        public List<string> staticDataJsonList;
+    }
+    
 }

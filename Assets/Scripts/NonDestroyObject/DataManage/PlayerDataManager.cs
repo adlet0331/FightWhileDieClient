@@ -19,7 +19,6 @@ namespace NonDestroyObject.DataManage
         public int CurrentEnemyHp => (int) (enemyStartHp * Math.Pow(enemyHpMultiplier, stage));
         public int Coin => coin;
         public int GatchaCosts => gatchaStartCoin * (int)Math.Pow(2, dailyGatchaCount);
-        // public int DailyGatchaCount => dailyGatchaCount;
         public List<int> EnhanceIngredientList => enhanceIngredientList;
         public int TopStage => topStage;
         public int Atk => atk;
@@ -47,7 +46,7 @@ namespace NonDestroyObject.DataManage
         public void Start()
         {
             LoadAllPrefs();
-            UpdateAllStatus(false);
+            FetchAllStatus(false);
         }
         
         /// <summary>
@@ -92,7 +91,7 @@ namespace NonDestroyObject.DataManage
         public void StageReset()
         {
             stage = ((int)(topStage / 10.0f) * 10) + 1;
-            UpdateAllStatus(false);
+            FetchAllStatus(true);
         }
         
         public void StageCleared()
@@ -102,7 +101,7 @@ namespace NonDestroyObject.DataManage
                 topStage = stage;
             baseAtk += 10;
             coin += stage;
-            UpdateAllStatus(true);
+            FetchAllStatus(false);
         }
 
         private enum IntPlayerPrefName
@@ -112,6 +111,7 @@ namespace NonDestroyObject.DataManage
             BaseAtk,
             Coin,
             DailyGatchaNum,
+            
             EnhanceIngredient1,
             EnhanceIngredient2,
             EnhanceIngredient3,
@@ -214,7 +214,7 @@ namespace NonDestroyObject.DataManage
                 enhanceIngredientList[i] = 0;
             }
 
-            UpdateAllStatus(true);
+            FetchAllStatus(true);
         }
 
         private void UpdateAtk()
@@ -235,38 +235,8 @@ namespace NonDestroyObject.DataManage
             UIManager.Instance.UpdateAttackVal(atk);
             UIManager.Instance.UpdateCoinVal(coin);
         }
-        
-        private async UniTaskVoid SaveAllInfosServer()
-        {
-            var checkConnection = await NetworkManager.Instance.CheckConnection();
-            switch (checkConnection)
-            {
-                // No Connection
-                case CheckConnectionResult.NoConnectionToServer:
-                    break;
-                case CheckConnectionResult.Success:
-                    NetworkManager.Instance.FetchUser().Forget();
-                    break;
-                case CheckConnectionResult.SuccessButNoIdInServer:
-                    if (userName == String.Empty)
-                    {
-                        await UniTask.SwitchToMainThread();
-                        UIManager.Instance.ShowPopupEnterYourNickname();
-                        break;
-                    }
-                    var createNewUser = await NetworkManager.Instance.CreateNewUser(userName);
 
-                    switch (createNewUser)
-                    {
-                        case CreateNewUserResult.Success:
-                            await UniTask.SwitchToMainThread();
-                            break;
-                    }
-                    break;
-            }
-        }
-
-        private void UpdateAllStatus(bool sendToServer)
+        private void FetchAllStatus(bool sendToServer)
         {
             // Update variables
             UpdateAtk();
@@ -276,7 +246,7 @@ namespace NonDestroyObject.DataManage
             // Update Prefs and Server
             SaveAllInfoPrefs();
             if (sendToServer)
-                SaveAllInfosServer().Forget();
+                NetworkManager.Instance.FetchUser().Forget();
         }
     }
 }

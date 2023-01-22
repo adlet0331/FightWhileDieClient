@@ -44,7 +44,7 @@ public class ItemView : View
     
     protected override void Init()
     {
-        var itemList = DataManager.Instance.ItemManager.ItemEquipments;
+        var itemList = DataManager.Instance.itemManager.ItemEquipments;
 
         for (var i = viewPortTransform.transform.childCount - 1; i >= 0; i--)
         {
@@ -99,32 +99,32 @@ public class ItemView : View
         while (low <= large)
         {
             while ((rareSort && 
-                    asc * itemSlotList[low].ItemEquipmentInfo.rare < asc * pivot.ItemEquipmentInfo.rare) ||
+                    asc * itemSlotList[low].EquipItemObjectInfo.rare < asc * pivot.EquipItemObjectInfo.rare) ||
                    (
                        levelSort &&
-                       (!rareSort || itemSlotList[low].ItemEquipmentInfo.rare == pivot.ItemEquipmentInfo.rare) && 
-                       asc * itemSlotList[low].ItemEquipmentInfo.level < asc * pivot.ItemEquipmentInfo.level) ||
+                       (!rareSort || itemSlotList[low].EquipItemObjectInfo.rare == pivot.EquipItemObjectInfo.rare) && 
+                       asc * itemSlotList[low].EquipItemObjectInfo.level < asc * pivot.EquipItemObjectInfo.level) ||
                    (
                        optionSort &&
-                       (!rareSort || itemSlotList[low].ItemEquipmentInfo.rare == pivot.ItemEquipmentInfo.rare) && 
-                       (!levelSort || itemSlotList[low].ItemEquipmentInfo.level == pivot.ItemEquipmentInfo.level) &&
-                       asc * itemSlotList[low].ItemEquipmentInfo.option < asc * pivot.ItemEquipmentInfo.option)
+                       (!rareSort || itemSlotList[low].EquipItemObjectInfo.rare == pivot.EquipItemObjectInfo.rare) && 
+                       (!levelSort || itemSlotList[low].EquipItemObjectInfo.level == pivot.EquipItemObjectInfo.level) &&
+                       asc * itemSlotList[low].EquipItemObjectInfo.option < asc * pivot.EquipItemObjectInfo.option)
                    )
             {
                 low++;
             }
         
             while ((rareSort && 
-                    asc * itemSlotList[large].ItemEquipmentInfo.rare > asc * pivot.ItemEquipmentInfo.rare) ||
+                    asc * itemSlotList[large].EquipItemObjectInfo.rare > asc * pivot.EquipItemObjectInfo.rare) ||
                    (
                        levelSort &&
-                       (!rareSort || itemSlotList[large].ItemEquipmentInfo.rare == pivot.ItemEquipmentInfo.rare) && 
-                       asc * itemSlotList[large].ItemEquipmentInfo.level > asc * pivot.ItemEquipmentInfo.level) ||
+                       (!rareSort || itemSlotList[large].EquipItemObjectInfo.rare == pivot.EquipItemObjectInfo.rare) && 
+                       asc * itemSlotList[large].EquipItemObjectInfo.level > asc * pivot.EquipItemObjectInfo.level) ||
                    (
                        optionSort &&
-                       (!rareSort || itemSlotList[large].ItemEquipmentInfo.rare == pivot.ItemEquipmentInfo.rare) && 
-                       (!levelSort || itemSlotList[large].ItemEquipmentInfo.level == pivot.ItemEquipmentInfo.level) &&
-                       asc * itemSlotList[large].ItemEquipmentInfo.option > asc * pivot.ItemEquipmentInfo.option)
+                       (!rareSort || itemSlotList[large].EquipItemObjectInfo.rare == pivot.EquipItemObjectInfo.rare) && 
+                       (!levelSort || itemSlotList[large].EquipItemObjectInfo.level == pivot.EquipItemObjectInfo.level) &&
+                       asc * itemSlotList[large].EquipItemObjectInfo.option > asc * pivot.EquipItemObjectInfo.option)
                   )
             {
                 large--;

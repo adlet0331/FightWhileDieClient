@@ -845,8 +845,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38f5ca530023d548bf464db8a030de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _condition: 0
+  _condition: 1
   _rootURL: 
+  connectable: 1
 --- !u!1 &322276781
 GameObject:
   m_ObjectHideFlags: 0
@@ -3867,6 +3868,8 @@ MonoBehaviour:
     topStage: 0
     atk: 50
     clearCoin: 0
+  StaticDataManager:
+    currentVersions: []
   ItemManager:
     itemEquipmentList: []
     rareColorList: []

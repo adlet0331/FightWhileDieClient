@@ -111,7 +111,7 @@ namespace NonDestroyObject
             if (player.Hitting && player.EnemyInRange)
             {
                 player.CancelHittingJudgeCoroutine();
-                var dead = enemyAI.Damaged(DataManager.Instance.PlayerDataManager.Atk);
+                var dead = enemyAI.Damaged(DataManager.Instance.playerDataManager.Atk);
                 if (dead)
                 {
                     // Update enemyAI's Random Seed
@@ -217,12 +217,12 @@ namespace NonDestroyObject
         private void InitPlayerEnemyHp()
         {
             player.SetHp(1);
-            enemyAI.SetHp(DataManager.Instance.PlayerDataManager.CurrentEnemyHp);
+            enemyAI.SetHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
         }
         
         public void StartCombat()
         {
-            DataManager.Instance.PlayerDataManager.StageReset();
+            DataManager.Instance.playerDataManager.StageReset();
             InitPlayerEnemyHp();
 
             isInCombat = true;
@@ -236,13 +236,13 @@ namespace NonDestroyObject
             if (cleared)
             {
                 // 스테이지 클리어 처리
-                DataManager.Instance.PlayerDataManager.StageCleared();
+                DataManager.Instance.playerDataManager.StageCleared();
                 InitAiPos(false);
             }
             else
             {
                 UIManager.Instance.TitleEnemyHpSwitch(false);
-                DataManager.Instance.PlayerDataManager.StageReset();
+                DataManager.Instance.playerDataManager.StageReset();
                 InitAiPos(true);
             }
             InitPlayerEnemyHp();

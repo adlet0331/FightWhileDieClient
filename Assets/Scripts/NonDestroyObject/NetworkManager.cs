@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -20,8 +21,8 @@ namespace NonDestroyObject
     {
         [SerializeField] private ClientCondition _condition;
         [SerializeField] private string _rootURL;
+        [SerializeField]private bool connectable;
         private HttpClient _httpClient;
-        private bool connectable;
         public bool Connectable => connectable;
         
         private void Start()
@@ -91,11 +92,16 @@ namespace NonDestroyObject
             return resString;
         }
         
-        public async UniTask<CheckConnectionResult> CheckConnection()
+        /// <summary>
+        /// Only Called in NetworkManager Privately.
+        /// Check Before functions, return if connection is not avaliable
+        /// </summary>
+        /// <returns></returns>
+        private async UniTask<CheckConnectionResult> CheckConnection()
         {
             var req = new CheckConnectionReq()
             {
-                id = DataManager.Instance.PlayerDataManager.Id
+                id = DataManager.Instance.playerDataManager.Id
             };
             var reqJson = JsonConvert.SerializeObject(req);
             
@@ -120,16 +126,24 @@ namespace NonDestroyObject
             return CheckConnectionResult.Success;
         }
 
+        
         public async UniTask<CreateNewUserResult> CreateNewUser(string userName)
         {
+            var checkConnection = await CheckConnection();
+
+            if (checkConnection == CheckConnectionResult.NoConnectionToServer)
+            {
+                return CreateNewUserResult.Fail;
+            }
+
             var request = new CreateNewUserReq()
             {
-                id = DataManager.Instance.PlayerDataManager.Id,
-                topStage = DataManager.Instance.PlayerDataManager.TopStage,
+                id = DataManager.Instance.playerDataManager.Id,
+                topStage = DataManager.Instance.playerDataManager.TopStage,
                 name = userName,
-                baseAtk = DataManager.Instance.PlayerDataManager.BaseAtk,
-                coin = DataManager.Instance.PlayerDataManager.Coin,
-                enhanceIngredientList = DataManager.Instance.PlayerDataManager.EnhanceIngredientList,
+                baseAtk = DataManager.Instance.playerDataManager.BaseAtk,
+                coin = DataManager.Instance.playerDataManager.Coin,
+                enhanceIngredientList = DataManager.Instance.playerDataManager.EnhanceIngredientList,
             };
             var reqJson = JsonConvert.SerializeObject(request);
             string resultJson = string.Empty;
@@ -145,12 +159,19 @@ namespace NonDestroyObject
                 return CreateNewUserResult.Fail;
             
             await UniTask.SwitchToMainThread();
-            DataManager.Instance.PlayerDataManager.InitUser(result.id, userName);
+            DataManager.Instance.playerDataManager.InitUser(result.id, userName);
             return CreateNewUserResult.Success;
         }
 
         public async UniTask<DeleteUserResult> DeleteUser(int id)
         {
+            var checkConnection = await CheckConnection();
+
+            if (checkConnection == CheckConnectionResult.NoConnectionToServer)
+            {
+                return DeleteUserResult.Fail;
+            }
+            
             var request = new DeleteUserReq()
             {
                 id = id,
@@ -171,14 +192,42 @@ namespace NonDestroyObject
 
         public async UniTask<FetchUserResult> FetchUser()
         {
+            var checkConnection = await CheckConnection();
+            switch (checkConnection)
+            {
+                // No Connection
+                case CheckConnectionResult.NoConnectionToServer:
+                    return FetchUserResult.Fail;
+                
+                case CheckConnectionResult.Success:
+                    break;
+                
+                case CheckConnectionResult.SuccessButNoIdInServer:
+                    var userName = DataManager.Instance.playerDataManager.UserName;
+                    if (userName == String.Empty)
+                    {
+                        UIManager.Instance.ShowPopupEnterYourNickname();
+                        return FetchUserResult.Fail;
+                    }
+                    var createNewUser = await CreateNewUser(userName);
+
+                    switch (createNewUser)
+                    {
+                        case CreateNewUserResult.Success:
+                            await UniTask.SwitchToMainThread();
+                            break;
+                    }
+                    break;
+            }
+            
             var request = new FetchUserReq()
             {
-                id = DataManager.Instance.PlayerDataManager.Id,
-                topStage = DataManager.Instance.PlayerDataManager.TopStage,
-                name = DataManager.Instance.PlayerDataManager.UserName,
-                baseAtk = DataManager.Instance.PlayerDataManager.BaseAtk,
-                coin = DataManager.Instance.PlayerDataManager.Coin,
-                enhanceIngredientList = DataManager.Instance.PlayerDataManager.EnhanceIngredientList,
+                id = DataManager.Instance.playerDataManager.Id,
+                topStage = DataManager.Instance.playerDataManager.TopStage,
+                name = DataManager.Instance.playerDataManager.UserName,
+                baseAtk = DataManager.Instance.playerDataManager.BaseAtk,
+                coin = DataManager.Instance.playerDataManager.Coin,
+                enhanceIngredientList = DataManager.Instance.playerDataManager.EnhanceIngredientList,
             };
             var reqJson = JsonConvert.SerializeObject(request);
             
@@ -208,7 +257,7 @@ namespace NonDestroyObject
         {
             var request = new AddEquipItemsReq()
             {
-                id = DataManager.Instance.PlayerDataManager.Id,
+                id = DataManager.Instance.playerDataManager.Id,
                 count = count
             };
             var reqJson = JsonConvert.SerializeObject(request);
@@ -227,6 +276,45 @@ namespace NonDestroyObject
 
             returnResult.Success = true;
             returnResult.ItemEquipmentList = result.itemList;
+            
+            return returnResult;
+        }
+
+        public async UniTask<StaticDataJsonResult> GetStaticDataJsonList(List<string> staticDataReqList)
+        {
+            var checkConnection = await CheckConnection();
+
+            if (checkConnection == CheckConnectionResult.NoConnectionToServer)
+            {
+                var ret = new StaticDataJsonResult
+                {
+                    Success = false
+                };
+                return ret;
+            }
+            
+            var request = new StaticDataJsonReq()
+            {
+                id = DataManager.Instance.playerDataManager.Id,
+                staticDataNameList = staticDataReqList
+            };
+            var reqJson = JsonConvert.SerializeObject(request);
+            
+            var resultJson = await RequestPost("getstaticdatajsonlist/", reqJson, false);
+            var result = JsonConvert.DeserializeObject<StaticDataJsonRes>(resultJson);
+
+            var returnResult = new StaticDataJsonResult();
+
+            if (result != null)
+            {
+                returnResult.Success = result.success;
+                returnResult.Data = result.staticDataJsonList;
+            }
+            else
+            {
+                Debug.LogAssertion("GetStaticDataJsonList failed: " + staticDataReqList);
+                returnResult.Success = false;
+            }
             
             return returnResult;
         }

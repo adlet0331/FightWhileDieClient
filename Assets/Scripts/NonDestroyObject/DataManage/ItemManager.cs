@@ -14,22 +14,22 @@ namespace NonDestroyObject.DataManage
 #if UNITY_EDITOR
         [ArrayElementTitle("id")]
 #endif
-        [SerializeField] private List<ItemEquipment> itemEquipmentList;
+        [SerializeField] private List<EquipItemObject> itemEquipmentList;
         [SerializeField] private List<Color> rareColorList; // TODO: Move to StaticDataManager 
 
-        public List<ItemEquipment> ItemEquipments => new List<ItemEquipment>(itemEquipmentList);
+        public List<EquipItemObject> ItemEquipments => new List<EquipItemObject>(itemEquipmentList);
         public List<Color> RareColorList => new List<Color>(rareColorList);
 
         public void Start()
         {
-            var jsonString = JsonSL.LoadJson(JsonTitle.ItemEquipment);
+            var jsonString = JsonSL.LoadJson(JsonTitle.PlayerEquipItemObjects);
             if (jsonString == String.Empty)
             {
-                itemEquipmentList = new List<ItemEquipment>();
+                itemEquipmentList = new List<EquipItemObject>();
             }
             else
             {
-                itemEquipmentList = JsonConvert.DeserializeObject<List<ItemEquipment>>(jsonString);
+                itemEquipmentList = JsonConvert.DeserializeObject<List<EquipItemObject>>(jsonString);
             }
             rareColorList = new List<Color>();
             rareColorList.Add(new Color(0,0,0, 255));
@@ -43,21 +43,21 @@ namespace NonDestroyObject.DataManage
 
         public void Clear()
         {
-            JsonSL.DeleteJsonFile(JsonTitle.ItemEquipment).Forget();
-            itemEquipmentList = new List<ItemEquipment>();
+            JsonSL.DeleteJsonFile(JsonTitle.PlayerEquipItemObjects).Forget();
+            itemEquipmentList = new List<EquipItemObject>();
         }
 
-        public void AddItems(List<ItemEquipment> itemEquipments)
+        public void AddItems(List<EquipItemObject> itemEquipments)
         {
             foreach (var item in itemEquipments)
             {
                 itemEquipmentList.Add(item);
             }
             var jsonString = JsonConvert.SerializeObject(itemEquipmentList);
-            JsonSL.SaveJson(JsonTitle.ItemEquipment, jsonString).Forget();
+            JsonSL.SaveJson(JsonTitle.PlayerEquipItemObjects, jsonString).Forget();
         }
 
-        public bool DeleteItems(List<ItemEquipment> itemIdList)
+        public bool DeleteItems(List<EquipItemObject> itemIdList)
         {
             var flag = true;
             foreach (var item in itemIdList)

@@ -12,13 +12,13 @@ namespace UI.Inventory
     {
         [Header("Item Info")]
         [SerializeField] private int index;
-        [SerializeField] private ItemEquipment itemEquipmentInfo;
+        [SerializeField] private EquipItemObject equipItemObjectInfo;
         [Header("Components")]
         [SerializeField] private Image image;
         [SerializeField] private TextMeshProUGUI level;
         [SerializeField] private Image slotBorder;
 
-        public ItemEquipment ItemEquipmentInfo => itemEquipmentInfo;
+        public EquipItemObject EquipItemObjectInfo => equipItemObjectInfo;
         
         private event SlotClickHandler SlotClicked;
 
@@ -27,15 +27,15 @@ namespace UI.Inventory
             index = val;
         }
         
-        public void Init(int idx, ItemEquipment itemEquipment, SlotClickHandler slotClicked)
+        public void Init(int idx, EquipItemObject equipItemObject, SlotClickHandler slotClicked)
         {
             index = idx;
             
-            itemEquipmentInfo = itemEquipment;
+            equipItemObjectInfo = equipItemObject;
             // TODO: Load Image per option
             
-            level.text = itemEquipment.level.ToString();
-            slotBorder.color = DataManager.Instance.ItemManager.RareColorList[itemEquipment.rare];
+            level.text = equipItemObject.level.ToString();
+            slotBorder.color = DataManager.Instance.itemManager.RareColorList[equipItemObject.rare];
             
             SlotClicked = slotClicked;
         }

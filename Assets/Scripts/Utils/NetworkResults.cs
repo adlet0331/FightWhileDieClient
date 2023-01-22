@@ -33,6 +33,12 @@ namespace NonDestroyObject
     public class AddItemsResult
     {
         public bool Success;
-        public List<ItemEquipment> ItemEquipmentList;
+        public List<EquipItemObject> ItemEquipmentList;
+    }
+
+    public class StaticDataJsonResult
+    {
+        public bool Success;
+        public List<string> Data;
     }
 }

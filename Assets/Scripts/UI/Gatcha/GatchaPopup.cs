@@ -30,8 +30,8 @@ namespace UI.Gatcha
 
         public void StartGatchaButton()
         {
-            var gatchaValue = DataManager.Instance.PlayerDataManager.GatchaCosts;
-            if (DataManager.Instance.PlayerDataManager.Coin < gatchaValue)
+            var gatchaValue = DataManager.Instance.playerDataManager.GatchaCosts;
+            if (DataManager.Instance.playerDataManager.Coin < gatchaValue)
                 return;
             StartGatcha(10).Forget();
         }
@@ -56,12 +56,12 @@ namespace UI.Gatcha
 
             var gatchaResult = await NetworkManager.Instance.AddRandomEquipItems(10);
 
-            var gatchaValue = DataManager.Instance.PlayerDataManager.GatchaCosts;
+            var gatchaValue = DataManager.Instance.playerDataManager.GatchaCosts;
             
-            DataManager.Instance.PlayerDataManager.SpendCoin(gatchaValue);
-            DataManager.Instance.PlayerDataManager.GatchaIncrement();
+            DataManager.Instance.playerDataManager.SpendCoin(gatchaValue);
+            DataManager.Instance.playerDataManager.GatchaIncrement();
             
-            DataManager.Instance.ItemManager.AddItems(gatchaResult.ItemEquipmentList);
+            DataManager.Instance.itemManager.AddItems(gatchaResult.ItemEquipmentList);
 
             var highestRare = 1;
             foreach (var item in gatchaResult.ItemEquipmentList)
@@ -71,7 +71,7 @@ namespace UI.Gatcha
                     highestRare = item.rare;
                 }
             }
-            inStartingPage.Initiate(false, new ItemEquipment
+            inStartingPage.Initiate(false, new EquipItemObject
             {
                 rare = highestRare
             });
@@ -103,13 +103,11 @@ namespace UI.Gatcha
         
         public new void Open()
         {
-            NetworkManager.Instance.CheckConnection().Forget();
-            
             gatchaStartPage.SetActive(true);
             gatchaStartingPage.SetActive(false);
             gatchaOpeningPage.SetActive(false);
-            var playerCoin = DataManager.Instance.PlayerDataManager.Coin;
-            var price = DataManager.Instance.PlayerDataManager.GatchaCosts;
+            var playerCoin = DataManager.Instance.playerDataManager.Coin;
+            var price = DataManager.Instance.playerDataManager.GatchaCosts;
             playerCoinUI.SetCoinValue(playerCoin);
             priceCoinUI.SetCoinValue(price);
             afterUseCoinUI.SetCoinValue(playerCoin - price);

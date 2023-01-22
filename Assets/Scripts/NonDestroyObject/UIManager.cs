@@ -85,7 +85,7 @@ namespace NonDestroyObject
 
         public void ShowCoinEffect()
         {
-            coinEffect.ShowCoinEffect(DataManager.Instance.PlayerDataManager.ClearCoin, 0.3f);
+            coinEffect.ShowCoinEffect(DataManager.Instance.playerDataManager.ClearCoin, 0.3f);
         }
 
         public void ShowPopupEnterYourNickname()

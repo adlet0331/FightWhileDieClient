@@ -13,6 +13,8 @@ namespace Data
     }
     public enum EquipmentOption
     {
+        // 디버깅용 치트 옵션
+        Cheat = 0,
         // 1. 오토
         AutoUnlockAndDecreaseDebuff = 1,
         // 2. 성장

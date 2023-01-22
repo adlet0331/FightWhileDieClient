@@ -7,8 +7,16 @@ namespace Utils
 {
     public enum JsonTitle
     {
-        CustomLog,
-        ItemEquipment
+        // Custom Logs
+        CustomLog = 0,
+        
+        // Player EquipItem Local file
+        PlayerEquipItemObjects = 1,
+        
+        // Static Datas
+        StaticDataVersion = 2,
+        GatchaProbability = 3,
+        EquipItemInfo = 4,
     }
     /// <summary>
     /// Json Read/Write를 지원하는 Util
@@ -21,15 +29,7 @@ namespace Utils
             var filePath = Path.Combine(basePath, path.ToString() + ".json");
             if (!File.Exists(filePath))
                 return string.Empty;
-            string jsonString;
-#if UNITY_EDITOR
-            jsonString = File.ReadAllText(filePath);
-#elif UNITY_ANDROID
-            jsonString = File.ReadAllText(filePath);
-#elif UNITY_IPHONE
-            jsonString = File.ReadAllText(filePath);
-#endif
-            return jsonString;
+            return File.ReadAllText(filePath);
         }
 
         public static async UniTaskVoid SaveJson(JsonTitle path, string content)

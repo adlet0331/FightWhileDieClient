@@ -30,7 +30,7 @@ namespace UI
             }
             else
             {
-                DataManager.Instance.PlayerDataManager.InitUser(-1, userName);
+                DataManager.Instance.playerDataManager.InitUser(-1, userName);
                 Close();
             }
         }
