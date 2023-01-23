@@ -3854,7 +3854,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31bc531a805143bdb3a10c0a5f4597bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerDataManager:
+  playerDataManager:
     enemyStartHp: 50
     enemyHpMultiplier: 1.2
     gatchaStartCoin: 100
@@ -3868,9 +3868,12 @@ MonoBehaviour:
     topStage: 0
     atk: 50
     clearCoin: 0
-  StaticDataManager:
+  staticDataManager:
     currentVersions: []
-  ItemManager:
+    serverVersions: []
+    gatchaProbabilitys: []
+    equipmentItemInfos: []
+  itemManager:
     itemEquipmentList: []
     rareColorList: []
 --- !u!1 &1484660412

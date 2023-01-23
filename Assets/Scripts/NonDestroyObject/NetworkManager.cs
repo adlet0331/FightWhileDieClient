@@ -39,6 +39,9 @@ namespace NonDestroyObject
                 case ClientCondition.NoConnectionTest:
                     _rootURL = "http://for-no-connection.haje.org/";
                     return;
+                #if !UNITY_EDITOR
+                _rootURL = "http://fwt-server.haje.org/playerserver/";  
+  #endif
             }
         }
 
