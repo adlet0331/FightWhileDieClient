@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using NonDestroyObject.DataManage;
 using TMPro;
 using UI;
 using UI.Gatcha;
@@ -110,41 +111,38 @@ namespace NonDestroyObject
             gatchaButton.gameObject.SetActive(show);
             inventoryButton.gameObject.SetActive(show);
         }
-        
-        public void UpdateUserName(string name)
+
+        public void UpdateMainUI()
         {
+            var name = DataManager.Instance.playerDataManager.UserName;
             if (name == String.Empty)
             {
                 _name.text = "guest";
                 _name.color = Color.gray;
                 return;
             }
-            _name.text = name;
-            _name.color = Color.black;
+            else
+            {
+                _name.text = name;
+                _name.color = Color.black;
+            }
+            _stage.text = DataManager.Instance.playerDataManager.Stage.ToString();
+            _attackVal.text = DataManager.Instance.playerDataManager.Atk.ToString();
+            _coinVal.text = DataManager.Instance.playerDataManager.Coin.ToString();
         }
-        
+
+        public void UpdateCombatUI()
+        {
+            UpdateEnemyHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
+        }
+
         public void UpdateEnemyHp(float end)
         {
             _updateCount = (int) (0.5f / Time.fixedDeltaTime);
             _updatingInterval = (float) Math.Round((_enemyHp.value - end)/ _updateCount, 3);
             _updatingEndValue = end;
         }
-
-        public void UpdateStage(int stage)
-        {
-            _stage.text = stage.ToString();
-        }
-
-        public void UpdateAttackVal(int atk)
-        {
-            _attackVal.text = atk.ToString();
-        }
-
-        public void UpdateCoinVal(int coin)
-        {
-            _coinVal.text = coin.ToString();
-        }
-
+        
         private IEnumerator _stageHpMoveCoroutine;
         private IEnumerator _titleMoveCoroutine;
         

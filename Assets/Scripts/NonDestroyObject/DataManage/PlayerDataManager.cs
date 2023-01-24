@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using UI;
 using UnityEngine;
 using Utils;
 
@@ -20,6 +21,7 @@ namespace NonDestroyObject.DataManage
         public int Coin => coin;
         public int GatchaCosts => gatchaStartCoin * (int)Math.Pow(2, dailyGatchaCount);
         public List<int> EnhanceIngredientList => enhanceIngredientList;
+        public int LastUpdated => lastUpdated;
         public int TopStage => topStage;
         public int Atk => atk;
         public int ClearCoin => clearCoin;
@@ -38,7 +40,9 @@ namespace NonDestroyObject.DataManage
         [SerializeField] private int coin = 10;
         [SerializeField] private int dailyGatchaCount;
         [SerializeField] private List<int> enhanceIngredientList;
-        [Header("Update")]
+        [Header("Non-Server Dependent Variables, Only handled in Client")]
+        [SerializeField] private int lastUpdated;
+        [Header("Updated Frequently")]
         [SerializeField] private int topStage;
         [SerializeField] private int atk = 50;
         [SerializeField] private int clearCoin;
@@ -84,13 +88,18 @@ namespace NonDestroyObject.DataManage
 
             coin -= amount;
             PlayerPrefs.SetInt("Coin", coin);
-            UpdateMainUI();
+            FetchAllStatus(true);
             return true;
+        }
+
+        public void UpdateGatchaPopupOpen()
+        {
+            UpdateCurrentTime();
         }
         
         public void StageReset()
         {
-            stage = ((int)(topStage / 10.0f) * 10) + 1;
+            stage = ((int)((topStage - 1) / 10.0f) * 10) + 1;
             FetchAllStatus(true);
         }
         
@@ -111,6 +120,7 @@ namespace NonDestroyObject.DataManage
             BaseAtk,
             Coin,
             DailyGatchaNum,
+            LastUpdated,
             
             EnhanceIngredient1,
             EnhanceIngredient2,
@@ -161,6 +171,7 @@ namespace NonDestroyObject.DataManage
             baseAtk = LoadIntPrefs(IntPlayerPrefName.BaseAtk);
             coin = LoadIntPrefs(IntPlayerPrefName.Coin);
             dailyGatchaCount = LoadIntPrefs(IntPlayerPrefName.DailyGatchaNum);
+            lastUpdated = LoadIntPrefs(IntPlayerPrefName.LastUpdated);
             
             enhanceIngredientList = new List<int>();
             enhanceIngredientList.Add(0);
@@ -172,8 +183,7 @@ namespace NonDestroyObject.DataManage
             enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient6));
             enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient7));
             enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient8));
-            
-             
+
             if (userName == string.Empty)
             {
                 UIManager.Instance.enterYourNamePopup.Open();
@@ -189,6 +199,7 @@ namespace NonDestroyObject.DataManage
             SaveIntPrefs(IntPlayerPrefName.BaseAtk, baseAtk);
             SaveIntPrefs(IntPlayerPrefName.Coin, coin);
             SaveIntPrefs(IntPlayerPrefName.DailyGatchaNum, dailyGatchaCount);
+            SaveIntPrefs(IntPlayerPrefName.LastUpdated, lastUpdated);
             
             SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient1, enhanceIngredientList[1]);
             SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient2, enhanceIngredientList[2]);
@@ -200,6 +211,13 @@ namespace NonDestroyObject.DataManage
             SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient8, enhanceIngredientList[8]);
         }
 
+        private int GetCurrentTime()
+        {
+            var currentDate = DateTime.Today;
+            var date2Int = int.Parse(currentDate.ToString("yyyyMMdd"));
+            return date2Int;
+        }
+
         private void ClearAllPrefs(int pid = 0, string name = "")
         {
             userName = name;
@@ -208,6 +226,7 @@ namespace NonDestroyObject.DataManage
             baseAtk = 50;
             coin = 10;
             dailyGatchaCount = 0;
+            lastUpdated = GetCurrentTime();
 
             for (int i = 1; i <= 8; i++)
             {
@@ -227,13 +246,16 @@ namespace NonDestroyObject.DataManage
             clearCoin = stage;
         }
 
-        private void UpdateMainUI()
+        private void UpdateCurrentTime()
         {
-            UIManager.Instance.UpdateUserName(userName);
-            UIManager.Instance.UpdateStage(stage);
-            UIManager.Instance.UpdateEnemyHp(CurrentEnemyHp);
-            UIManager.Instance.UpdateAttackVal(atk);
-            UIManager.Instance.UpdateCoinVal(coin);
+            if (lastUpdated < GetCurrentTime())
+                InitDailyUpdateDatas();
+            lastUpdated = GetCurrentTime();
+        }
+
+        private void InitDailyUpdateDatas()
+        {
+            dailyGatchaCount = 0;
         }
 
         private void FetchAllStatus(bool sendToServer)
@@ -241,8 +263,10 @@ namespace NonDestroyObject.DataManage
             // Update variables
             UpdateAtk();
             UpdateClearCoin();
+            UpdateCurrentTime();
             // Update UI
-            UpdateMainUI();
+            UIManager.Instance.UpdateMainUI();
+            UIManager.Instance.UpdateCombatUI();
             // Update Prefs and Server
             SaveAllInfoPrefs();
             if (sendToServer)

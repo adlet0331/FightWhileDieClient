@@ -38,15 +38,14 @@ namespace UI.Gatcha
         public void OnPointerClick(PointerEventData eventData)
         {
             Debug.Log("Clicked");
-            
-            if (!isOpenable) return;
-
-            animator.SetInteger(Clicked, equipItemObject.rare);
+            OpenAndShowItem();
         }
 
         public void OpenAndShowItem()
         {
-            
+            if (!isOpenable) return;
+
+            animator.SetInteger(Clicked, equipItemObject.rare);
         }
     }
 }

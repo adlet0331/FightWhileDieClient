@@ -32,13 +32,13 @@ namespace NonDestroyObject.DataManage
                 itemEquipmentList = JsonConvert.DeserializeObject<List<EquipItemObject>>(jsonString);
             }
             rareColorList = new List<Color>();
-            rareColorList.Add(new Color(0,0,0, 255));
-            rareColorList.Add(new Color(137,137,137, 255));
-            rareColorList.Add(new Color(0,19,255, 255));
-            rareColorList.Add(new Color(195,0,255, 255));
-            rareColorList.Add(new Color(255,0,0, 255));
-            rareColorList.Add(new Color(255,229,0, 255));
-            rareColorList.Add(new Color(0,0,0, 255));
+            rareColorList.Add(new Color(0.0f,0.0f,0.0f, 1.0f));
+            rareColorList.Add(new Color(0.5f,0.5f,0.5f, 1.0f));
+            rareColorList.Add(new Color(0.0f,0.1f,1.0f, 1.0f));
+            rareColorList.Add(new Color(0.8f,0.0f,1.0f, 1.0f));
+            rareColorList.Add(new Color(1.0f,0.0f,0.0f, 1.0f));
+            rareColorList.Add(new Color(1.0f,0.8f,0.0f, 1.0f));
+            rareColorList.Add(new Color(0.0f,0.0f,0.0f, 1.0f));
         }
 
         public void Clear()

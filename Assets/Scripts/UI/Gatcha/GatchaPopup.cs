@@ -19,13 +19,15 @@ namespace UI.Gatcha
         [SerializeField] private GameObject gatchaStartPage;
         [SerializeField] private GameObject gatchaStartingPage;
         [SerializeField] private GameObject gatchaOpeningPage;
+        [SerializeField] private Transform gatchaOpeningPageTriggersParent;
         [SerializeField] private GameObject gatchaStartinbGoButton;
         [Header("Components")]
         [SerializeField] private CoinUI playerCoinUI;
         [SerializeField] private CoinUI afterUseCoinUI;
         [SerializeField] private CoinUI priceCoinUI;
         [SerializeField] private GatchaTriggerObj inStartingPage;
-        [SerializeField] private Image buttonImage;
+        [SerializeField] private Image openGatchaImage;
+        [SerializeField] private List<GatchaTriggerObj> gatchaTriggerObjs;
         //[SerializeField] private GatchaTriggerObj gatchaTriggerObjAnimator;
 
         public void StartGatchaButton()
@@ -39,6 +41,22 @@ namespace UI.Gatcha
         public void StartingGatchaButton()
         {
             StartOpening().Forget();
+        }
+
+        public void OpenAllGatchaTriggers()
+        {
+            for (int i = 0; i < gatchaTriggerObjs.Count; i++)
+            {
+                gatchaTriggerObjs[i].OpenAndShowItem();
+            }
+        }
+
+        public void BackToStartPage()
+        {
+            UpdateUI();
+            gatchaStartPage.SetActive(true);
+            gatchaStartingPage.SetActive(false);
+            gatchaOpeningPage.SetActive(false);
         }
         
         private async UniTaskVoid StartGatcha(int count)
@@ -55,6 +73,11 @@ namespace UI.Gatcha
             gatchaStartingPage.SetActive(true);
 
             var gatchaResult = await NetworkManager.Instance.AddRandomEquipItems(10);
+
+            if (!gatchaResult.Success)
+            {
+                NoInternetPopup.Open();
+            }
 
             var gatchaValue = DataManager.Instance.playerDataManager.GatchaCosts;
             
@@ -79,16 +102,18 @@ namespace UI.Gatcha
             Debug.AssertFormat(gatchaResult.ItemEquipmentList.Count == count, $"Gatcha Result Count is not matched: {0}", gatchaResult.ItemEquipmentList.Count.ToString());
             
             // Destroy Before Objects
-            for (var i = gatchaOpeningPage.transform.childCount - 1; i >= 0; i--)
+            for (var i = gatchaOpeningPageTriggersParent.childCount - 1; i >= 0; i--)
             {
-                Destroy(gatchaOpeningPage.transform.GetChild(i).gameObject);
+                Destroy(gatchaOpeningPageTriggersParent.GetChild(i).gameObject);
             }
 
             var prefab = Resources.Load("Prefabs/UI/Gatcha/GatchaTrigger") as GameObject;
+            gatchaTriggerObjs.Clear();
             for (var i = 0; i < count; i++)
             {
-                GameObject obj = Instantiate(prefab, gatchaOpeningPage.transform);
+                GameObject obj = Instantiate(prefab, gatchaOpeningPageTriggersParent);
                 obj.GetComponent<GatchaTriggerObj>().Initiate(true, gatchaResult.ItemEquipmentList[i]);
+                gatchaTriggerObjs.Add(obj.GetComponent<GatchaTriggerObj>());
             }
             gatchaStartinbGoButton.SetActive(true);
             gatchaLoaded = true;
@@ -100,12 +125,9 @@ namespace UI.Gatcha
             gatchaStartingPage.SetActive(false);
             gatchaOpeningPage.SetActive(true);
         }
-        
-        public new void Open()
+
+        private void UpdateUI()
         {
-            gatchaStartPage.SetActive(true);
-            gatchaStartingPage.SetActive(false);
-            gatchaOpeningPage.SetActive(false);
             var playerCoin = DataManager.Instance.playerDataManager.Coin;
             var price = DataManager.Instance.playerDataManager.GatchaCosts;
             playerCoinUI.SetCoinValue(playerCoin);
@@ -113,18 +135,28 @@ namespace UI.Gatcha
             afterUseCoinUI.SetCoinValue(playerCoin - price);
             if (playerCoin < price)
             {
-                buttonImage.color = Color.gray;
+                openGatchaImage.color = Color.gray;
             }
             else
             {
-                buttonImage.color = Color.white;
+                openGatchaImage.color = Color.white;
             }
+        }
+        
+        public new void Open()
+        {
+            DataManager.Instance.playerDataManager.UpdateGatchaPopupOpen();
+            UpdateUI();
+            gatchaStartPage.SetActive(true);
+            gatchaStartingPage.SetActive(false);
+            gatchaOpeningPage.SetActive(false);
             base.Open();
         }
 
         public new void Close()
         {
             base.Close();
+            NoInternetPopup.Close();
         }
     }
 }
