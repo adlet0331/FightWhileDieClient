@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Data;
 using NonDestroyObject;
+using TMPro;
 using UI;
 using UI.Inventory;
 using UnityEngine;
@@ -16,8 +17,13 @@ public class ItemView : View
     [SerializeField] private Toggle optionToggle;
     [SerializeField] private Button ascDescButton;
 
+    [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private Image rareImage;
+    [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private TextMeshProUGUI descriptionText;
     [Header("Debugging")]
     [SerializeField] private bool isAsc;
+    [SerializeField] private int beforeClicked;
 
     public void ChangeAscDesc()
     {
@@ -37,13 +43,31 @@ public class ItemView : View
         SlotClickHandler += SlotClicked;
     }
 
+    private void SetItemDescription(int index)
+    {
+        var itemInfo = itemSlotList[index].EquipItemObjectInfo;
+        var itemStaticInfo = DataManager.Instance.staticDataManager.GetEquipItemInfo(itemInfo.rare, itemInfo.option);
+        nameText.text = itemStaticInfo.nameList[0];
+        rareImage.color = DataManager.Instance.itemManager.RareColorList[itemInfo.rare];
+        levelText.text = itemInfo.level.ToString();
+        descriptionText.text = string.Format(itemStaticInfo.descriptionList[0], itemStaticInfo.optionValuePerLevelList[itemInfo.level]);
+    }
+
     private void SlotClicked(int index)
     {
+        if (beforeClicked == index)
+            return;
         
+        if (beforeClicked >= 0)
+            itemSlotList[beforeClicked].Select();
+        beforeClicked = index;
+        itemSlotList[index].Select();
+        SetItemDescription(index);
     }
     
     protected override void Init()
     {
+        beforeClicked = -1;
         var itemList = DataManager.Instance.itemManager.ItemEquipments;
 
         for (var i = viewPortTransform.transform.childCount - 1; i >= 0; i--)
@@ -64,7 +88,8 @@ public class ItemView : View
     }
     protected override void Clean()
     {
-        
+        itemSlotList[beforeClicked].Select();
+        beforeClicked = -1;
     }
 
     public void Sort()
@@ -85,6 +110,9 @@ public class ItemView : View
         (itemSlotList[small], itemSlotList[large]) = (itemSlotList[large], itemSlotList[small]);
         itemSlotList[small].IndexChanged(small);
         itemSlotList[large].IndexChanged(large);
+
+        if (small == beforeClicked || large == beforeClicked)
+            beforeClicked = small + large - beforeClicked;
     }
     private void QuickSort(int minIndex, int maxIndex, bool rareSort, bool levelSort, bool optionSort)
     {

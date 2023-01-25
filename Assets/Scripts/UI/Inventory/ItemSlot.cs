@@ -1,4 +1,5 @@
-﻿using Data;
+﻿using System;
+using Data;
 using NonDestroyObject;
 using TMPro;
 using UnityEngine;
@@ -12,15 +13,24 @@ namespace UI.Inventory
     {
         [Header("Item Info")]
         [SerializeField] private int index;
+        [SerializeField] private bool isSelected;
         [SerializeField] private EquipItemObject equipItemObjectInfo;
         [Header("Components")]
-        [SerializeField] private Image image;
+        [SerializeField] private Image itemImage;
+        [SerializeField] private Image backGround;
         [SerializeField] private TextMeshProUGUI level;
         [SerializeField] private Image slotBorder;
-
+        [SerializeField] private Image selectedBorder;
+        
         public EquipItemObject EquipItemObjectInfo => equipItemObjectInfo;
         
         private event SlotClickHandler SlotClicked;
+
+        private void Start()
+        {
+            isSelected = false;
+            selectedBorder.gameObject.SetActive(false);
+        }
 
         public void IndexChanged(int val)
         {
@@ -35,9 +45,17 @@ namespace UI.Inventory
             // TODO: Load Image per option
             
             level.text = equipItemObject.level.ToString();
-            slotBorder.color = DataManager.Instance.itemManager.RareColorList[equipItemObject.rare];
+            //slotBorder.color = DataManager.Instance.itemManager.RareColorList[equipItemObject.rare];
+            backGround.color = DataManager.Instance.itemManager.RareColorList[equipItemObject.rare];
             
             SlotClicked = slotClicked;
+            isSelected = false;
+        }
+
+        public void Select()
+        {
+            isSelected = !isSelected;
+            selectedBorder.gameObject.SetActive(isSelected);
         }
 
         private void Clicked()

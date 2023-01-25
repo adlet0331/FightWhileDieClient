@@ -92,6 +92,10 @@ namespace UI.Inventory
             Debug.Log(index);
         }
 
+        private void EquipViewSlotClicked(int index)
+        {
+            
+        }
 
         public new void Open()
         {

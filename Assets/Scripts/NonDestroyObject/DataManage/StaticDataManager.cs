@@ -22,8 +22,14 @@ namespace NonDestroyObject.DataManage
 
         public List<GatchaProbability> GatchaProbabilitys => gatchaProbabilitys;
         [SerializeField] private List<GatchaProbability> gatchaProbabilitys;
+        
+        public EquipItemInfo GetEquipItemInfo(int rare, int option)
+        {
+            var totalLength = equipmentItemInfos.Count;
+            var totalOptions = (int)(totalLength / 6);
 
-        public List<EquipItemInfo> EquipmentItemInfos => equipmentItemInfos;
+            return equipmentItemInfos[totalOptions * (rare - 1) + option];
+        }
         [SerializeField] private List<EquipItemInfo> equipmentItemInfos;
         
         public void Start()
@@ -73,6 +79,8 @@ namespace NonDestroyObject.DataManage
 
             // After Get StaticDataVersion, Get All the Others inside of StaticDataVersion
             List<string> unVerionedStaticDataTitleList = new List<string>();
+            
+            // Check If need Update
             foreach (var serverVersion in serverVersions)
             {
                 foreach (var staticDataTitle in Enum.GetValues(typeof(JsonTitle)))
@@ -104,12 +112,14 @@ namespace NonDestroyObject.DataManage
             if (unVerionedStaticDataTitleList.Count == 0)
                 return;
             
+            // Send Request to Server
             var staticDataJsonResult = await NetworkManager.Instance.GetStaticDataJsonList(unVerionedStaticDataTitleList);
             
             if (!staticDataJsonResult.Success)
                 return;
             
             var staticDatas = staticDataJsonResult.Data;
+            // Update Local Data
             for (int i = 0; i < staticDatas.Count; i++)
             {
                 switch (unVerionedStaticDataTitleList[i])
