@@ -198,6 +198,7 @@ build-android:
   variables:
     BUILD_TARGET: Android
     BUILD_APP_BUNDLE: "true"
+    BUILD_FOLDER_NAME: $CI_COMMIT_TAG-abb
   tags:
     - daegunju-docker
 
@@ -207,6 +208,7 @@ build-android-apk:
   variables:
     BUILD_TARGET: Android
     BUILD_APP_BUNDLE: "false"
+    BUILD_FOLDER_NAME: $CI_COMMIT_TAG-abb
   tags:
     - daegunju-docker
 
