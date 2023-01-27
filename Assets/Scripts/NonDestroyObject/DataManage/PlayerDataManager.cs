@@ -35,9 +35,9 @@ namespace NonDestroyObject.DataManage
         [Header("Current Status")] 
         [SerializeField] private int id;
         [SerializeField] private string userName;
-        [SerializeField] private int stage = 1;
-        [SerializeField] private int baseAtk = 50;
-        [SerializeField] private int coin = 10;
+        [SerializeField] private int stage;
+        [SerializeField] private int baseAtk;
+        [SerializeField] private int coin;
         [SerializeField] private int dailyGatchaCount;
         [SerializeField] private List<int> enhanceIngredientList;
         [Header("Non-Server Dependent Variables, Only handled in Client")]
@@ -223,8 +223,9 @@ namespace NonDestroyObject.DataManage
             userName = name;
             id = pid;
             topStage = 1;
-            baseAtk = 50;
-            coin = 10;
+            // For Debuging
+            baseAtk = 50000;
+            coin = 100000;
             dailyGatchaCount = 0;
             lastUpdated = GetCurrentTime();
 
