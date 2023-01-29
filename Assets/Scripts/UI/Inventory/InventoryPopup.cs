@@ -1,18 +1,10 @@
 using System;
+using System.Collections.Generic;
+using Data;
 using UnityEngine;
 
 namespace UI.Inventory
 {
-    public class TopItemSlotButtonClickEventArgs
-    {
-        public UpperViewStatus ViewStatus;
-        public int Index;
-    }
-    public class DownItemSlotButtonClickEventArgs
-    {
-        public DownViewStatus ViewStatus;
-        public int Index;
-    }
     public enum UpperViewStatus
     {
         Equip,
@@ -28,48 +20,38 @@ namespace UI.Inventory
         [Header("Status")]
         [SerializeField] private UpperViewStatus upperViewStatus;
         [SerializeField] private DownViewStatus downViewStatus;
+        [Header("View Info")]
+        [SerializeField] private List<string> upperViewStatusList;
+        [SerializeField] private List<string> downViewStatusList;
         private void Awake()
         {
             upperViewStatus = UpperViewStatus.Equip;
             downViewStatus = DownViewStatus.ItemView;
-        }
-        [Header("TopView")]
-        [SerializeField] private EquipView equipView;
-        [SerializeField] private View enhanceView;
-        [SerializeField] private View decompositionView;
-        [Header("DownView")]
-        [SerializeField] private ItemView itemView;
 
+            upperViewStatusList = new List<string>();
+            downViewStatusList = new List<string>();
+
+            foreach (var enumVar in Enum.GetValues(typeof(UpperViewStatus)))
+            {
+                upperViewStatusList.Add(enumVar.ToString());
+            }
+            foreach (var enumVar in Enum.GetValues(typeof(DownViewStatus)))
+            {
+                downViewStatusList.Add(enumVar.ToString());
+            }
+        }
         private void SwitchStatus(UpperViewStatus uViewStatus, DownViewStatus dViewStatus)
         {
-            if (upperViewStatus != uViewStatus)
-            {
-                switch (upperViewStatus)
-                {
-                    case UpperViewStatus.Equip:
-                        equipView.DeActivate();
-                        break;
-                    case UpperViewStatus.Enhancement:
-                        enhanceView.DeActivate();
-                        break;
-                    case UpperViewStatus.Decomposition:
-                        decompositionView.DeActivate();
-                        break;
-                }
-            }
-            if (downViewStatus != dViewStatus)
-            {
-                switch (downViewStatus)
-                {
-                    case DownViewStatus.ItemView:
-                        itemView.DeActivate();
-                        break;
-                }
-            }
+            equipView.DeActivate();
+            //enhanceView.DeActivate();
+            //decompositionView.DeActivate();
+
+            itemView.DeActivate();
+            
             switch (uViewStatus)
             {
                 case UpperViewStatus.Equip:
-                    equipView.Activate();
+                    equipView.OpenWithBindingEvent(ItemObjectClicked);
                     break;
                 case UpperViewStatus.Enhancement:
                     enhanceView.Activate();
@@ -81,20 +63,48 @@ namespace UI.Inventory
             switch (dViewStatus)
             {
                 case DownViewStatus.ItemView:
-                    itemView.BindSlotClickHandler(ItemViewSlotClicked);
-                    itemView.Activate();
+                    itemView.OpenWithBindingEvent(ItemObjectClicked);
                     break;
             }
         }
+        [Header("TopView")]
+        [SerializeField] private EquipView equipView;
+        [SerializeField] private View enhanceView;
+        [SerializeField] private View decompositionView;
 
-        private void ItemViewSlotClicked(int index)
-        {
-            Debug.Log(index);
-        }
+        [Header("DownView")]
+        [SerializeField] private ItemView itemView;
+        
 
-        private void EquipViewSlotClicked(int index)
+        private void ItemObjectClicked(SlotClickArgs args)
         {
-            
+            if (upperViewStatusList.Contains(args.SourceView))
+            {
+                switch (downViewStatus)
+                {
+                    case DownViewStatus.ItemView:
+                        break;
+                }
+            }
+            else if (downViewStatusList.Contains(args.SourceView))
+            {
+                switch (upperViewStatus)
+                {
+                    case UpperViewStatus.Equip:
+                        equipView.EquipEvent(args.EquipItemObject);
+                        break;
+                    case UpperViewStatus.Enhancement:
+                        enhanceView.Activate();
+                        break;
+                    case UpperViewStatus.Decomposition:
+                        decompositionView.Activate();
+                        break;
+                }
+            }
+            else
+            {
+                Debug.LogAssertion($"{args.SourceView} is Not Contained in Any View Status");
+            }
         }
 
         public new void Open()

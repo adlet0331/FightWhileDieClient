@@ -1,5 +1,6 @@
 using System;
 using Newtonsoft.Json;
+using NonDestroyObject;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,6 +11,17 @@ namespace Data
     [Serializable]
     public class EquipItemObject
     {
+        public string GetName(int locale)
+        {
+            var itemStaticInfo = DataManager.Instance.staticDataManager.GetEquipItemInfo(rare, option);
+            return itemStaticInfo.nameList[locale];
+        }
+        public string GetDescriptionText(int locale)
+        {
+            var itemStaticInfo = DataManager.Instance.staticDataManager.GetEquipItemInfo(rare, option);
+            return string.Format(itemStaticInfo.descriptionList[locale], itemStaticInfo.optionValuePerLevelList[level]);
+        }
+        
         public int id;
         [SerializeField] private Rare Rare;
         public int rare

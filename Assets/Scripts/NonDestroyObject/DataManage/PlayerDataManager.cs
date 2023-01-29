@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using UI;
 using UnityEngine;
-using Utils;
 
 namespace NonDestroyObject.DataManage
 {
@@ -13,6 +11,7 @@ namespace NonDestroyObject.DataManage
     [Serializable]
     public class PlayerDataManager
     {
+        // Properties
         public int Id => id;
         public string UserName => userName;
         public int Stage => stage;
@@ -20,11 +19,12 @@ namespace NonDestroyObject.DataManage
         public int CurrentEnemyHp => (int) (enemyStartHp * Math.Pow(enemyHpMultiplier, stage));
         public int Coin => coin;
         public int GatchaCosts => gatchaStartCoin * (int)Math.Pow(2, dailyGatchaCount);
-        public List<int> EnhanceIngredientList => enhanceIngredientList;
+        public List<int> EnhanceIngredientList => new List<int>(enhanceIngredientList);
         public int LastUpdated => lastUpdated;
         public int TopStage => topStage;
         public int Atk => atk;
         public int ClearCoin => clearCoin;
+        public List<int> EquipedItem1Id => new List<int>(equipedItemIdList);
 
 
         [Header("Static Values")]
@@ -42,6 +42,7 @@ namespace NonDestroyObject.DataManage
         [SerializeField] private List<int> enhanceIngredientList;
         [Header("Non-Server Dependent Variables, Only handled in Client")]
         [SerializeField] private int lastUpdated;
+        [SerializeField] private List<int> equipedItemIdList;
         [Header("Updated Frequently")]
         [SerializeField] private int topStage;
         [SerializeField] private int atk = 50;
@@ -130,6 +131,9 @@ namespace NonDestroyObject.DataManage
             EnhanceIngredient6,
             EnhanceIngredient7,
             EnhanceIngredient8,
+            
+            EquipItem1Id,
+            EquipItem2Id
         }
 
         private enum StringPlayerPrefName
@@ -184,6 +188,10 @@ namespace NonDestroyObject.DataManage
             enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient7));
             enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient8));
 
+            equipedItemIdList = new List<int>();
+            equipedItemIdList.Add(LoadIntPrefs(IntPlayerPrefName.EquipItem1Id));
+            equipedItemIdList.Add(LoadIntPrefs(IntPlayerPrefName.EquipItem2Id));
+
             if (userName == string.Empty)
             {
                 UIManager.Instance.enterYourNamePopup.Open();
@@ -209,13 +217,9 @@ namespace NonDestroyObject.DataManage
             SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient6, enhanceIngredientList[6]);
             SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient7, enhanceIngredientList[7]);
             SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient8, enhanceIngredientList[8]);
-        }
-
-        private int GetCurrentTime()
-        {
-            var currentDate = DateTime.Today;
-            var date2Int = int.Parse(currentDate.ToString("yyyyMMdd"));
-            return date2Int;
+            
+            SaveIntPrefs(IntPlayerPrefName.EquipItem1Id, equipedItemIdList[0]);
+            SaveIntPrefs(IntPlayerPrefName.EquipItem2Id, equipedItemIdList[1]);
         }
 
         private void ClearAllPrefs(int pid = 0, string name = "")
@@ -229,12 +233,24 @@ namespace NonDestroyObject.DataManage
             dailyGatchaCount = 0;
             lastUpdated = GetCurrentTime();
 
+            for (int i = 0; i <= 1; i++)
+            {
+                equipedItemIdList[i] = -1;
+            }
+
             for (int i = 1; i <= 8; i++)
             {
                 enhanceIngredientList[i] = 0;
             }
 
             FetchAllStatus(true);
+        }
+        
+        private int GetCurrentTime()
+        {
+            var currentDate = DateTime.Today;
+            var date2Int = int.Parse(currentDate.ToString("yyyyMMdd"));
+            return date2Int;
         }
 
         private void UpdateAtk()

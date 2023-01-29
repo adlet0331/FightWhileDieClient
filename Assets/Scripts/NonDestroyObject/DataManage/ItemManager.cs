@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Data;
 using Newtonsoft.Json;
-using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -20,6 +19,16 @@ namespace NonDestroyObject.DataManage
         public List<EquipItemObject> ItemEquipments => new List<EquipItemObject>(itemEquipmentList);
         public List<Color> RareColorList => new List<Color>(rareColorList);
 
+        public EquipItemObject GetEquipItemObjectWithId(int id)
+        {
+            foreach (var itemObject in itemEquipmentList)
+            {
+                if (itemObject.id == id)
+                    return itemObject;
+            }
+            return null;
+        }
+        
         public void Start()
         {
             var jsonString = JsonSL.LoadJson(JsonTitle.PlayerEquipItemObjects);
