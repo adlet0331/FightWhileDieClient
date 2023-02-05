@@ -9,18 +9,19 @@ namespace UI
     /// </summary>
     public abstract class View : MonoBehaviour
     {
-        protected abstract void Init();
-        protected abstract void Clean();
+        protected abstract void BeforeActivate();
+        protected abstract void AfterDeActivate();
 
         public void Activate()
         {
-            Init();
+            BeforeActivate();
             gameObject.SetActive(true);
         }
 
         public void DeActivate()
         {
             gameObject.SetActive(false);
+            AfterDeActivate();
         }
     }
 }

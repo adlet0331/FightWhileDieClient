@@ -24367,7 +24367,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8903778461303968310
 RectTransform:
   m_ObjectHideFlags: 0
@@ -34177,11 +34177,11 @@ MonoBehaviour:
   - {fileID: 7482556893618222612}
   animator: {fileID: 8257848668965117929}
   runtimeAnimatorController: {fileID: 0}
-  itemEquipment:
+  equipItemObject:
     id: 0
-    Rare: 1
+    Rare: 0
     level: 0
-    Option: 1
+    Option: 0
     optionValue: 0
 --- !u!1 &5046846771491707045
 GameObject:

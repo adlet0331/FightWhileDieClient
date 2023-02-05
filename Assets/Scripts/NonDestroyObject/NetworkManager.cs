@@ -32,17 +32,17 @@ namespace NonDestroyObject
             {
                 case ClientCondition.Idle:
                     _rootURL = "http://fwt-server.haje.org/playerserver/";
-                    return;
+                    break;
                 case ClientCondition.Localhost:
                     _rootURL = "http://localhost:8000/playerserver/";
-                    return;
+                    break;
                 case ClientCondition.NoConnectionTest:
                     _rootURL = "http://for-no-connection.haje.org/";
-                    return;
-                #if !UNITY_EDITOR
-                _rootURL = "http://fwt-server.haje.org/playerserver/";  
-  #endif
+                    break;
             }
+#if !UNITY_EDITOR
+            _rootURL = "http://fwt-server.haje.org/playerserver/";  
+  #endif
         }
 
         private async UniTask<string> RequestPost(string url, string reqString, bool triggeredInThreadPool = true, int retryNum = 0)

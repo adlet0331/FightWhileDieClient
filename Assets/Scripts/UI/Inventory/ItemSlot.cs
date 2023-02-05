@@ -15,6 +15,12 @@ namespace UI.Inventory
         public int Index;
         public EquipItemObject EquipItemObject;
     }
+    public enum EquipNum
+    {
+        None = 0,
+        One = 1,
+        Two = 2,
+    }
     public delegate void SlotClickHandler(SlotClickArgs var);
     public class ItemSlot : MonoBehaviour, IPointerClickHandler
     {
@@ -27,6 +33,7 @@ namespace UI.Inventory
         [SerializeField] private Image backGround;
         [SerializeField] private TextMeshProUGUI level;
         [SerializeField] private Image slotBorder;
+        [SerializeField] private TextMeshProUGUI equiped;
         [Header("For Event")]
         [SerializeField] private string sourceView;
 
@@ -35,6 +42,19 @@ namespace UI.Inventory
         public void ChangeIndex(int val)
         {
             index = val;
+        }
+
+        public void SetEquiped(EquipNum equipNum)
+        {
+            if (equipNum == EquipNum.None)
+            {
+                equiped.gameObject.SetActive(false);
+            }
+            else
+            {
+                equiped.gameObject.SetActive(true);
+                equiped.text = ((int) equipNum).ToString();
+            }
         }
 
         public void SetNewItemObject(EquipItemObject itemObject)
@@ -66,7 +86,13 @@ namespace UI.Inventory
 
         private void LoadItemUI()
         {
-            if (equipItemObjectInfo == null) return;
+            if (equipItemObjectInfo == null)
+            {
+                itemImage.sprite = null;
+                level.text = "";
+                slotBorder.color = DataManager.Instance.itemManager.RareColorList[1];
+                return;
+            }
             
             itemImage.sprite = ResourcesLoad.LoadEquipmentSprite(equipItemObjectInfo.rare, equipItemObjectInfo.option);
             level.text = equipItemObjectInfo.level.ToString();

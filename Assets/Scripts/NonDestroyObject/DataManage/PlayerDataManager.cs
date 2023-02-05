@@ -24,7 +24,7 @@ namespace NonDestroyObject.DataManage
         public int TopStage => topStage;
         public int Atk => atk;
         public int ClearCoin => clearCoin;
-        public List<int> EquipedItem1Id => new List<int>(equipedItemIdList);
+        public List<int> EquipedItemIdList => new List<int>(equipedItemIdList);
 
 
         [Header("Static Values")]
@@ -91,6 +91,11 @@ namespace NonDestroyObject.DataManage
             PlayerPrefs.SetInt("Coin", coin);
             FetchAllStatus(true);
             return true;
+        }
+
+        public void UpdateEquipItem(int index, int uid)
+        {
+            equipedItemIdList[index] = uid;
         }
 
         public void UpdateGatchaPopupOpen()
