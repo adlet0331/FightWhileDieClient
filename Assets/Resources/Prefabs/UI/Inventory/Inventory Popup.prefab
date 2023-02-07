@@ -8117,7 +8117,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6756915143479167720
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8139,8 +8139,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -500}
-  m_SizeDelta: {x: 0, y: -1000}
+  m_AnchoredPosition: {x: 0, y: -290}
+  m_SizeDelta: {x: 0, y: -580}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5876911397834486946
 MonoBehaviour:
@@ -9482,7 +9482,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6452312195701120006
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9526,8 +9526,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   upperViewStatus: 0
-  downViewStatus: 1
+  downViewStatus: 0
+  initialized: 0
   upperViewStatusList: []
+  downViewStatusList: []
   equipView: {fileID: 6145026404034254611}
   enhanceView: {fileID: 8414159732739186731}
   decomposeView: {fileID: 0}
@@ -11875,7 +11877,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2769884452705581200
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11898,7 +11900,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 395}
+  m_AnchoredPosition: {x: 0, y: 394.99997}
   m_SizeDelta: {x: 0, y: -790}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8414159732739186731
@@ -11925,6 +11927,13 @@ MonoBehaviour:
   afterSpendCoin: {fileID: 0}
   spendCoin: {fileID: 0}
   enhanceTriggerObj: {fileID: 1674876968913602771}
+  currentMode: 0
+  currentObject:
+    id: 0
+    Rare: 0
+    level: 0
+    Option: 0
+    optionValue: 0
   selected: 0
   animator: {fileID: 7528782980869100899}
 --- !u!114 &7900288909342135694
@@ -11951,7 +11960,7 @@ Animator:
   m_GameObject: {fileID: 8766172772667582125}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a429cb65088ecda408fa3bd320159923, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -17163,13 +17172,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3473488856149551104, guid: 1c1eb4725a3ce58479da9a0d836efe46, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6658040696172961973, guid: 1c1eb4725a3ce58479da9a0d836efe46, type: 3}
       propertyPath: m_Name
       value: Enhance Select Trigger Obj
+      objectReference: {fileID: 0}
+    - target: {fileID: 6658040696172961973, guid: 1c1eb4725a3ce58479da9a0d836efe46, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1c1eb4725a3ce58479da9a0d836efe46, type: 3}

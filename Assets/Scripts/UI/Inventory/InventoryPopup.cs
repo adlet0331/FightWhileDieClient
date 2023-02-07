@@ -20,8 +20,10 @@ namespace UI.Inventory
         [Header("Status")]
         [SerializeField] private UpperViewStatus upperViewStatus;
         [SerializeField] private ItemViewMode downViewStatus;
+        [SerializeField] private bool initialized;
         [Header("View Info")]
         [SerializeField] private List<string> upperViewStatusList;
+        [SerializeField] private List<string> downViewStatusList;
         [Header("TopView")]
         [SerializeField] private EquipView equipView;
         [SerializeField] private EnhanceView enhanceView;
@@ -32,24 +34,27 @@ namespace UI.Inventory
 
         public void OpenEquipView()
         {
-            SwitchStatus(UpperViewStatus.Equip, ItemViewMode.WithItemInfoRow3);
+            SwitchStatus(UpperViewStatus.Equip, ItemViewMode.ItemSlotsWithInfo);
         }
 
         public void OpenEnhanceView()
         {
-            SwitchStatus(UpperViewStatus.Enhancement, ItemViewMode.OnlyItemSlotsRow3);
+            SwitchStatus(UpperViewStatus.Enhancement, ItemViewMode.ItemSlots);
         }
         
         private void Awake()
         {
-            upperViewStatus = UpperViewStatus.Equip;
-            downViewStatus = ItemViewMode.WithItemInfoRow3;
-
             upperViewStatusList = new List<string>();
+            downViewStatusList = new List<string>();
 
             foreach (var enumVar in Enum.GetValues(typeof(UpperViewStatus)))
             {
                 upperViewStatusList.Add(enumVar.ToString());
+            }
+
+            foreach (var enumVar in Enum.GetValues(typeof(ItemViewMode)))
+            {
+                downViewStatusList.Add(enumVar.ToString());
             }
         }
         private void SwitchStatus(UpperViewStatus uViewStatus, ItemViewMode dViewStatus)
@@ -79,7 +84,6 @@ namespace UI.Inventory
 
         private void ItemSlotClicked(SlotClickArgs args)
         {
-            Debug.Log("Popup Clicked");
             // 위의 View 터치 처리
             if (upperViewStatusList.Contains(args.SourceView))
             {
@@ -91,13 +95,17 @@ namespace UI.Inventory
                         break;
                     // 강화 할 아이템 변경 이벤트
                     case UpperViewStatus.Enhancement:
+                        // 아이템이 선택이 안되어있으면 터치 X
+                        if (!enhanceView.Selected) return;
+                        
+                        SwitchStatus(UpperViewStatus.Enhancement, ItemViewMode.ItemSlots);
                         break;
                     case UpperViewStatus.Decomposition:
                         break;
                 }
             }
             // 아래 View 터치 처리
-            else
+            else if (downViewStatusList.Contains(args.SourceView))
             {
                 switch (upperViewStatus)
                 {
@@ -107,29 +115,36 @@ namespace UI.Inventory
                         break;
                     case UpperViewStatus.Enhancement:
                         enhanceView.SelectEvent(args.EquipItemObject);
+                        SwitchStatus(UpperViewStatus.Enhancement, ItemViewMode.Hide);
                         break;
                     case UpperViewStatus.Decomposition:
                         
                         break;
                 }
             }
+            else
+            {
+                Debug.LogAssertion(args.SourceView);
+            }
         }
 
         public new void Open()
         {
-            equipView.Init(ItemSlotClicked);
+            base.Open();
 
-            enhanceView.InitHandler(ItemSlotClicked);
+            if (!initialized)
+            {
+                equipView.Init(ItemSlotClicked);
+
+                enhanceView.InitHandler(ItemSlotClicked);
             
-            itemView.InitHandler(ItemSlotClicked, ItemViewMode.WithItemInfoRow3);
-            itemView.Activate();
+                itemView.InitHandler(ItemSlotClicked, ItemViewMode.ItemSlotsWithInfo);
+                itemView.Activate();
 
-            upperViewStatus = UpperViewStatus.Equip;
-            downViewStatus = ItemViewMode.WithItemInfoRow3;
+                initialized = true;
+            }
             
             SwitchStatus(upperViewStatus, downViewStatus);
-            
-            base.Open();
         }
     }
 }

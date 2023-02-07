@@ -21,16 +21,26 @@ namespace UI.Inventory
         One = 1,
         Two = 2,
     }
+    public enum ItemSlotMode
+    {
+        HideAll,
+        OnlyFrame,
+        OnlyItem,
+        ItemSlotView,
+        ItemSlotViewSelected,
+    }
     public delegate void SlotClickHandler(SlotClickArgs var);
     public class ItemSlot : MonoBehaviour, IPointerClickHandler
     {
-        [Header("Item Info")]
+        [Header("Infos")]
+        [SerializeField] private ItemSlotMode currentMode;
         [SerializeField] private int index;
         [SerializeField] private bool isSelected;
         [SerializeField] private EquipItemObject equipItemObjectInfo;
         [Header("Components")]
         [SerializeField] private Image itemImage;
         [SerializeField] private Image backGround;
+        [SerializeField] private GameObject levelObject;
         [SerializeField] private TextMeshProUGUI level;
         [SerializeField] private Image slotBorder;
         [SerializeField] private TextMeshProUGUI equiped;
@@ -48,25 +58,26 @@ namespace UI.Inventory
         {
             if (equipNum == EquipNum.None)
             {
-                equiped.gameObject.SetActive(false);
+                equiped.text = "";
             }
             else
             {
-                equiped.gameObject.SetActive(true);
                 equiped.text = ((int) equipNum).ToString();
             }
         }
 
-        public void SetNewItemObject(EquipItemObject itemObject)
+        public void UpdateItemObjectAndMode(EquipItemObject itemObject, ItemSlotMode mode)
         {
             equipItemObjectInfo = itemObject;
+            currentMode = mode;
             LoadItemUI();
         }
         
-        public void Init(int idx, EquipItemObject equipItemObject, SlotClickHandler slotClicked, string sourceViewString)
+        public void Init(int idx, EquipItemObject equipItemObject, SlotClickHandler slotClicked, string sourceViewString, ItemSlotMode mode = ItemSlotMode.ItemSlotView)
         {
             index = idx;
-            
+
+            currentMode = mode;
             equipItemObjectInfo = equipItemObject;
             LoadItemUI();
             
@@ -79,24 +90,76 @@ namespace UI.Inventory
         {
             isSelected = select;
             if (select)
-                backGround.color = new Color(0.7f, 0.7f, 0.7f, 1);
+                UpdateItemObjectAndMode(equipItemObjectInfo, ItemSlotMode.ItemSlotViewSelected);
             else
-                backGround.color = new Color(0.85f, 0.85f, 0.85f, 1);
+                UpdateItemObjectAndMode(equipItemObjectInfo, ItemSlotMode.ItemSlotView);
         }
 
         private void LoadItemUI()
         {
-            if (equipItemObjectInfo == null)
-            {
-                itemImage.sprite = null;
-                level.text = "";
-                slotBorder.color = DataManager.Instance.itemManager.RareColorList[1];
-                return;
-            }
+            itemImage.gameObject.SetActive(false);
+            backGround.gameObject.SetActive(false);
+            slotBorder.gameObject.SetActive(false);
+            levelObject.SetActive(false);
+            equiped.gameObject.SetActive(false);
+
+            var isNull = equipItemObjectInfo == null;
+            var lev = equipItemObjectInfo?.level ?? 0; 
+            var rare = equipItemObjectInfo?.rare ?? 1;
+            var option = equipItemObjectInfo?.option ?? 0;
             
-            itemImage.sprite = ResourcesLoad.LoadEquipmentSprite(equipItemObjectInfo.rare, equipItemObjectInfo.option);
-            level.text = equipItemObjectInfo.level.ToString();
-            slotBorder.color = DataManager.Instance.itemManager.RareColorList[equipItemObjectInfo.rare];
+            switch (currentMode)
+            {
+                case ItemSlotMode.HideAll:
+                    break;
+                
+                case ItemSlotMode.OnlyFrame:
+                    slotBorder.gameObject.SetActive(true);
+                    slotBorder.color = DataManager.Instance.itemManager.RareColorList[rare];
+
+                    break;
+
+                case ItemSlotMode.OnlyItem:
+                    itemImage.gameObject.SetActive(true);
+                    Debug.Log(isNull);
+                    itemImage.sprite = !isNull ? ResourcesLoad.LoadEquipmentSprite(rare, option) : null;
+                    itemImage.color = !isNull ? new Color(1, 1, 1, 1) : new Color(0, 0, 0, 0);
+                    break;
+                
+                case ItemSlotMode.ItemSlotView:
+                    itemImage.gameObject.SetActive(true);
+                    itemImage.sprite = !isNull ? ResourcesLoad.LoadEquipmentSprite(rare, option) : null;
+                    itemImage.color = !isNull ? new Color(1, 1, 1, 1) : new Color(0, 0, 0, 0);
+                    
+                    backGround.gameObject.SetActive(true);
+                    backGround.color = new Color(0.85f, 0.85f, 0.85f, 1);
+                    
+                    levelObject.SetActive(true);
+                    level.text = !isNull ? lev.ToString() : "";
+                    
+                    slotBorder.gameObject.SetActive(true);
+                    slotBorder.color = DataManager.Instance.itemManager.RareColorList[rare];
+                    
+                    equiped.gameObject.SetActive(true);
+                    break;
+                
+                case ItemSlotMode.ItemSlotViewSelected:
+                    itemImage.gameObject.SetActive(true);   
+                    itemImage.sprite = !isNull ? ResourcesLoad.LoadEquipmentSprite(rare, option) : null;
+                    itemImage.color = !isNull ? new Color(1, 1, 1, 1) : new Color(0, 0, 0, 0);
+                    
+                    backGround.gameObject.SetActive(true);
+                    backGround.color = new Color(0.7f, 0.7f, 0.7f, 1);
+                    
+                    levelObject.SetActive(true);
+                    level.text = lev != 0 ? lev.ToString() : "";
+                    
+                    slotBorder.gameObject.SetActive(true);
+                    slotBorder.color = DataManager.Instance.itemManager.RareColorList[rare];
+                    
+                    equiped.gameObject.SetActive(true);
+                    break;
+            }
         }
         
         private event SlotClickHandler SlotClicked;

@@ -1,10 +1,23 @@
-﻿using Data;
+﻿using System;
+using Data;
 using UnityEngine;
 
 namespace UI.Inventory.Enhance
 {
+    
     public class EnhanceView : View
     {
+        private enum EnhanceViewMode
+        {
+            ItemNotSelected,
+            ItemSelected,
+        }
+
+        private enum AnimatorParams
+        {
+            ItemSelectedBool
+        }
+        
         [Header("UI Components")]
         [SerializeField] private IngredientValUI[] ingredientInfoList;
         [SerializeField] private CoinUI playerCoin;
@@ -13,6 +26,8 @@ namespace UI.Inventory.Enhance
         [SerializeField] private EnhanceTriggerObj enhanceTriggerObj;
 
         [Header("Status")]
+        [SerializeField] private EnhanceViewMode currentMode;
+        [SerializeField] private EquipItemObject currentObject;
         [SerializeField] private bool selected;
 
         public bool Selected => selected;
@@ -23,6 +38,7 @@ namespace UI.Inventory.Enhance
         private event SlotClickHandler SlotClickHandler;
         public void InitHandler(SlotClickHandler handler)
         {
+            animator.keepAnimatorControllerStateOnDisable = true;
             SlotClickHandler = handler;
             SlotClickHandler += SlotClicked;
         }
@@ -31,21 +47,52 @@ namespace UI.Inventory.Enhance
         {
             if (selected) return;
 
-            selected = true;
-            enhanceTriggerObj.Select(itemObject);
+            SetItem(itemObject);
         }
 
         private void SlotClicked(SlotClickArgs args)
         {
-            if (selected)
+            if (!selected) return;
+            
+            HideItem();
+        }
+
+        private void SetItem(EquipItemObject itemObject)
+        {
+            selected = true;
+            currentObject = itemObject;
+            
+            SwitchMode(EnhanceViewMode.ItemSelected);
+            
+            enhanceTriggerObj.Select(itemObject);
+            enhanceTriggerObj.SwitchStatus(EnhanceTriggerStatus.Selected);
+        }
+
+        private void HideItem()
+        {
+            selected = false;
+            currentObject = null;
+            
+            SwitchMode(EnhanceViewMode.ItemNotSelected);
+            
+            enhanceTriggerObj.SwitchStatus(EnhanceTriggerStatus.NotSelected);
+            enhanceTriggerObj.Select(null);
+        }
+
+        private void SwitchMode(EnhanceViewMode mode)
+        {
+            currentMode = mode;
+
+            animator.SetBool(AnimatorParams.ItemSelectedBool.ToString(), false);
+            
+            switch (mode)
             {
-                selected = false;
-                enhanceTriggerObj.Select(null);
-                return;
-            }
-            else
-            {
-                
+                case EnhanceViewMode.ItemNotSelected:
+                    animator.SetBool(AnimatorParams.ItemSelectedBool.ToString(), false);
+                    break;
+                case EnhanceViewMode.ItemSelected:
+                    animator.SetBool(AnimatorParams.ItemSelectedBool.ToString(), true);
+                    break;
             }
         }
 
@@ -59,17 +106,13 @@ namespace UI.Inventory.Enhance
         protected override void BeforeActivate()
         {
             UpdateAllUI();
-            
+
             enhanceTriggerObj.InitHandler(SlotClickHandler);
+            animator.keepAnimatorControllerStateOnDisable = true;
         }
         protected override void AfterDeActivate()
         {
             
-        }
-        
-        private void Start()
-        {
-            animator = GetComponent<Animator>();
         }
     }
 }

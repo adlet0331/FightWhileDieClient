@@ -17,7 +17,7 @@ namespace UI.Inventory.Equip
 
         public void SetNewItem(EquipItemObject newItem)
         {
-            itemSlot.SetNewItemObject(newItem);
+            itemSlot.UpdateItemObjectAndMode(newItem, ItemSlotMode.ItemSlotView);
             if (newItem != null)
                 descriptionText.text = newItem.GetDescriptionText(1);
             else
@@ -27,7 +27,7 @@ namespace UI.Inventory.Equip
         public void Init(int idx, EquipItemObject equipItemObject, SlotClickHandler slotClicked)
         {
             isSelected = false;
-            itemSlot.Init(idx, equipItemObject, slotClicked, UpperViewStatus.Equip.ToString());
+            itemSlot.Init(idx, equipItemObject, slotClicked, UpperViewStatus.Equip.ToString(), ItemSlotMode.OnlyFrame);
         }
 
         public void Select(bool select)

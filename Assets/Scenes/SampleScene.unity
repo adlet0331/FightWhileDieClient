@@ -6336,6 +6336,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Inventory Popup
       objectReference: {fileID: 0}
+    - target: {fileID: 6452312195701120005, guid: c9b9e2735b9a3584983d625736aa7135, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6452312195701120006, guid: c9b9e2735b9a3584983d625736aa7135, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

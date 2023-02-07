@@ -28,6 +28,8 @@ namespace NonDestroyObject.DataManage
             var totalLength = equipmentItemInfos.Count;
             var totalOptions = (int)(totalLength / 6);
 
+            Debug.Log($"{totalOptions * (rare - 1) + option}, rare: {rare}, option: {option}");
+            
             return equipmentItemInfos[totalOptions * (rare - 1) + option];
         }
         [SerializeField] private List<EquipItemInfo> equipmentItemInfos;

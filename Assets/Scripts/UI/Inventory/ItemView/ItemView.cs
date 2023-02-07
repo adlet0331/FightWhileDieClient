@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using NonDestroyObject;
 using TMPro;
@@ -8,15 +9,17 @@ namespace UI.Inventory.ItemView
 {
     public enum ItemViewMode
     {
-        WithItemInfoRow3,
-        OnlyItemSlotsRow3
+        ItemSlotsWithInfo,
+        ItemSlots,
+        Hide
     }
     public class ItemView : View
     {
         private enum AnimParams
         {
-            WithItemInfoRow3,
-            OnlyItemSlotsRow3,
+            ItemInfoView,
+            OnlySlots,
+            Hide
         }
         
         [Header("Components")]
@@ -62,27 +65,27 @@ namespace UI.Inventory.ItemView
         {
             currentMode = mode;
 
+            foreach (AnimParams parameter in Enum.GetValues(typeof(AnimParams)))
+            {
+                animator.SetBool(parameter.ToString(), false);
+            }
+
             switch (mode)
             {
-                case ItemViewMode.WithItemInfoRow3:
-                    // selfRectTransform.SetParent(equipTransform);
-                    // selfRectTransform.offsetMax = Vector2.zero;
-                    // selfRectTransform.offsetMin = Vector2.zero;
-                    animator.SetBool(AnimParams.WithItemInfoRow3.ToString(), true);
-                    animator.SetBool(AnimParams.OnlyItemSlotsRow3.ToString(), false);
-                    
+                case ItemViewMode.ItemSlotsWithInfo:
+                    animator.SetBool(AnimParams.ItemInfoView.ToString(), true);
                     break;
-                case ItemViewMode.OnlyItemSlotsRow3:
-                    animator.SetBool(AnimParams.WithItemInfoRow3.ToString(), false);
-                    animator.SetBool(AnimParams.OnlyItemSlotsRow3.ToString(), true);
-                    
+                case ItemViewMode.ItemSlots:
+                    animator.SetBool(AnimParams.OnlySlots.ToString(), true);
+                    break;
+                case ItemViewMode.Hide:
+                    animator.SetBool(AnimParams.Hide.ToString(), true);
                     break;
             }
         }
         
         public void UpdateEquipedItem()
         {
-            Debug.Log("Update");
             equipedItemObjUid = DataManager.Instance.playerDataManager.EquipedItemIdList;
             
             var cnt = 0;
@@ -97,7 +100,7 @@ namespace UI.Inventory.ItemView
                         cnt += 1;
                     }
                 }
-                if (cnt == equipedItemObjUid.Count - 1) return;
+                if (cnt == equipedItemObjUid.Count) return;
             }
         }
         
@@ -149,6 +152,8 @@ namespace UI.Inventory.ItemView
 
         protected override void BeforeActivate()
         {
+            animator.keepAnimatorControllerStateOnDisable = true;
+            
             beforeClicked = 0;
             selectedBefore = false;
 
@@ -166,7 +171,7 @@ namespace UI.Inventory.ItemView
             for (int i = 0; i < itemList.Count; i++)
             {
                 GameObject obj = Instantiate(prefab, viewPortTransform);
-                obj.GetComponent<ItemSlot>().Init(i, itemList[i], SlotClickHandler, ItemViewMode.WithItemInfoRow3.ToString());
+                obj.GetComponent<ItemSlot>().Init(i, itemList[i], SlotClickHandler, ItemViewMode.ItemSlotsWithInfo.ToString());
                 itemSlotList.Add(obj.GetComponent<ItemSlot>());
             }
 
