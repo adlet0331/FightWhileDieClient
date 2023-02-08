@@ -34,12 +34,12 @@ namespace UI.Inventory
 
         public void OpenEquipView()
         {
-            SwitchStatus(UpperViewStatus.Equip, ItemViewMode.ItemSlotsWithInfo);
+            SwitchStatus(UpperViewStatus.Equip,  ItemViewMode.ItemSlotsWithInfo);
         }
 
         public void OpenEnhanceView()
         {
-            SwitchStatus(UpperViewStatus.Enhancement, ItemViewMode.ItemSlots);
+            SwitchStatus(UpperViewStatus.Enhancement, enhanceView.Selected ? ItemViewMode.Hide : ItemViewMode.ItemSlots);
         }
         
         private void Awake()
@@ -59,9 +59,9 @@ namespace UI.Inventory
         }
         private void SwitchStatus(UpperViewStatus uViewStatus, ItemViewMode dViewStatus)
         {
-            upperViewStatus = uViewStatus;
-            downViewStatus = dViewStatus;
-            
+             downViewStatus = dViewStatus;
+             upperViewStatus = uViewStatus;
+
             equipView.DeActivate();
             enhanceView.DeActivate();
             //decompositionView.DeActivate();
@@ -79,7 +79,7 @@ namespace UI.Inventory
                     break;
             }
             
-            itemView.ChangeMode(dViewStatus);
+            itemView.ChangeMode(downViewStatus);
         }
 
         private void ItemSlotClicked(SlotClickArgs args)

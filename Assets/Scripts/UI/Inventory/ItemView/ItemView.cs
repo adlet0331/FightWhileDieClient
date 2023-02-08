@@ -63,8 +63,6 @@ namespace UI.Inventory.ItemView
 
         public void ChangeMode(ItemViewMode mode)
         {
-            currentMode = mode;
-
             foreach (AnimParams parameter in Enum.GetValues(typeof(AnimParams)))
             {
                 animator.SetBool(parameter.ToString(), false);
@@ -79,9 +77,13 @@ namespace UI.Inventory.ItemView
                     animator.SetBool(AnimParams.OnlySlots.ToString(), true);
                     break;
                 case ItemViewMode.Hide:
+                    if (currentMode == ItemViewMode.ItemSlotsWithInfo)
+                        animator.SetBool(AnimParams.OnlySlots.ToString(), true);
                     animator.SetBool(AnimParams.Hide.ToString(), true);
                     break;
             }
+            
+            currentMode = mode;
         }
         
         public void UpdateEquipedItem()
@@ -153,7 +155,7 @@ namespace UI.Inventory.ItemView
         protected override void BeforeActivate()
         {
             animator.keepAnimatorControllerStateOnDisable = true;
-            
+
             beforeClicked = 0;
             selectedBefore = false;
 
