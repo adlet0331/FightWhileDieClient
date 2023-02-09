@@ -90,7 +90,6 @@ namespace UI.Inventory.ItemView
         {
             equipedItemObjUid = DataManager.Instance.playerDataManager.EquipedItemIdList;
             
-            var cnt = 0;
             foreach (var itemSlot in itemSlotList)
             {
                 itemSlot.SetEquiped(EquipNum.None);
@@ -99,10 +98,8 @@ namespace UI.Inventory.ItemView
                     if (itemSlot.EquipItemObjectInfo.id == equipedItemObjUid[i])
                     {
                         itemSlot.SetEquiped((EquipNum)(i + 1));
-                        cnt += 1;
                     }
                 }
-                if (cnt == equipedItemObjUid.Count) return;
             }
         }
         
