@@ -76,11 +76,9 @@ namespace UI.Inventory
         public void Init(int idx, EquipItemObject equipItemObject, SlotClickHandler slotClicked, string sourceViewString, ItemSlotMode mode = ItemSlotMode.ItemSlotView)
         {
             index = idx;
-
-            currentMode = mode;
-            equipItemObjectInfo = equipItemObject;
-            LoadItemUI();
             
+            UpdateItemObjectAndMode(equipItemObject, mode);
+
             SlotClicked = slotClicked;
             sourceView = sourceViewString;
             isSelected = false;
@@ -89,10 +87,7 @@ namespace UI.Inventory
         public void Select(bool select)
         {
             isSelected = select;
-            if (select)
-                UpdateItemObjectAndMode(equipItemObjectInfo, ItemSlotMode.ItemSlotViewSelected);
-            else
-                UpdateItemObjectAndMode(equipItemObjectInfo, ItemSlotMode.ItemSlotView);
+            UpdateItemObjectAndMode(equipItemObjectInfo, select ? ItemSlotMode.ItemSlotViewSelected : ItemSlotMode.ItemSlotView);
         }
 
         private void LoadItemUI()
@@ -103,10 +98,10 @@ namespace UI.Inventory
             levelObject.SetActive(false);
             equiped.gameObject.SetActive(false);
 
-            var isNull = equipItemObjectInfo == null;
-            var lev = equipItemObjectInfo?.level ?? 0; 
-            var rare = equipItemObjectInfo?.rare ?? 1;
-            var option = equipItemObjectInfo?.option ?? 0;
+            bool isNull = equipItemObjectInfo == null;
+            int lev = equipItemObjectInfo?.level ?? 0; 
+            int rare = equipItemObjectInfo?.rare ?? 1;
+            int option = equipItemObjectInfo?.option ?? 0;
             
             switch (currentMode)
             {

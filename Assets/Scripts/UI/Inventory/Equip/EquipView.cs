@@ -79,8 +79,8 @@ namespace UI.Inventory.Equip
             {
                 var itemObject = DataManager.Instance.itemManager.GetEquipItemObjectWithId(equipedItemIdList[i]);
                 equipItemObjects.Add(itemObject);
-                
-                equipSlots[i].Init(i, itemObject, SlotClickHandler);
+
+                equipSlots[i].Init(i, itemObject, SlotClickHandler, itemObject != null ? ItemSlotMode.ItemSlotView : ItemSlotMode.HideAll);
             }
         }
         protected override void AfterDeActivate()

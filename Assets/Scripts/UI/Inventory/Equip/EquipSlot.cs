@@ -12,7 +12,7 @@ namespace UI.Inventory.Equip
         [SerializeField] private TextMeshProUGUI descriptionText;
         [SerializeField] private GameObject selected;
 
-        [Header("Debugging")]
+        [Header("Status")]
         [SerializeField] private bool isSelected;
 
         public void SetNewItem(EquipItemObject newItem)
@@ -24,10 +24,11 @@ namespace UI.Inventory.Equip
                 descriptionText.text = "No Ability Applied";
         }
         
-        public void Init(int idx, EquipItemObject equipItemObject, SlotClickHandler slotClicked)
+        public void Init(int idx, EquipItemObject equipItemObject, SlotClickHandler slotClicked, ItemSlotMode mode)
         {
             isSelected = false;
-            itemSlot.Init(idx, equipItemObject, slotClicked, UpperViewStatus.Equip.ToString(), ItemSlotMode.OnlyFrame);
+            itemSlot.Init(idx, equipItemObject, slotClicked, UpperViewStatus.Equip.ToString(), mode);
+            SetNewItem(equipItemObject);
         }
 
         public void Select(bool select)
