@@ -156,8 +156,8 @@ namespace UI.Inventory.ItemView
             beforeClicked = 0;
             selectedBefore = false;
 
+            // Get Items
             equipedItemObjUid = DataManager.Instance.playerDataManager.EquipedItemIdList;
-            
             var itemList = DataManager.Instance.itemManager.ItemEquipments;
 
             for (var i = viewPortTransform.transform.childCount - 1; i >= 0; i--)
@@ -226,7 +226,12 @@ namespace UI.Inventory.ItemView
                            optionSort &&
                            (!rareSort || itemSlotList[low].EquipItemObjectInfo.rare == pivot.EquipItemObjectInfo.rare) && 
                            (!levelSort || itemSlotList[low].EquipItemObjectInfo.level == pivot.EquipItemObjectInfo.level) &&
-                           asc * itemSlotList[low].EquipItemObjectInfo.option < asc * pivot.EquipItemObjectInfo.option)
+                           asc * itemSlotList[low].EquipItemObjectInfo.option < asc * pivot.EquipItemObjectInfo.option) ||
+                       (
+                           !(!rareSort || itemSlotList[low].EquipItemObjectInfo.rare == pivot.EquipItemObjectInfo.rare) &&
+                           !(!levelSort || itemSlotList[low].EquipItemObjectInfo.level == pivot.EquipItemObjectInfo.level) &&
+                           !(!optionSort || itemSlotList[low].EquipItemObjectInfo.option == pivot.EquipItemObjectInfo.option) &&
+                           asc * itemSlotList[low].EquipItemObjectInfo.id < asc * pivot.EquipItemObjectInfo.id)
                       )
                 {
                     low++;
@@ -242,7 +247,12 @@ namespace UI.Inventory.ItemView
                            optionSort &&
                            (!rareSort || itemSlotList[large].EquipItemObjectInfo.rare == pivot.EquipItemObjectInfo.rare) && 
                            (!levelSort || itemSlotList[large].EquipItemObjectInfo.level == pivot.EquipItemObjectInfo.level) &&
-                           asc * itemSlotList[large].EquipItemObjectInfo.option > asc * pivot.EquipItemObjectInfo.option)
+                           asc * itemSlotList[large].EquipItemObjectInfo.option > asc * pivot.EquipItemObjectInfo.option) ||
+                       (
+                           !(!rareSort || itemSlotList[low].EquipItemObjectInfo.rare == pivot.EquipItemObjectInfo.rare) &&
+                           !(!levelSort || itemSlotList[low].EquipItemObjectInfo.level == pivot.EquipItemObjectInfo.level) &&
+                           !(!optionSort || itemSlotList[low].EquipItemObjectInfo.option == pivot.EquipItemObjectInfo.option) &&
+                           asc * itemSlotList[low].EquipItemObjectInfo.id > asc * pivot.EquipItemObjectInfo.id)
                       )
                 {
                     large--;
