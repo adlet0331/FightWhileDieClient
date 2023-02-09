@@ -19,8 +19,8 @@ namespace UI.Gatcha
         [SerializeField] private GameObject gatchaStartPage;
         [SerializeField] private GameObject gatchaStartingPage;
         [SerializeField] private GameObject gatchaOpeningPage;
-        [SerializeField] private Transform gatchaOpeningPageTriggersParent;
-        [SerializeField] private GameObject gatchaStartinbGoButton;
+        [SerializeField] private GridLayoutGroup gatchaOpeningPageTriggersParent;
+        [SerializeField] private GameObject gatchaStartingGoButton;
         [Header("Components")]
         [SerializeField] private CoinUI playerCoinUI;
         [SerializeField] private CoinUI afterUseCoinUI;
@@ -69,7 +69,7 @@ namespace UI.Gatcha
             
             gatchaLoaded = false;
             gatchaStartPage.SetActive(false);
-            gatchaStartinbGoButton.SetActive(false);
+            gatchaStartingGoButton.SetActive(false);
             gatchaStartingPage.SetActive(true);
 
             var gatchaResult = await NetworkManager.Instance.AddRandomEquipItems(10);
@@ -102,20 +102,29 @@ namespace UI.Gatcha
             Debug.AssertFormat(gatchaResult.ItemEquipmentList.Count == count, $"Gatcha Result Count is not matched: {0}", gatchaResult.ItemEquipmentList.Count.ToString());
             
             // Destroy Before Objects
-            for (var i = gatchaOpeningPageTriggersParent.childCount - 1; i >= 0; i--)
+            for (var i = gatchaOpeningPageTriggersParent.transform.childCount - 1; i >= 0; i--)
             {
-                Destroy(gatchaOpeningPageTriggersParent.GetChild(i).gameObject);
+                Destroy(gatchaOpeningPageTriggersParent.transform.GetChild(i).gameObject);
             }
 
+            // Resize Grid Layout
+            float width = gatchaOpeningPageTriggersParent.gameObject.GetComponent<RectTransform>().rect.width;
+            float height = gatchaOpeningPageTriggersParent.gameObject.GetComponent<RectTransform>().rect.height;
+            float xmaxLen = (width - gatchaOpeningPageTriggersParent.spacing.x - 50) / 2;
+            float ymaxLen = (height - gatchaOpeningPageTriggersParent.spacing.y * 4 - 50) / 5;
+            float size = xmaxLen > ymaxLen ? ymaxLen : xmaxLen;
+            
+            gatchaOpeningPageTriggersParent.cellSize = new Vector2(size,size);
+            
             var prefab = Resources.Load("Prefabs/UI/Gatcha/GatchaTrigger") as GameObject;
             gatchaTriggerObjs.Clear();
             for (var i = 0; i < count; i++)
             {
-                GameObject obj = Instantiate(prefab, gatchaOpeningPageTriggersParent);
+                GameObject obj = Instantiate(prefab, gatchaOpeningPageTriggersParent.transform);
                 obj.GetComponent<GatchaTriggerObj>().Initiate(true, gatchaResult.ItemEquipmentList[i]);
                 gatchaTriggerObjs.Add(obj.GetComponent<GatchaTriggerObj>());
             }
-            gatchaStartinbGoButton.SetActive(true);
+            gatchaStartingGoButton.SetActive(true);
             gatchaLoaded = true;
         }
 
