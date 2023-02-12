@@ -39,7 +39,7 @@ namespace UI.Inventory
 
         public void OpenEnhanceView()
         {
-            SwitchStatus(UpperViewStatus.Enhancement, enhanceView.Selected ? ItemViewMode.Hide : ItemViewMode.ItemSlots);
+            SwitchStatus(UpperViewStatus.Enhancement, enhanceView.ItemSelected ? ItemViewMode.Hide : ItemViewMode.ItemSlots);
         }
         
         private void Awake()
@@ -96,7 +96,7 @@ namespace UI.Inventory
                     // 강화 할 아이템 변경 이벤트
                     case UpperViewStatus.Enhancement:
                         // 아이템이 선택이 안되어있으면 터치 X
-                        if (!enhanceView.Selected) return;
+                        if (!enhanceView.ItemSelected) return;
                         
                         SwitchStatus(UpperViewStatus.Enhancement, ItemViewMode.ItemSlots);
                         break;

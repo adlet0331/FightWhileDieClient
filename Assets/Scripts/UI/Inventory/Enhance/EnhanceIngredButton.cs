@@ -14,20 +14,16 @@ namespace UI.Inventory.Enhance
         [SerializeField] private Color currentColor;
         [SerializeField] private bool isSelected;
 
-        public void InitRare(int rare)
+        public void InitRare(int rare, bool select)
         {
             currentRare = rare;
             currentColor = DataManager.Instance.itemManager.RareColorList[rare];
-            isSelected = true;
-            SelectIngredient();
+            SelectIngredient(select);
         }
         
-        public void SelectIngredient()
+        public void SelectIngredient(bool select)
         {
-            // Check if Player have
-            if (DataManager.Instance.playerDataManager.EnhanceIngredientList[currentRare] == 0) return;
-
-            isSelected = !isSelected;
+            isSelected = select;
             
             if (isSelected)
             {

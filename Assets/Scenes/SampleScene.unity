@@ -3874,6 +3874,7 @@ MonoBehaviour:
     currentVersions: []
     serverVersions: []
     gatchaProbabilitys: []
+    enhanceInfos: []
     equipmentItemInfos: []
   itemManager:
     itemEquipmentList: []

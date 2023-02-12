@@ -25,6 +25,14 @@ namespace UI.Inventory
             UpdateValues();
         }
 
+        public void ClearSelect()
+        {
+            for (int i = 1; i <= 6; i++)
+            {
+                ingredientInfoList[i].SetSelected(false);
+            }
+        }
+
         public void SelectRare(int rare)
         {
             for (int i = 1; i <= 6; i++)

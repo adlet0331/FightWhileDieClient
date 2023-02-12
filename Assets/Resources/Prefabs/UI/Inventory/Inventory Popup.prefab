@@ -6431,7 +6431,7 @@ GameObject:
   - component: {fileID: 267841940606825540}
   - component: {fileID: 2388297126213403605}
   m_Layer: 5
-  m_Name: Ingredient Button
+  m_Name: Add Ingredient Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10802,6 +10802,95 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &8424095841110312497
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1083620279498430606}
+  - component: {fileID: 3592579951204103086}
+  - component: {fileID: 7973663514544005537}
+  - component: {fileID: 868426115276755876}
+  m_Layer: 5
+  m_Name: Touch Block
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1083620279498430606
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8424095841110312497}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2769884452705581200}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 5000, y: 5000}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3592579951204103086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8424095841110312497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f71d8db239ee4a459cf803fe0f930ab7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!222 &7973663514544005537
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8424095841110312497}
+  m_CullTransparentMesh: 1
+--- !u!114 &868426115276755876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8424095841110312497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &8643319364788740200
 GameObject:
   m_ObjectHideFlags: 0
@@ -10954,6 +11043,7 @@ RectTransform:
   - {fileID: 8959536049885383674}
   - {fileID: 7875165034944246032}
   - {fileID: 5434130665276309396}
+  - {fileID: 1083620279498430606}
   m_Father: {fileID: 5677940374859697406}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10980,17 +11070,22 @@ MonoBehaviour:
   priceCoinUI: {fileID: 8702500595361035028}
   currLevelVal: {fileID: 357880923152609182}
   nextLevelVal: {fileID: 6047297773548431047}
+  basicProbabilityVal: {fileID: 2450379520257180807}
+  additionalProbabilityVal: {fileID: 8228629238516505532}
+  totalProbabilityVal: {fileID: 4714852178261357630}
   enhanceTriggerObj: {fileID: 1674876968913602771}
-  StartEnhanceButton: {fileID: 5856523021676584729}
-  enhanceIngredButton: {fileID: 2388297126213403605}
+  noResponseTouchBoard: {fileID: 3592579951204103086}
+  startEnhanceButton: {fileID: 5856523021676584729}
+  addIngredientButton: {fileID: 2388297126213403605}
   currentMode: 0
-  currentObject:
+  selectedObject:
     id: 0
     Rare: 0
     level: 0
     Option: 0
     optionValue: 0
-  selected: 0
+  itemSelected: 0
+  ingredientSelected: 0
   animator: {fileID: 7528782980869100899}
 --- !u!114 &7900288909342135694
 MonoBehaviour:
