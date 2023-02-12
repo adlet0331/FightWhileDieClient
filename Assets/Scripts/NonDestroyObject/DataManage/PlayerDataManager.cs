@@ -19,12 +19,12 @@ namespace NonDestroyObject.DataManage
         public int CurrentEnemyHp => (int) (enemyStartHp * Math.Pow(enemyHpMultiplier, stage));
         public int Coin => coin;
         public int GatchaCosts => gatchaStartCoin * (int)Math.Pow(2, dailyGatchaCount);
-        public List<int> EnhanceIngredientList => new List<int>(enhanceIngredientList);
+        public List<int> EnhanceIngredientList => enhanceIngredientList;
         public int LastUpdated => lastUpdated;
         public int TopStage => topStage;
         public int Atk => atk;
         public int ClearCoin => clearCoin;
-        public List<int> EquipedItemIdList => new List<int>(equipedItemIdList);
+        public List<int> EquipedItemIdList => equipedItemIdList;
 
 
         [Header("Static Values")]

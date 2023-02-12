@@ -16,8 +16,8 @@ namespace NonDestroyObject.DataManage
         [SerializeField] private List<EquipItemObject> itemEquipmentList;
         [SerializeField] private List<Color> rareColorList; // TODO: Move to StaticDataManager 
 
-        public List<EquipItemObject> ItemEquipments => new List<EquipItemObject>(itemEquipmentList);
-        public List<Color> RareColorList => new List<Color>(rareColorList);
+        public List<EquipItemObject> ItemEquipments => itemEquipmentList;
+        public List<Color> RareColorList => rareColorList;
 
         public EquipItemObject GetEquipItemObjectWithId(int id)
         {

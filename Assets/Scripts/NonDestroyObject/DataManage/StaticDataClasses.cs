@@ -76,12 +76,14 @@ namespace NonDestroyObject.DataManage
         public string spriteName;
         public int maxLevel;
         public List<int> optionValuePerLevelList;
-        public List<int> coinPerLevelList;
     }
 
     [Serializable]
-    public class EnhanceProbability
+    public class EnhanceInfo
     {
-        
+        public int rare;
+        public List<int> probabilityPerlevelList;
+        public List<int> addProbabilityPerLevelList;
+        public List<int> coinPerLevelList;
     }
 }

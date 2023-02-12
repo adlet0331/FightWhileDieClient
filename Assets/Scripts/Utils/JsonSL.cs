@@ -17,6 +17,7 @@ namespace Utils
         StaticDataVersion = 2,
         GatchaProbability = 3,
         EquipItemInfo = 4,
+        EnhanceInfo = 5,
     }
     /// <summary>
     /// Json Read/Write를 지원하는 Util

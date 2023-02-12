@@ -22,18 +22,26 @@ namespace NonDestroyObject.DataManage
 
         public List<GatchaProbability> GatchaProbabilitys => gatchaProbabilitys;
         [SerializeField] private List<GatchaProbability> gatchaProbabilitys;
-        [SerializeField] private List<EnhanceProbability> enhanceProbabilities;
         
+        [SerializeField] private List<EquipItemInfo> equipmentItemInfos;
         public EquipItemInfo GetEquipItemInfo(int rare, int option)
         {
             var totalLength = equipmentItemInfos.Count;
             var totalOptions = (int)(totalLength / 6);
 
             Debug.Log($"{totalOptions * (rare - 1) + option}, rare: {rare}, option: {option}");
+
+            var equipItemInfo = equipmentItemInfos[totalOptions * (rare - 1) + option];
             
-            return equipmentItemInfos[totalOptions * (rare - 1) + option];
+            return equipItemInfo;
         }
-        [SerializeField] private List<EquipItemInfo> equipmentItemInfos;
+        
+        [SerializeField] private List<EnhanceInfo> enhanceInfos;
+        public EnhanceInfo GetEnhanceInfo(int rare)
+        {
+            var enhanceInfo = enhanceInfos[rare - 1]; 
+            return enhanceInfo;
+        }
         
         public void Start()
         {
@@ -50,6 +58,10 @@ namespace NonDestroyObject.DataManage
             if (equipmentItemInfosJson != String.Empty)
                 equipmentItemInfos = JsonConvert.DeserializeObject<List<EquipItemInfo>>(equipmentItemInfosJson);
             
+            var gatchaProbabilitysJson = JsonSL.LoadJson(JsonTitle.EnhanceInfo);
+            if (gatchaProbabilitysJson != String.Empty)
+                enhanceInfos = JsonConvert.DeserializeObject<List<EnhanceInfo>>(gatchaProbabilitysJson);
+
             GetStaticDatasFromServer().Forget();
         }
 
@@ -122,7 +134,7 @@ namespace NonDestroyObject.DataManage
                 return;
             
             var staticDatas = staticDataJsonResult.Data;
-            // Update Local Data
+            // Update Local Data And Load
             for (int i = 0; i < staticDatas.Count; i++)
             {
                 switch (unVerionedStaticDataTitleList[i])
@@ -133,11 +145,19 @@ namespace NonDestroyObject.DataManage
                         var gatchaProbJsonString = JsonConvert.SerializeObject(gatchaProbabilitys);
                         JsonSL.SaveJson(JsonTitle.GatchaProbability, gatchaProbJsonString).Forget();
                         break;
+                    
                     case nameof(JsonTitle.EquipItemInfo):
                         equipmentItemInfos = JsonConvert.DeserializeObject<List<EquipItemInfo>>(staticDatas[i]);
                         
                         var equipmentItemInfosJsonString = JsonConvert.SerializeObject(equipmentItemInfos);
                         JsonSL.SaveJson(JsonTitle.EquipItemInfo, equipmentItemInfosJsonString).Forget();
+                        break;
+                    
+                    case nameof(JsonTitle.EnhanceInfo):
+                        enhanceInfos = JsonConvert.DeserializeObject<List<EnhanceInfo>>(staticDatas[i]);
+                        
+                        var enhanceInfosJsonString = JsonConvert.SerializeObject(enhanceInfos);
+                        JsonSL.SaveJson(JsonTitle.EnhanceInfo, enhanceInfosJsonString).Forget();
                         break;
                 }
             }
