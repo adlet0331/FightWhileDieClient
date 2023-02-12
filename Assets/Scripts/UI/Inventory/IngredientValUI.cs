@@ -7,27 +7,21 @@ namespace UI.Inventory
 {
     public class IngredientValUI: MonoBehaviour
     {
-        [Header("Need To Be Init")]
-        [SerializeField] private int rare;
-        
         [Header("Components")]
         [SerializeField] private Image background;
         [SerializeField] private Image ingredientColor;
         [SerializeField] private TextMeshProUGUI valueText;
 
-        public void SetSelected(bool selected)
+        public void SetSelected(bool isSelected)
         {
-            if (selected)
+            if (isSelected)
                 background.color = Color.grey;
             else
                 background.color = Color.white;
         }
         
-        public void UpdateValue()
+        public void UpdateUI(Color color, int val)
         {
-            var val = DataManager.Instance.playerDataManager.EnhanceIngredientList[rare];
-            var color = DataManager.Instance.itemManager.RareColorList[rare];
-            
             valueText.text = val.ToString();
             ingredientColor.color = color;
             valueText.color = color;

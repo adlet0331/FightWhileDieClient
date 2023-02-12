@@ -22,6 +22,7 @@ namespace NonDestroyObject.DataManage
 
         public List<GatchaProbability> GatchaProbabilitys => gatchaProbabilitys;
         [SerializeField] private List<GatchaProbability> gatchaProbabilitys;
+        [SerializeField] private List<EnhanceProbability> enhanceProbabilities;
         
         public EquipItemInfo GetEquipItemInfo(int rare, int option)
         {

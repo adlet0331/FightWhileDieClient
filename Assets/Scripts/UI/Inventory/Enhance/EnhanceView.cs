@@ -1,6 +1,9 @@
 ﻿using System;
 using Data;
+using NonDestroyObject;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI.Inventory.Enhance
 {
@@ -17,13 +20,29 @@ namespace UI.Inventory.Enhance
         {
             ItemSelectedBool
         }
-        
+
         [Header("UI Components")]
-        [SerializeField] private IngredientValUI[] ingredientInfoList;
-        [SerializeField] private CoinUI playerCoin;
-        [SerializeField] private CoinUI afterSpendCoin;
-        [SerializeField] private CoinUI spendCoin;
+        [SerializeField] private IngredientBanner ingredientBanner;
+        [SerializeField] private CoinUI playerCoinUI;
+        [SerializeField] private CoinUI afterUseCoinUI;
+        [SerializeField] private CoinUI priceCoinUI;
+        [SerializeField] private TextMeshProUGUI currLevelVal;
+        [SerializeField] private TextMeshProUGUI nextLevelVal;
         [SerializeField] private EnhanceTriggerObj enhanceTriggerObj;
+
+        [Header("Buttons")]
+        [SerializeField] private Image StartEnhanceButton;
+        [SerializeField] private EnhanceIngredButton enhanceIngredButton;
+
+        public void ButtonStartPressed()
+        {
+            
+        }
+
+        public void ButtonIngredientPressed()
+        {
+            
+        }
 
         [Header("Status")]
         [SerializeField] private EnhanceViewMode currentMode;
@@ -98,14 +117,25 @@ namespace UI.Inventory.Enhance
 
         private void UpdateAllUI()
         {
-            for (int i = 1; i <= 6; i++)
+            ingredientBanner.UpdateValues();
+            
+            var playerCoin = DataManager.Instance.playerDataManager.Coin;
+            var price = DataManager.Instance.playerDataManager.GatchaCosts;
+            playerCoinUI.SetCoinValue(playerCoin);
+            priceCoinUI.SetCoinValue(price);
+            afterUseCoinUI.SetCoinValue(playerCoin - price);
+            if (playerCoin < price)
             {
-                ingredientInfoList[i].UpdateValue();
+                StartEnhanceButton.color = Color.gray;
+            }
+            else
+            {
+                StartEnhanceButton.color = Color.white;
             }
         }
         protected override void BeforeActivate()
         {
-            UpdateAllUI();
+            ingredientBanner.Init(true, false);
 
             enhanceTriggerObj.InitHandler(SlotClickHandler);
             animator.keepAnimatorControllerStateOnDisable = true;

@@ -78,4 +78,10 @@ namespace NonDestroyObject.DataManage
         public List<int> optionValuePerLevelList;
         public List<int> coinPerLevelList;
     }
+
+    [Serializable]
+    public class EnhanceProbability
+    {
+        
+    }
 }

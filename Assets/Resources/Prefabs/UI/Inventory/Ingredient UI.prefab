@@ -339,7 +339,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58037457b47f480cbbd8b8623ac6ac28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rare: 0
-  background: {fileID: 0}
+  background: {fileID: 5472911046721232822}
   ingredientColor: {fileID: 6945937909728695026}
   valueText: {fileID: 3493980644918807804}
