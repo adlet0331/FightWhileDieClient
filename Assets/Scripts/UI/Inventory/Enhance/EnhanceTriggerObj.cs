@@ -2,6 +2,7 @@
 using NonDestroyObject;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 namespace UI.Inventory.Enhance
 {
@@ -18,13 +19,22 @@ namespace UI.Inventory.Enhance
         {
             SelectedBool,
             EnhancingBool,
-            EnhanceEndBool
+            EnhanceEndBool,
+            EnhanceSuccessBool
         }
-        
+
+        private enum AnimationName
+        {
+            Enhancing,
+            EnhanceSuccessed,
+            EnhanceFailed
+        }
+
         [Header("Components")]
         [SerializeField] private Image itemBorder;
         [SerializeField] private ItemSlot itemSlot;
         [SerializeField] private Animator animator;
+        [SerializeField] private RuntimeAnimatorController runtimeAnimatorController;
 
         [Header("States")]
         [SerializeField] private bool initialized;
@@ -32,6 +42,31 @@ namespace UI.Inventory.Enhance
 
         private event SlotClickHandler SlotClickHandler;
 
+        public float EnhancingTime()
+        {
+            var time = AnimatorUtil.GetAnimationTime(AnimationName.Enhancing.ToString(), runtimeAnimatorController);
+            
+            return time;
+        }
+        
+        public float EnhanceResultWaitTime(bool success)
+        {
+            var animationName = success ? AnimationName.EnhanceSuccessed.ToString() : AnimationName.EnhanceFailed.ToString();
+            var time = AnimatorUtil.GetAnimationTime(animationName, runtimeAnimatorController);
+
+            return time;
+        }
+        
+        public void SetEnhanceResult(bool success)
+        {
+            // animator.SetBool(AnimParams.SelectedBool.ToString(), true);
+            
+            animator.SetBool(AnimParams.EnhanceEndBool.ToString(), true);
+            animator.SetBool(AnimParams.EnhancingBool.ToString(), true);
+            animator.SetBool(AnimParams.EnhanceSuccessBool.ToString(), success);
+
+        }
+        
         public void SwitchStatus(EnhanceTriggerStatus status)
         {
             currentStatus = status;
@@ -47,12 +82,6 @@ namespace UI.Inventory.Enhance
                     break;
                 case EnhanceTriggerStatus.Selected:
                     animator.SetBool(AnimParams.SelectedBool.ToString(), true);
-                    break;
-                case EnhanceTriggerStatus.Enhancing:
-                    animator.SetBool(AnimParams.EnhancingBool.ToString(), true);
-                    break;
-                case EnhanceTriggerStatus.Result:
-                    animator.SetBool(AnimParams.EnhanceEndBool.ToString(), true);
                     break;
             }
         }
@@ -73,6 +102,7 @@ namespace UI.Inventory.Enhance
             
             SlotClickHandler = clickHandler;
             animator.keepAnimatorControllerStateOnDisable = true;
+            runtimeAnimatorController = animator.runtimeAnimatorController;
 
             itemSlot.Init(0, null, clickHandler, UpperViewStatus.Enhancement.ToString(), ItemSlotMode.OnlyItem);
 

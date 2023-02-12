@@ -28,6 +28,15 @@ namespace NonDestroyObject.DataManage
             }
             return null;
         }
+
+        public void UpdateEquipItemObject(EquipItemObject equipItemObject)
+        {
+            var index = itemEquipmentList.FindIndex((val) => val.id == equipItemObject.id);
+            itemEquipmentList[index] = equipItemObject;
+
+            var jsonString = JsonConvert.SerializeObject(itemEquipmentList);
+            JsonSL.SaveJson(JsonTitle.PlayerEquipItemObjects, jsonString).Forget();
+        }
         
         public void Start()
         {

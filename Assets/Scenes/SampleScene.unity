@@ -3874,8 +3874,8 @@ MonoBehaviour:
     currentVersions: []
     serverVersions: []
     gatchaProbabilitys: []
-    enhanceInfos: []
     equipmentItemInfos: []
+    enhanceInfos: []
   itemManager:
     itemEquipmentList: []
     rareColorList: []

@@ -41,6 +41,11 @@ namespace UI.Inventory
         {
             SwitchStatus(UpperViewStatus.Enhancement, enhanceView.ItemSelected ? ItemViewMode.Hide : ItemViewMode.ItemSlots);
         }
+
+        public void OpenDecomposeView()
+        {
+            SwitchStatus(UpperViewStatus.Decomposition, ItemViewMode.ItemSlotsWithInfo);
+        }
         
         private void Awake()
         {
@@ -64,7 +69,7 @@ namespace UI.Inventory
 
             equipView.DeActivate();
             enhanceView.DeActivate();
-            //decompositionView.DeActivate();
+            decomposeView.DeActivate();
 
             switch (uViewStatus)
             {

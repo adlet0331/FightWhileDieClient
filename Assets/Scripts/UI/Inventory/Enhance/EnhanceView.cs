@@ -6,6 +6,8 @@ using TMPro;
 using UI.Touch;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
+using Random = System.Random;
 
 namespace UI.Inventory.Enhance
 {
@@ -16,6 +18,7 @@ namespace UI.Inventory.Enhance
         {
             ItemNotSelected,
             ItemSelected,
+            Enhancing,
         }
 
         private enum AnimatorParams
@@ -35,6 +38,7 @@ namespace UI.Inventory.Enhance
         [SerializeField] private TextMeshProUGUI totalProbabilityVal;
         [SerializeField] private EnhanceTriggerObj enhanceTriggerObj;
         [SerializeField] private NoResponseTouch noResponseTouchBoard;
+        [SerializeField] private GameObject[] disableWhileEnhancing;
         
         [Header("Buttons")]
         [SerializeField] private Image startEnhanceButton;
@@ -43,18 +47,56 @@ namespace UI.Inventory.Enhance
 
         public void ButtonStartPressed()
         {
-            ButtonStartPressedAsync().Forget();
-        }
-
-        public async UniTaskVoid ButtonStartPressedAsync()
-        {
             // Enable Block Touch Event
             noResponseTouchBoard.gameObject.SetActive(true);
-            
-            
 
-            UniTask.SwitchToMainThread();
-            noResponseTouchBoard.gameObject.SetActive(false);
+            int rare = selectedObject.rare;
+            int level = selectedObject.level;
+
+            var enhanceInfo = DataManager.Instance.staticDataManager.GetEnhanceInfo(rare);
+            var price = enhanceInfo.coinPerLevelList[level];
+            var playerCoin = DataManager.Instance.playerDataManager.Coin;
+            
+            // Check If There is Enough Coin
+            if (price > playerCoin) return;
+            
+            // Calculate If Enhance Success Or Fail
+            Random random = new Random();
+            var successProb = enhanceInfo.probabilityPerlevelList[level];
+            var randResult = random.Next(1, 101);
+            // 1 ~ 100
+            // 1 퍼센트면 1일 때만 성공
+            var success = randResult <= successProb;
+            enhanceTriggerObj.SetEnhanceResult(success);
+            var enhancingTime = enhanceTriggerObj.EnhancingTime();
+            var waitTime = enhancingTime + 1.2f;
+            
+            Debug.Log(waitTime);
+
+            // Spend Coin
+            DataManager.Instance.playerDataManager.SpendCoin(price);
+            
+            // Fetch Data
+            if (success) selectedObject.level += 1;
+            else if (selectedObject.level > 1) selectedObject.level -= 1;
+            DataManager.Instance.itemManager.UpdateEquipItemObject(selectedObject);
+            
+            // UI
+            foreach (var disableGameObject in disableWhileEnhancing)
+            {
+                disableGameObject.SetActive(false);
+            }
+
+            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(waitTime, () =>
+            {
+                foreach (var disableGameObject in disableWhileEnhancing)
+                {
+                    disableGameObject.SetActive(true);
+                }
+                noResponseTouchBoard.gameObject.SetActive(false);
+                enhanceTriggerObj.SwitchStatus(EnhanceTriggerStatus.Selected);
+                UpdateAllUI();
+            }));
         }
 
         public void ButtonIngredientPressed()
@@ -140,8 +182,6 @@ namespace UI.Inventory.Enhance
         {
             currentMode = mode;
 
-            animator.SetBool(AnimatorParams.ItemSelectedBool.ToString(), false);
-            
             switch (mode)
             {
                 case EnhanceViewMode.ItemNotSelected:
@@ -150,6 +190,9 @@ namespace UI.Inventory.Enhance
                 case EnhanceViewMode.ItemSelected:
                     animator.SetBool(AnimatorParams.ItemSelectedBool.ToString(), true);
                     break;
+                // case EnhanceViewMode.Enhancing:
+                //     
+                //     break;
             }
         }
 
