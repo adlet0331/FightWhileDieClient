@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NonDestroyObject;
-using UnityEditor.Presets;
 using UnityEngine;
 
 namespace UI.Inventory

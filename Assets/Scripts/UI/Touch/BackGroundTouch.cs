@@ -1,7 +1,5 @@
-﻿using System;
-using NonDestroyObject;
+﻿using NonDestroyObject;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace UI.Touch
 {

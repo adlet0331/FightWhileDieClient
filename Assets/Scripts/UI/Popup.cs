@@ -1,9 +1,4 @@
-﻿using System;
-using NonDestroyObject;
-using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 namespace UI
 {

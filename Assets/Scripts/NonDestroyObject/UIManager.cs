@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using NonDestroyObject.DataManage;
 using TMPro;
 using UI;
 using UI.Gatcha;

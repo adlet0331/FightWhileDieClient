@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Data;
 using UI.Inventory.Decompose;
 using UI.Inventory.Enhance;
 using UI.Inventory.Equip;

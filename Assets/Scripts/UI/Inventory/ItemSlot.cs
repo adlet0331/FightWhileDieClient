@@ -1,5 +1,4 @@
-﻿using System;
-using Data;
+﻿using Data;
 using NonDestroyObject;
 using TMPro;
 using UnityEngine;

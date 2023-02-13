@@ -1,6 +1,4 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using Data;
+﻿using Data;
 using NonDestroyObject;
 using TMPro;
 using UI.Touch;

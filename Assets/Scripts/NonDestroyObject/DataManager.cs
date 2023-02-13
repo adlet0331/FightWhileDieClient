@@ -1,5 +1,3 @@
-using System;
-using Cysharp.Threading.Tasks;
 using NonDestroyObject.DataManage;
 
 namespace NonDestroyObject

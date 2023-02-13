@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
-using NonDestroyObject;
+﻿using NonDestroyObject;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace UI
 {

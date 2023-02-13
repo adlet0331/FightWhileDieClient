@@ -1,10 +1,8 @@
-using Cysharp.Threading.Tasks;
 using Data;
 using NonDestroyObject;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Utils;
 
 namespace UI.Gatcha
 {
