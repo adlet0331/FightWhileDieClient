@@ -10,8 +10,8 @@ namespace NonDestroyObject
     public class CombatManager : Singleton<CombatManager>
     {
         [Header("Need Initialize In Unity")] 
-        public CombatObject player;
-        public CombatObject enemyAI;
+        public CombatEntity player;
+        public CombatEntity enemyAI;
         [SerializeField] private Transform aiStartPosition;
         [SerializeField] private Transform aiStandingPosition;
 
@@ -70,7 +70,6 @@ namespace NonDestroyObject
             inputBlocked = true;
             // Coroutines
             _afterDeadCoroutine = null;
-            _blockInputCoroutine = null;
             // Random
             randomSeed = DateTime.Now.Millisecond * 103729;
             _random = new Random(randomSeed);
@@ -256,31 +255,5 @@ namespace NonDestroyObject
         
         // IEnumerator
         private IEnumerator _afterDeadCoroutine;
-        // Input Block 용
-        private IEnumerator _blockInputCoroutine;
-        
-        private void CancelBlockInputCoroutine()
-        {
-            if (_blockInputCoroutine != null)
-            {
-                StopCoroutine(_blockInputCoroutine);
-                _blockInputCoroutine = null;
-            }
-        }
-        private void BlockInput(float sec, CoroutineUtils.AfterWaitOperation operation)
-        {
-            inputBlocked = true;
-            
-            if (_blockInputCoroutine != null) StopCoroutine(_blockInputCoroutine);
-            _blockInputCoroutine = CoroutineUtils.WaitAndOperationIEnum(sec, () =>
-            {
-                inputBlocked = false;
-
-                _blockInputCoroutine = null;
-                operation();
-            });
-            StartCoroutine(_blockInputCoroutine);
-        }
-
     }
 }

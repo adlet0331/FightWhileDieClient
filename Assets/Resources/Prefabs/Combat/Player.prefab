@@ -28,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5935084497502917635}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2, y: -1.7, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
@@ -121,7 +121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c74e43d6efb84058b0e231366e8a6bd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  atk: 50
   maxHp: 1
   attackDelay: 0
   attackEnd: 0.2
@@ -130,7 +129,6 @@ MonoBehaviour:
   runningSpeed: 0
   backJumpSpeed: 0
   knockBackXInterval: 0
-  knockBackTime: 0
   currentStatus: 0
   currentHp: 1
   attacking: 0
@@ -139,10 +137,9 @@ MonoBehaviour:
   running: 0
   backJumping: 0
   damaging: 0
-  animator: {fileID: 0}
+  animator: {fileID: 5935084497502917634}
   hitBox: {fileID: 5935084497502917646}
   attackHitBox: {fileID: 5935084497732478257}
-  runtimeAnimatorController: {fileID: 0}
 --- !u!61 &5935084497502917646
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -261,6 +258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2d7df074ef4fd99df24c9a08658301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  combatObject: {fileID: 5935084497502917640}
+  combatEntity: {fileID: 5935084497502917640}
   attackRangeCollider: {fileID: 5935084497732478262}
   enemyInRange: 0

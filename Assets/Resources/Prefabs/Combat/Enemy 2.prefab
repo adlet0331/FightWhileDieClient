@@ -48,7 +48,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.08684349}
+  m_Offset: {x: -0.17641258, y: 0.04751437}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -59,7 +59,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.4, y: 0.344338}
+  m_Size: {x: 1.0437586, y: 0.58484626}
   m_EdgeRadius: 0
 --- !u!61 &2941824332708101191
 BoxCollider2D:
@@ -74,7 +74,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.072369576, y: -0.024812534}
+  m_Offset: {x: -0.105111666, y: -0.049153745}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -85,7 +85,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.19959903, y: 0.476671}
+  m_Size: {x: 0.1889898, y: 0.41926068}
   m_EdgeRadius: 0
 --- !u!50 &4383551722597679850
 Rigidbody2D:
@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 3973778045446700010}
   - component: {fileID: 3973778045446700020}
   m_Layer: 0
-  m_Name: Enemy 1
+  m_Name: Enemy 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -174,9 +174,9 @@ MonoBehaviour:
   attackEnd: 0.45
   attackAfterDelay: 0.55
   type: 1
-  runningSpeed: 3.5
-  backJumpSpeed: 3.5
-  knockBackXInterval: 4
+  runningSpeed: 8
+  backJumpSpeed: 6
+  knockBackXInterval: 5
   currentStatus: 0
   currentHp: 50
   attacking: 0
@@ -213,8 +213,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6365470792853590273}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.102, y: -0.114, z: 0}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3973778045446700010}
@@ -261,7 +261,7 @@ SpriteRenderer:
   m_SortingLayerID: -831797151
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4723107735738678597, guid: fc46633b0eb321e46838bcb9ff2d4150, type: 3}
+  m_Sprite: {fileID: 4723107735738678597, guid: 174209194dbf2fb44aef1ea1ba76a2f1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -282,7 +282,7 @@ Animator:
   m_GameObject: {fileID: 6365470792853590273}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4e6b71cdaefdd944593df0615e644af7, type: 2}
+  m_Controller: {fileID: 9100000, guid: 2ae39095950fa0b48af0e52e116b0891, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

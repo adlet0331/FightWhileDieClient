@@ -1,27 +1,28 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Combat
 {
     [RequireComponent(typeof(BoxCollider2D))]
     public class AttackRangeObject : MonoBehaviour
     {
-        [SerializeField] private CombatObject combatObject;
+        [Header("Set in Unity")]
+        [SerializeField] private CombatEntity combatEntity;
         [SerializeField] private BoxCollider2D attackRangeCollider;
         
         public bool EnemyInRange => enemyInRange;
         
         [SerializeField] private bool enemyInRange;
+
         private void Start()
         {
-            attackRangeCollider = GetComponent<BoxCollider2D>();
-            combatObject = GetComponentInParent<CombatObject>();
+            ResetInRange();
         }
 
         private void OnTriggerEnter2D(Collider2D col)
         {
             if (col.CompareTag("Player"))
             {
-                // Debug.Log("Trigger In");
                 enemyInRange = true;
             }
         }
@@ -29,7 +30,6 @@ namespace Combat
         {
             if (col.CompareTag("Player"))
             {
-                // Debug.Log("Trigger Out");
                 enemyInRange = false;
             }
         }

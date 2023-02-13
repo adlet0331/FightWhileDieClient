@@ -21,9 +21,7 @@ namespace Combat
         Player = 0,
         AI = 1
     }
-    [RequireComponent(typeof(Rigidbody2D))]
-    [RequireComponent(typeof(BoxCollider2D))]
-    public class CombatObject : MonoBehaviour
+    public class CombatEntity : MonoBehaviour
     {
         [Header("Initial Setting")]
         [SerializeField] private int maxHp;
@@ -58,32 +56,14 @@ namespace Combat
         [SerializeField] private bool backJumping;
         [SerializeField] private bool damaging;
 
-        [Header("Components")]
+        [Header("Set In Unity")]
         [SerializeField] private Animator animator;
-        [SerializeField] private BoxCollider2D hitBox;
         [SerializeField] private AttackRangeObject attackHitBox;
-        [SerializeField] private RuntimeAnimatorController runtimeAnimatorController;
 
         #region Start
         private void Start()
         {
-            if (animator.IsUnityNull())
-            {
-                animator = GetComponent<Animator>();
-            }
-
-            if (hitBox.IsUnityNull())
-            {
-                hitBox = GetComponent<BoxCollider2D>();
-            }
-
-            if (attackHitBox.IsUnityNull())
-            {
-                attackHitBox = GetComponentInChildren<AttackRangeObject>();
-            }
-            
             currentHp = maxHp;
-            runtimeAnimatorController = animator.runtimeAnimatorController;
 
             // Coroutines
             _waitAndReturnToIdleCoroutine = null;
@@ -167,7 +147,7 @@ namespace Combat
         // Animation 시간 이름으로 받아오기
         public float GetAnimationTime(string animationName)
         {
-            return AnimatorUtil.GetAnimationTime(animationName, runtimeAnimatorController);
+            return AnimatorUtil.GetAnimationTime(animationName, animator.runtimeAnimatorController);
         }
 
         public void ResetAfterDie()
