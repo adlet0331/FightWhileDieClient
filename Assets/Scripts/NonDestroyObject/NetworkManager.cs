@@ -50,7 +50,7 @@ namespace NonDestroyObject
             if (!triggeredInThreadPool)
             {
                 await UniTask.SwitchToMainThread();
-                UIManager.Instance.LoadingPopup.Open();
+                UIManager.Instance.loadingPopup.Open();
                 Debug.Log(url + "\n" + reqString);
             }
             await UniTask.SwitchToThreadPool();
@@ -88,7 +88,7 @@ namespace NonDestroyObject
             await UniTask.SwitchToMainThread();
             if (!triggeredInThreadPool)
             {
-                UIManager.Instance.LoadingPopup.Close();
+                UIManager.Instance.loadingPopup.Close();
                 Debug.Log(resString);
             }
             

@@ -25,21 +25,22 @@ namespace NonDestroyObject
     {
         Gatcha = 0,
     }
+    public delegate void UIUpdateVoid();
     public class UIManager : Singleton<UIManager>
     {
         [FormerlySerializedAs("_updating")]
         [Header("UI Enemy Hp Update")] 
-        [SerializeField] private int _updateCount;
-        [SerializeField] private float _updatingInterval;
-        [SerializeField] private float _updatingEndValue;
+        [SerializeField] private int updateCount;
+        [SerializeField] private float updatingInterval;
+        [SerializeField] private float updatingEndValue;
         [Header("Popup")]
         public GatchaPopup gatchaPopup;
-        public Popup NoInternetInGatchaPopup;
+        public Popup noInternetInGatchaPopup;
         public InventoryPopup inventoryPopup;
         public Popup rankingPopup;
         public Popup pausePopup;
         public PopupEnterName enterYourNamePopup;
-        public LoadingPopup LoadingPopup;
+        public LoadingPopup loadingPopup;
         public SimpleTextPopup simpleTextPopup;
         [Header("Effect")]
         public CoinEffect coinEffect;
@@ -60,26 +61,36 @@ namespace NonDestroyObject
         [SerializeField] private TextMeshProUGUI _attackVal;
         [SerializeField] private TextMeshProUGUI _coinVal;
         [SerializeField] private Slider _enemyHp;
+        
+        public event UIUpdateVoid UpdateAllUIEvent;
+
+        public void UpdateAllUIInGame()
+        {
+            UpdateAllUIEvent?.Invoke();
+        }
 
         private void Start()
         {
             _stageHpMoveCoroutine = null;
             _titleMoveCoroutine = null;
+
+            UpdateAllUIEvent += UpdateMainUI;
+            UpdateAllUIEvent += UpdateCombatUI;
         }
 
         private void FixedUpdate()
         {
-            if (_updateCount > 0)
+            if (updateCount > 0)
             {
-                if (_updateCount == 1)
+                if (updateCount == 1)
                 {
-                    _enemyHp.value = _updatingEndValue;
+                    _enemyHp.value = updatingEndValue;
                 }
                 else
                 {
-                    _enemyHp.value -= _updatingInterval;
+                    _enemyHp.value -= updatingInterval;
                 }
-                _updateCount -= 1;
+                updateCount -= 1;
             }
         }
 
@@ -96,7 +107,7 @@ namespace NonDestroyObject
         public void HideAllPopup()
         {
             gatchaPopup.Close();
-            NoInternetInGatchaPopup.Close();
+            noInternetInGatchaPopup.Close();
             inventoryPopup.Close();
             rankingPopup.Close();
             pausePopup.Close();
@@ -137,9 +148,9 @@ namespace NonDestroyObject
 
         public void UpdateEnemyHp(float end)
         {
-            _updateCount = (int) (0.5f / Time.fixedDeltaTime);
-            _updatingInterval = (float) Math.Round((_enemyHp.value - end)/ _updateCount, 3);
-            _updatingEndValue = end;
+            updateCount = (int) (0.5f / Time.fixedDeltaTime);
+            updatingInterval = (float) Math.Round((_enemyHp.value - end)/ updateCount, 3);
+            updatingEndValue = end;
         }
         
         private IEnumerator _stageHpMoveCoroutine;

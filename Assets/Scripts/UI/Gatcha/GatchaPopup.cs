@@ -152,7 +152,6 @@ namespace UI.Gatcha
         
         public new void Open()
         {
-            DataManager.Instance.playerDataManager.UpdateGatchaPopupOpen();
             UpdateUI();
             gatchaStartPage.SetActive(true);
             gatchaStartingPage.SetActive(false);

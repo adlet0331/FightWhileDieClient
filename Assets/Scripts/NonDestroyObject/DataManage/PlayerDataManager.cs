@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Data;
 using UnityEngine;
 
 namespace NonDestroyObject.DataManage
@@ -11,21 +12,75 @@ namespace NonDestroyObject.DataManage
     [Serializable]
     public class PlayerDataManager
     {
-        // Properties
+        // Not Updated Frequently
         public int Id => id;
         public string UserName => userName;
         public int Stage => stage;
         public int BaseAtk => baseAtk;
-        public int CurrentEnemyHp => (int) (enemyStartHp * Math.Pow(enemyHpMultiplier, stage));
         public int Coin => coin;
-        public int GatchaCosts => gatchaStartCoin * (int)Math.Pow(2, dailyGatchaCount);
         public List<int> EnhanceIngredientList => enhanceIngredientList;
         public int LastUpdated => lastUpdated;
         public int TopStage => topStage;
-        public int Atk => atk;
-        public int ClearCoin => clearCoin;
+        
+        // Need Update to Get
+        public int CurrentEnemyHp => (int) (enemyStartHp * Math.Pow(enemyHpMultiplier, stage));
+        public int DailyGatchaCount
+        {
+            get
+            {
+                if (lastUpdated < GetCurrentTime())
+                    dailyGatchaCount = 0;
+                lastUpdated = GetCurrentTime();
+                return dailyGatchaCount;
+            }
+        }
+        public int GatchaCosts => gatchaStartCoin * (int)Math.Pow(2, DailyGatchaCount);
+
+        public int Atk
+        {
+            get
+            {
+                int atk = baseAtk;
+
+                int plusVal = GetOptionValue(EquipmentOption.AtkAddValue);
+                float multVal = 1 + (GetOptionValue(EquipmentOption.AtkAddPercent) / 100.0f);
+
+                atk = (int)(multVal * (atk + plusVal));
+                
+                return atk;
+            }
+        }
+
+        public int ClearCoin
+        {
+            get
+            {
+                int coin = stage;
+
+                int plusVal = GetOptionValue(EquipmentOption.CoinGainAddValue);
+                float multVal = 1 + (GetOptionValue(EquipmentOption.CoinGainAddPercent) / 100.0f);
+
+                coin = (int) (multVal * (coin + plusVal));
+                
+                return coin;
+            }
+        }
         public List<int> EquipedItemIdList => equipedItemIdList;
 
+        public int GetOptionValue(EquipmentOption option)
+        {
+            int val = 0;
+
+            foreach (var equippedItemId in equipedItemIdList)
+            {
+                EquipItemObject equippedItem = DataManager.Instance.itemManager.GetEquipItemObjectWithId(equippedItemId);
+
+                if (equippedItem != null && equippedItem.Option == option)
+                    val += equippedItem.optionValue;
+            }
+
+            return val;
+        }
 
         [Header("Static Values")]
         [SerializeField] private int enemyStartHp = 50;
@@ -40,14 +95,14 @@ namespace NonDestroyObject.DataManage
         [SerializeField] private int coin;
         [SerializeField] private int dailyGatchaCount;
         [SerializeField] private List<int> enhanceIngredientList;
+        
         [Header("Non-Server Dependent Variables, Only handled in Client")]
         [SerializeField] private int lastUpdated;
         [SerializeField] private List<int> equipedItemIdList;
-        [Header("Updated Frequently")]
-        [SerializeField] private int topStage;
-        [SerializeField] private int atk = 50;
-        [SerializeField] private int clearCoin;
         
+        [Header("Update Frequently")]
+        [SerializeField] private int topStage;
+
         public void Start()
         {
             LoadAllPrefs();
@@ -96,13 +151,10 @@ namespace NonDestroyObject.DataManage
         public void UpdateEquipItem(int index, int uid)
         {
             equipedItemIdList[index] = uid;
+            UIManager.Instance.UpdateAllUIInGame();
+            FetchAllStatus(false);
         }
 
-        public void UpdateGatchaPopupOpen()
-        {
-            UpdateCurrentTime();
-        }
-        
         public void StageReset()
         {
             stage = ((int)((topStage - 1) / 10.0f) * 10) + 1;
@@ -114,7 +166,7 @@ namespace NonDestroyObject.DataManage
             stage += 1;
             if (stage > topStage)
                 topStage = stage;
-            baseAtk += 10;
+            baseAtk += 10 * (int)((100 + GetOptionValue(EquipmentOption.BaseAtkGainAddPercent)) / 100.0f);
             coin += stage;
             FetchAllStatus(false);
         }
@@ -258,38 +310,9 @@ namespace NonDestroyObject.DataManage
             return date2Int;
         }
 
-        private void UpdateAtk()
-        {
-            atk = baseAtk;
-        }
-        
-        private void UpdateClearCoin()
-        {
-            clearCoin = stage;
-        }
-
-        private void UpdateCurrentTime()
-        {
-            if (lastUpdated < GetCurrentTime())
-                InitDailyUpdateDatas();
-            lastUpdated = GetCurrentTime();
-        }
-
-        private void InitDailyUpdateDatas()
-        {
-            dailyGatchaCount = 0;
-        }
-
         private void FetchAllStatus(bool sendToServer)
         {
-            // Update variables
-            UpdateAtk();
-            UpdateClearCoin();
-            UpdateCurrentTime();
-            // Update UI
-            UIManager.Instance.UpdateMainUI();
-            UIManager.Instance.UpdateCombatUI();
-            // Update Prefs and Server
+            UIManager.Instance.UpdateAllUIInGame();
             SaveAllInfoPrefs();
             if (sendToServer)
                 NetworkManager.Instance.FetchUser().Forget();

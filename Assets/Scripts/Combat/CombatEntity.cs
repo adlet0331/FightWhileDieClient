@@ -139,6 +139,18 @@ namespace Combat
         }
         #endregion
 
+        public void Show()
+        {
+            attackHitBox.WhenShow();
+            gameObject.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+            attackHitBox.WhenHide();
+        }
+        
         public void EnableAnimation(bool enable)
         {
             animator.speed = enable ? 1.0f : 0.0f;

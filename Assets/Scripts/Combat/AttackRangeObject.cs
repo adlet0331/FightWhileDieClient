@@ -9,18 +9,40 @@ namespace Combat
         [Header("Set in Unity")]
         [SerializeField] private CombatEntity combatEntity;
         [SerializeField] private BoxCollider2D attackRangeCollider;
+        [SerializeField] private bool initiallized;
         
         public bool EnemyInRange => enemyInRange;
         
         [SerializeField] private bool enemyInRange;
 
+        public void WhenShow()
+        {
+            initiallized = false;
+        }
+
+        public void WhenHide()
+        {
+            ResetInRange();
+        }
+                
+        public void ResetInRange()
+        {
+            enemyInRange = false;
+        }
+
         private void Start()
         {
+            initiallized = false;
             ResetInRange();
         }
 
         private void OnTriggerEnter2D(Collider2D col)
         {
+            if (!initiallized)
+            {
+                initiallized = true;
+                return;
+            }
             if (col.CompareTag("Player"))
             {
                 enemyInRange = true;
@@ -32,11 +54,6 @@ namespace Combat
             {
                 enemyInRange = false;
             }
-        }
-
-        public void ResetInRange()
-        {
-            enemyInRange = false;
         }
     }
 }
