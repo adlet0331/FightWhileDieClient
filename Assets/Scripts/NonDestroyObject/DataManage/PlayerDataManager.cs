@@ -151,7 +151,6 @@ namespace NonDestroyObject.DataManage
         public void UpdateEquipItem(int index, int uid)
         {
             equipedItemIdList[index] = uid;
-            UIManager.Instance.UpdateAllUIInGame();
             FetchAllStatus(false);
         }
 

@@ -76,6 +76,8 @@ namespace NonDestroyObject
 
             UpdateAllUIEvent += UpdateMainUI;
             UpdateAllUIEvent += UpdateCombatUI;
+            
+            UpdateMainUI();
         }
 
         private void FixedUpdate()
