@@ -116,7 +116,7 @@ namespace Combat
             }
             _waitAndReturnToIdleCoroutine = null;
         }
-        private void WaitAndChangeHitting()
+        private void WaitAndHandleHitting()
         {
             CancelHittingJudgeCoroutine();
             _hittingJudgeCoroutine = CoroutineUtils.WaitAndOperationIEnum(attackDelay, () =>
@@ -262,7 +262,7 @@ namespace Combat
                 // 공격
                 case ObjectStatus.Attack:
                     // Hitting 변수
-                    WaitAndChangeHitting();
+                    WaitAndHandleHitting();
                     // Idle로 리턴
                     WaitAndReturnToIdleWithOperation(attackEnd + attackAfterDelay);
                     break;

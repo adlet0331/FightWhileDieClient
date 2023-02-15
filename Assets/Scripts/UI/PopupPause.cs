@@ -13,7 +13,7 @@ namespace UI
             base.Open();
             CombatManager.Instance.TimeBlocked = true;
 
-            if (CombatManager.Instance.isInCombat)
+            if (CombatManager.Instance.IsInCombat)
             {
                 resetButton.color = Color.gray;
             }
@@ -28,7 +28,7 @@ namespace UI
         /// </summary>
         public void ResetButton()
         {
-            if (CombatManager.Instance.isInCombat)
+            if (CombatManager.Instance.IsInCombat)
             {
                 UIManager.Instance.simpleTextPopup.OpenWithText("Reset Is Not Avaliable During Combat.");
                 return;

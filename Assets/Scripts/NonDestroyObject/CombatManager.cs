@@ -14,26 +14,17 @@ namespace NonDestroyObject
         public CombatEntity[] enemyAIList;
         [SerializeField] private Transform aiStartPosition;
         [SerializeField] private Transform aiStandingPosition;
-
-        [Header("Flags")]
-        public bool isInCombat;
         [SerializeField] private int currentEnemyIndex;
-        [Header("Debuging")]
+        [Header("Status")]
         [SerializeField] private bool inputBlocked;
         [SerializeField] private bool timeBlocked;
-        [SerializeField] public bool updateDelayed;
-        [SerializeField] public float updateInterval;
+        [SerializeField] private bool updateDelayed;
+        [SerializeField] private float updateInterval;
         [SerializeField] private int randomSeed;
+        [SerializeField] private float afterEndCombat;
 
-        public bool InputBlocked
-        {
-            get => inputBlocked;
-            set
-            {
-                inputBlocked = value;
-            }
-        }
-        
+        public bool IsInCombat { get; private set; }
+
         public bool TimeBlocked
         {
             get => timeBlocked;
@@ -67,7 +58,7 @@ namespace NonDestroyObject
         private Random _random;
         private void Start()
         {
-            isInCombat = false;
+            IsInCombat = false;
             inputBlocked = true;
             // Coroutines
             _afterDeadCoroutine = null;
@@ -88,6 +79,26 @@ namespace NonDestroyObject
         // Player Input
         private void Update()
         {
+            if (AutoManager.Instance.IsAuto)
+            {
+                // Delay After End Combat
+                if (!AutoManager.Instance.IsFirst && afterEndCombat < 5.0f)
+                {
+                    afterEndCombat += Time.deltaTime;
+                    return;
+                }
+                
+                if (!player.Attacking)
+                {
+                    player.Action(ObjectStatus.Attack);
+                }
+
+                if (!IsInCombat)
+                {
+                    StartCombat();
+                }
+                
+            }
             // Attack 중일 때는 막기
             if (timeBlocked || inputBlocked || player.Attacking || player.Dying) return;
             foreach (var touch in Input.touches)
@@ -147,7 +158,7 @@ namespace NonDestroyObject
                 var dead = player.Damaged(1);
                 if (dead)
                 {
-                    isInCombat = false;
+                    IsInCombat = false;
                     inputBlocked = true;
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(player.GetAnimationTime("Dead"), () =>
                     {
@@ -233,7 +244,7 @@ namespace NonDestroyObject
             DataManager.Instance.playerDataManager.StageReset();
             InitPlayerEnemyHp();
 
-            isInCombat = true;
+            IsInCombat = true;
             inputBlocked = false;
             InitAiPos(false);
             UIManager.Instance.TitleEnemyHpSwitch(true);
@@ -253,6 +264,7 @@ namespace NonDestroyObject
                 UIManager.Instance.TitleEnemyHpSwitch(false);
                 DataManager.Instance.playerDataManager.StageReset();
                 InitAiPos(true);
+                afterEndCombat = 0.0f;
             }
             InitPlayerEnemyHp();
         }
