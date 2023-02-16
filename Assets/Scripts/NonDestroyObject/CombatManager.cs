@@ -79,10 +79,31 @@ namespace NonDestroyObject
         // Player Input
         private void Update()
         {
+            // Input Particle
+            foreach (var touch in Input.touches)
+            {
+                if (touch.phase == TouchPhase.Began)
+                {
+                    var touchPosition = Camera.main.ScreenToWorldPoint(touch.position);
+                    touchPosition.z = 0;
+                    var clickParticle = Resources.Load("Prefabs/UI/TouchParticle") as GameObject;
+                    Instantiate(clickParticle, touchPosition, new Quaternion(0, 0, 0, 0));
+                }
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mousePosition.z = 0;
+                var clickParticle = Resources.Load("Prefabs/UI/TouchParticle") as GameObject;
+                Instantiate(clickParticle, mousePosition, new Quaternion(0, 0, 0, 0));
+            }
+            // Input Particle End
+            
             if (AutoManager.Instance.IsAuto)
             {
                 // Delay After End Combat
-                if (!AutoManager.Instance.IsFirst && afterEndCombat < 5.0f)
+                if (!AutoManager.Instance.IsFirst && afterEndCombat < 3.0f)
                 {
                     afterEndCombat += Time.deltaTime;
                     return;
@@ -97,8 +118,10 @@ namespace NonDestroyObject
                 {
                     StartCombat();
                 }
-                
+
+                return;
             }
+            
             // Attack 중일 때는 막기
             if (timeBlocked || inputBlocked || player.Attacking || player.Dying) return;
             foreach (var touch in Input.touches)

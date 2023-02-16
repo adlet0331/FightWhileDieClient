@@ -694,6 +694,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAuto: 0
+  isFirst: 0
 --- !u!224 &210796557 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1254696450481321505, guid: be79790d92f031046853b3b144032f7f, type: 3}
@@ -2979,6 +2980,7 @@ MonoBehaviour:
   updateDelayed: 0
   updateInterval: 0.1
   randomSeed: 0
+  afterEndCombat: 0
 --- !u!1 &1042355073
 GameObject:
   m_ObjectHideFlags: 0
@@ -6512,6 +6514,10 @@ PrefabInstance:
     - target: {fileID: 5935084497502917635, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: attackAfterDelay
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 5935084497502917644, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_RootOrder
