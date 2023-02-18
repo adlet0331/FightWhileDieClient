@@ -6515,10 +6515,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: attackAfterDelay
-      value: 0.8
-      objectReference: {fileID: 0}
     - target: {fileID: 5935084497502917644, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_RootOrder
       value: 4

@@ -21,6 +21,7 @@ namespace NonDestroyObject
         [SerializeField] private bool updateDelayed;
         [SerializeField] private float updateInterval;
         [SerializeField] private int randomSeed;
+        [Header("Auto Status")]
         [SerializeField] private float afterEndCombat;
 
         public bool IsInCombat { get; private set; }
@@ -79,7 +80,7 @@ namespace NonDestroyObject
         // Player Input
         private void Update()
         {
-            // Input Particle
+            #region InputParticle
             foreach (var touch in Input.touches)
             {
                 if (touch.phase == TouchPhase.Began)
@@ -98,32 +99,35 @@ namespace NonDestroyObject
                 var clickParticle = Resources.Load("Prefabs/UI/TouchParticle") as GameObject;
                 Instantiate(clickParticle, mousePosition, new Quaternion(0, 0, 0, 0));
             }
-            // Input Particle End
-            
+            #endregion
+
             if (AutoManager.Instance.IsAuto)
             {
-                // Delay After End Combat
-                if (!AutoManager.Instance.IsFirst && afterEndCombat < 3.0f)
+                // Skip Delay At First Pressed
+                if (AutoManager.Instance.IsFirst)
+                {
+                    afterEndCombat = 3.0f;
+                }
+                
+                if (afterEndCombat < 3.0f)
                 {
                     afterEndCombat += Time.deltaTime;
                     return;
                 }
                 
-                if (!player.Attacking)
-                {
-                    player.Action(ObjectStatus.Attack);
-                }
-
                 if (!IsInCombat)
                 {
                     StartCombat();
                 }
-
-                return;
+                
+                if (!player.Attacking && !player.Dying)
+                {
+                    player.Action(ObjectStatus.Attack);
+                }
             }
             
-            // Attack 중일 때는 막기
             if (timeBlocked || inputBlocked || player.Attacking || player.Dying) return;
+            
             foreach (var touch in Input.touches)
             {
                 if (touch.phase == TouchPhase.Began)
@@ -143,24 +147,27 @@ namespace NonDestroyObject
         {
             yield return new WaitForSeconds(second);
             updateDelayed = false;
+            _delayedCoroutine = null;
         }
 
         private void FixedUpdate()
         {
             if (timeBlocked) return;
-             
-            // enemyAI[currentEnemyIndex] 피격 판정 우선. 
+
+            #region CheckHitting
+            // enemyAI 피격 판정 우선 - 동시에 때리면 플레이어 판정이 우세 
             if (player.Hitting && player.EnemyInRange)
             {
                 player.CancelHittingJudgeCoroutine();
+                enemyAIList[currentEnemyIndex].CancelHittingJudgeCoroutine();
+                
                 var dead = enemyAIList[currentEnemyIndex].Damaged(DataManager.Instance.playerDataManager.Atk);
                 if (dead)
                 {
-                    // Update enemyAI[currentEnemyIndex]'s Random Seed
-                    UpdateRandomSeed();
                     // 코인 이펙트
                     UIManager.Instance.ShowCoinEffect();
-                    _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(enemyAIList[currentEnemyIndex].GetAnimationTime("Dead"), () =>
+                    var delay = enemyAIList[currentEnemyIndex].GetAnimationTime("Dead");
+                    _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
                         EndCombat(true);
                         player.ResetAfterDie();
@@ -168,6 +175,8 @@ namespace NonDestroyObject
                         _afterDeadCoroutine = null;
                     });
                     StartCoroutine(_afterDeadCoroutine);
+                    // Update enemyAI[currentEnemyIndex]'s Random Seed
+                    UpdateRandomSeed();
                 }
 
                 return;
@@ -176,14 +185,15 @@ namespace NonDestroyObject
             // Player 피격 판정
             if (enemyAIList[currentEnemyIndex].Hitting && enemyAIList[currentEnemyIndex].EnemyInRange)
             {
+                player.CancelHittingJudgeCoroutine();
                 enemyAIList[currentEnemyIndex].CancelHittingJudgeCoroutine();
+                
                 // Player's Hp is always 1
                 var dead = player.Damaged(1);
                 if (dead)
                 {
-                    IsInCombat = false;
-                    inputBlocked = true;
-                    _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(player.GetAnimationTime("Dead"), () =>
+                    var delay = player.GetAnimationTime("Dead");
+                    _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
                         EndCombat(false);
                         player.ResetAfterDie();
@@ -192,12 +202,13 @@ namespace NonDestroyObject
                     });
                     StartCoroutine(_afterDeadCoroutine);
                 }
-                else
-                    Debug.LogAssertion("Player MUST DIE in first hit!!");
-                
+
                 return;
             }
+            #endregion
             
+            if (inputBlocked) return;
+
             // enemyAI[currentEnemyIndex] Transform Moving
             if (enemyAIList[currentEnemyIndex].Damaging)
             {
@@ -212,12 +223,9 @@ namespace NonDestroyObject
                 enemyAIList[currentEnemyIndex].transform.position += Vector3.right * (enemyAIList[currentEnemyIndex].backJumpSpeed * Time.fixedDeltaTime);
             }
 
-            if (enemyAIList[currentEnemyIndex].Attacking || enemyAIList[currentEnemyIndex].Damaging || enemyAIList[currentEnemyIndex].BackJumping || enemyAIList[currentEnemyIndex].Dying) return;
-
-            // enemyAI[currentEnemyIndex] 행동 명령 전달
-            if (updateDelayed || inputBlocked) return;
+            if (updateDelayed || enemyAIList[currentEnemyIndex].Attacking || enemyAIList[currentEnemyIndex].Damaging || enemyAIList[currentEnemyIndex].BackJumping || enemyAIList[currentEnemyIndex].Dying) return;
+            
             updateDelayed = true;
-
             AIAction();
             if (_delayedCoroutine != null)
             {
@@ -284,6 +292,8 @@ namespace NonDestroyObject
             }
             else
             {
+                IsInCombat = false;
+                inputBlocked = true;
                 UIManager.Instance.TitleEnemyHpSwitch(false);
                 DataManager.Instance.playerDataManager.StageReset();
                 InitAiPos(true);

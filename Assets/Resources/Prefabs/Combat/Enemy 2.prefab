@@ -209,7 +209,7 @@ MonoBehaviour:
   type: 1
   runningSpeed: 8
   backJumpSpeed: 5
-  knockBackXInterval: 5
+  knockBackXInterval: 6
   currentStatus: 0
   currentHp: 50
   attacking: 0

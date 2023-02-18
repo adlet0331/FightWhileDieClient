@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using Cysharp.Threading.Tasks;
 using NonDestroyObject;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -101,9 +103,9 @@ namespace Combat
             CancelWaitAndReturnToIdleCoroutine();
             _waitAndReturnToIdleCoroutine = CoroutineUtils.WaitAndOperationIEnum(sec, () =>
             {
+                operation?.Invoke();
                 Action(ObjectStatus.Idle);
                 _waitAndReturnToIdleCoroutine = null;
-                operation?.Invoke();
             });
             StartCoroutine(_waitAndReturnToIdleCoroutine);
         }
@@ -125,7 +127,46 @@ namespace Combat
                 _hittingJudgeCoroutine = null;
             });
             StartCoroutine(_hittingJudgeCoroutine);
-            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(attackEnd, () => { hitting = false; }));
+            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(attackEnd, () =>
+            {
+                hitting = false;
+            }));
+        }
+        
+        private void SwitchStatus(ObjectStatus newStatus)
+        {
+            if (currentStatus == newStatus) return;
+            
+            attacking = false;
+            damaging = false;
+            dying = false;
+            running = false;
+            backJumping = false;
+            animator.SetBool(currentStatus.ToString(), false);
+            
+            currentStatus = newStatus;
+            
+            switch (currentStatus)
+            {
+                case ObjectStatus.Attack:
+                    attacking = true;
+                    break;
+                case ObjectStatus.AttackSlow:
+                    break;
+                case ObjectStatus.Damaged:
+                    damaging = true;
+                    break;
+                case ObjectStatus.Dead:
+                    dying = true;
+                    break;
+                case ObjectStatus.Running:
+                    running = true;
+                    break;
+                case ObjectStatus.JumpBack:
+                    backJumping = true;
+                    break;
+            }
+            animator.SetBool(currentStatus.ToString(), true);
         }
 
         public void CancelHittingJudgeCoroutine()
@@ -167,7 +208,7 @@ namespace Combat
             attackHitBox.ResetInRange();
             CancelHittingJudgeCoroutine();
             CancelWaitAndReturnToIdleCoroutine();
-            SwitchStatus(ObjectStatus.Idle);
+            Action(ObjectStatus.Idle);
         }
         
         public void SetHp(int mhp)
@@ -176,47 +217,9 @@ namespace Combat
             maxHp = mhp;
         }
 
-        private void SwitchStatus(ObjectStatus newStatus)
-        {
-            if (currentStatus == newStatus) return;
-            attacking = false;
-            damaging = false;
-            dying = false;
-            running = false;
-            backJumping = false;
-            animator.SetBool(currentStatus.ToString(), false);
-            
-            currentStatus = newStatus;
-            
-            switch (currentStatus)
-            {
-                case ObjectStatus.Attack:
-                    attacking = true;
-                    break;
-                case ObjectStatus.AttackSlow:
-                    break;
-                case ObjectStatus.Damaged:
-                    damaging = true;
-                    break;
-                case ObjectStatus.Dead:
-                    dying = true;
-                    break;
-                case ObjectStatus.Running:
-                    running = true;
-                    break;
-                case ObjectStatus.JumpBack:
-                    backJumping = true;
-                    break;
-            }
-            animator.SetBool(currentStatus.ToString(), true);
-        }
-
         public bool Damaged(int damage)
         {
-            CancelHittingJudgeCoroutine();
-            
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
-            UIManager.Instance.UpdateEnemyHp((float)currentHp / maxHp);
             if (currentHp == 0)
             {
                 SwitchStatus(ObjectStatus.Dead);
@@ -241,19 +244,22 @@ namespace Combat
             // 공격 중이면 Action 안 받음
             if (hitting) return;
             
+            // Animation 및 변수들 처리
+            SwitchStatus(objectStatus);
+            
             // Player Action WhiteList
             if (type == ObjectType.Player &&
                 (objectStatus != ObjectStatus.Idle && objectStatus != ObjectStatus.Attack &&
                  objectStatus != ObjectStatus.Dead && objectStatus != ObjectStatus.Running))
             {
-                Debug.Log("Player Action Rejected");
+                Debug.LogAssertion("Player Action Rejected: " + objectStatus);
                 return;
             }
             // enemyAI Action BlackList
             if (type == ObjectType.AI && 
                 (objectStatus is ObjectStatus.Dead or ObjectStatus.Damaged))
             {
-                Debug.Log("enemyAI Action Rejected");
+                Debug.LogAssertion("enemyAI Action Rejected: " + objectStatus);
                 return;
             }
 
@@ -286,9 +292,6 @@ namespace Combat
                     });
                     break;
             }
-            
-            // Animation 및 변수들 처리
-            SwitchStatus(objectStatus);
         }
     }
 }
