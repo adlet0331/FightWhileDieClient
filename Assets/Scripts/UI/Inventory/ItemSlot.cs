@@ -165,6 +165,7 @@ namespace UI.Inventory
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            SoundManager.Instance.PlayClip(0);
             SlotClicked?.Invoke(new SlotClickArgs
             {
                 SourceView = sourceView,

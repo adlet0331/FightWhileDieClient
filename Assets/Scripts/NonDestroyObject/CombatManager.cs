@@ -111,7 +111,8 @@ namespace NonDestroyObject
                 
                 if (afterEndCombat < 3.0f)
                 {
-                    afterEndCombat += Time.deltaTime;
+                    if (!timeBlocked)
+                        afterEndCombat += Time.deltaTime;
                     return;
                 }
                 

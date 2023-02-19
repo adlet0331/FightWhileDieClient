@@ -31,7 +31,8 @@ namespace Combat
         [SerializeField] private float attackEnd;
         [SerializeField] private float attackAfterDelay;
         [SerializeField] private ObjectType type;
-
+        [SerializeField] private ClipName hittingClip;
+        
         [Header("If enemyAI, Need to be Initialized")] 
         [SerializeField] public float runningSpeed;
         [SerializeField] public float backJumpSpeed;
@@ -125,6 +126,7 @@ namespace Combat
             {
                 hitting = true;
                 _hittingJudgeCoroutine = null;
+                SoundManager.Instance.PlayClip((int)hittingClip);
             });
             StartCoroutine(_hittingJudgeCoroutine);
             StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(attackEnd, () =>
