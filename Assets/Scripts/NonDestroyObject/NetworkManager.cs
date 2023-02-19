@@ -43,6 +43,7 @@ namespace NonDestroyObject
 #if !UNITY_EDITOR
             _rootURL = "http://fwt-server.haje.org/playerserver/";  
   #endif
+            CheckConnection().Forget();
         }
 
         private async UniTask<string> RequestPost(string url, string reqString, bool triggeredInThreadPool = true, int retryNum = 0)
