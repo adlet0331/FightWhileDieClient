@@ -100,6 +100,8 @@ namespace NonDestroyObject
                 Instantiate(clickParticle, mousePosition, new Quaternion(0, 0, 0, 0));
             }
             #endregion
+            
+            if (timeBlocked) return;
 
             if (AutoManager.Instance.IsAuto)
             {
@@ -111,8 +113,7 @@ namespace NonDestroyObject
                 
                 if (afterEndCombat < 3.0f)
                 {
-                    if (!timeBlocked)
-                        afterEndCombat += Time.deltaTime;
+                    afterEndCombat += Time.deltaTime;
                     return;
                 }
                 
