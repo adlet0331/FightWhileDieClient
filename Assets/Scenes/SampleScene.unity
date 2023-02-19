@@ -7171,6 +7171,10 @@ PrefabInstance:
       value: NonDestroyObject.SoundManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6631089091095119146, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_IntArgument
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6631089091095119146, guid: adf6001142d3f5c48be64ea34794d405, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
@@ -7386,6 +7390,10 @@ PrefabInstance:
     - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: hittingClip
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: attackAfterDelay
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 5935084497502917644, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_RootOrder

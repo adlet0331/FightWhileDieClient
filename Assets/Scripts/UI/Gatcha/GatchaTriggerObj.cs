@@ -35,7 +35,7 @@ namespace UI.Gatcha
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            Debug.Log("Clicked");
+            SoundManager.Instance.PlayClip(4);
             OpenAndShowItem();
         }
 

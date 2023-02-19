@@ -43,6 +43,7 @@ namespace UI.Gatcha
 
         public void OpenAllGatchaTriggers()
         {
+            SoundManager.Instance.PlayClip(4);
             for (int i = 0; i < gatchaTriggerObjs.Count; i++)
             {
                 gatchaTriggerObjs[i].OpenAndShowItem();

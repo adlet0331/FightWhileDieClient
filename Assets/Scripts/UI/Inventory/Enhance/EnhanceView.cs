@@ -41,8 +41,7 @@ namespace UI.Inventory.Enhance
         [Header("Buttons")]
         [SerializeField] private Image startEnhanceButton;
         [SerializeField] private EnhanceIngredButton addIngredientButton;
-
-
+        
         public void ButtonStartPressed()
         {
             // Enable Block Touch Event
@@ -66,10 +65,9 @@ namespace UI.Inventory.Enhance
             // 1 퍼센트면 1일 때만 성공
             var success = randResult <= successProb;
             enhanceTriggerObj.SetEnhanceResult(success);
-            var enhancingTime = enhanceTriggerObj.EnhancingTime();
-            var waitTime = enhancingTime + 1.2f;
-            
-            Debug.Log(waitTime);
+            var enhancingTime = enhanceTriggerObj.GetEnhancingTime();
+            var endTime = enhanceTriggerObj.GetEnhancingTime();
+            var waitTime = enhancingTime + endTime + 1.2f;
 
             // Spend Coin
             DataManager.Instance.playerDataManager.SpendCoin(price);

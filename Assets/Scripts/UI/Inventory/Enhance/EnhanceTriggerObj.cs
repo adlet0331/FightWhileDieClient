@@ -42,7 +42,7 @@ namespace UI.Inventory.Enhance
 
         private event SlotClickHandler SlotClickHandler;
 
-        public float EnhancingTime()
+        public float GetEnhancingTime()
         {
             var time = AnimatorUtil.GetAnimationTime(AnimationName.Enhancing.ToString(), runtimeAnimatorController);
             
