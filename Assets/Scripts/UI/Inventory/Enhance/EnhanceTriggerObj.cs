@@ -59,12 +59,9 @@ namespace UI.Inventory.Enhance
         
         public void SetEnhanceResult(bool success)
         {
-            // animator.SetBool(AnimParams.SelectedBool.ToString(), true);
-            
             animator.SetBool(AnimParams.EnhanceEndBool.ToString(), true);
             animator.SetBool(AnimParams.EnhancingBool.ToString(), true);
             animator.SetBool(AnimParams.EnhanceSuccessBool.ToString(), success);
-
         }
         
         public void SwitchStatus(EnhanceTriggerStatus status)

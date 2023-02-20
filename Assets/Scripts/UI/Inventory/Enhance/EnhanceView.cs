@@ -16,7 +16,6 @@ namespace UI.Inventory.Enhance
         {
             ItemNotSelected,
             ItemSelected,
-            Enhancing,
         }
 
         private enum AnimatorParams
@@ -37,6 +36,11 @@ namespace UI.Inventory.Enhance
         [SerializeField] private EnhanceTriggerObj enhanceTriggerObj;
         [SerializeField] private NoResponseTouch noResponseTouchBoard;
         [SerializeField] private GameObject[] disableWhileEnhancing;
+        [SerializeField] private EnhanceResultBoard enhanceResultBoard;
+
+        [SerializeField] private GameObject whenItemNotSelectedBoard;
+        [SerializeField] private GameObject whenItemSelectedBoard;
+        
         
         [Header("Buttons")]
         [SerializeField] private Image startEnhanceButton;
@@ -66,8 +70,6 @@ namespace UI.Inventory.Enhance
             var success = randResult <= successProb;
             enhanceTriggerObj.SetEnhanceResult(success);
             var enhancingTime = enhanceTriggerObj.GetEnhancingTime();
-            var endTime = enhanceTriggerObj.GetEnhancingTime();
-            var waitTime = enhancingTime + endTime + 1.2f;
 
             // Spend Coin
             DataManager.Instance.playerDataManager.SpendCoin(price);
@@ -83,15 +85,19 @@ namespace UI.Inventory.Enhance
                 disableGameObject.SetActive(false);
             }
 
-            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(waitTime, () =>
+            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(enhancingTime, () =>
             {
-                foreach (var disableGameObject in disableWhileEnhancing)
-                {
-                    disableGameObject.SetActive(true);
-                }
                 noResponseTouchBoard.gameObject.SetActive(false);
-                enhanceTriggerObj.SwitchStatus(EnhanceTriggerStatus.Selected);
-                UpdateAllUI();
+                
+                enhanceResultBoard.OpenWithData(success, level, () =>
+                {
+                    enhanceTriggerObj.SwitchStatus(EnhanceTriggerStatus.Selected);
+                    foreach (var disableGameObject in disableWhileEnhancing)
+                    {
+                        disableGameObject.SetActive(true);
+                    }
+                    UpdateAllUI();
+                });
             }));
         }
 
@@ -118,7 +124,6 @@ namespace UI.Inventory.Enhance
         }
 
         [Header("Status")]
-        [SerializeField] private EnhanceViewMode currentMode;
         [SerializeField] private EquipItemObject selectedObject;
         [SerializeField] private bool itemSelected;
         [SerializeField] private bool ingredientSelected;
@@ -176,19 +181,18 @@ namespace UI.Inventory.Enhance
 
         private void SwitchMode(EnhanceViewMode mode)
         {
-            currentMode = mode;
-
             switch (mode)
             {
                 case EnhanceViewMode.ItemNotSelected:
                     animator.SetBool(AnimatorParams.ItemSelectedBool.ToString(), false);
+                    whenItemSelectedBoard.SetActive(false);
+                    whenItemNotSelectedBoard.SetActive(true);
                     break;
                 case EnhanceViewMode.ItemSelected:
                     animator.SetBool(AnimatorParams.ItemSelectedBool.ToString(), true);
+                    whenItemSelectedBoard.SetActive(true);
+                    whenItemNotSelectedBoard.SetActive(false);
                     break;
-                // case EnhanceViewMode.Enhancing:
-                //     
-                //     break;
             }
         }
 

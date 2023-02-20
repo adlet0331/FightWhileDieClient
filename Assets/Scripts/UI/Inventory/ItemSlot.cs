@@ -89,7 +89,7 @@ namespace UI.Inventory
             UpdateItemObjectAndMode(equipItemObjectInfo, select ? ItemSlotMode.ItemSlotViewSelected : ItemSlotMode.ItemSlotView);
         }
 
-        private void LoadItemUI()
+        public void LoadItemUI()
         {
             itemImage.gameObject.SetActive(false);
             backGround.gameObject.SetActive(false);
@@ -110,12 +110,10 @@ namespace UI.Inventory
                 case ItemSlotMode.OnlyFrame:
                     slotBorder.gameObject.SetActive(true);
                     slotBorder.color = DataManager.Instance.itemManager.RareColorList[rare];
-
                     break;
 
                 case ItemSlotMode.OnlyItem:
                     itemImage.gameObject.SetActive(true);
-                    Debug.Log(isNull);
                     itemImage.sprite = !isNull ? ResourcesLoad.LoadEquipmentSprite(rare, option) : null;
                     itemImage.color = !isNull ? new Color(1, 1, 1, 1) : new Color(0, 0, 0, 0);
                     break;

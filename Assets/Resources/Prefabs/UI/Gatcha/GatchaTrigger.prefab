@@ -34171,8 +34171,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0747570aef7d1ab419825f815d99fe7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  opened: 0
   isOpenable: 0
-  images:
+  itemImage: {fileID: 3216807643622909665}
+  rareColorImages:
   - {fileID: 5456020685218742888}
   - {fileID: 7482556893618222612}
   animator: {fileID: 8257848668965117929}
@@ -87454,6 +87456,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a5d0da3816babe49bba379971a752ee, type: 3}
+--- !u!114 &3216807643622909665 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6381975655895557665, guid: 0a5d0da3816babe49bba379971a752ee, type: 3}
+  m_PrefabInstance: {fileID: 8373652449587609792}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5430609780020255352 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4568996771109362360, guid: 0a5d0da3816babe49bba379971a752ee, type: 3}

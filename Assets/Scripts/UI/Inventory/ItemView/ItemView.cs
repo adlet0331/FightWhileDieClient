@@ -46,7 +46,6 @@ namespace UI.Inventory.ItemView
         [SerializeField] private GameObject enhanceInfoTransform;
         
         [Header("Status")]
-        [SerializeField] private bool initialized;
         [SerializeField] private bool isAsc;
         [SerializeField] private int beforeClicked;
         [SerializeField] private bool selectedBefore;
@@ -63,6 +62,11 @@ namespace UI.Inventory.ItemView
 
         public void ChangeMode(ItemViewMode mode)
         {
+            foreach (var slot in itemSlotList)
+            {
+                slot.LoadItemUI();
+            }
+            
             foreach (AnimParams parameter in Enum.GetValues(typeof(AnimParams)))
             {
                 animator.SetBool(parameter.ToString(), false);

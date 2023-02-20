@@ -3,28 +3,36 @@ using NonDestroyObject;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Utils;
 
 namespace UI.Gatcha
 {
     public class GatchaTriggerObj : MonoBehaviour, IPointerClickHandler
     {
+        [Header("Status")]
+        [SerializeField] private bool opened;
         [Header("Need Init")]
         [SerializeField] private bool isOpenable;
-        [SerializeField] private Image[] images; 
+        [SerializeField] private Image itemImage;
+        [SerializeField] private Image[] rareColorImages; 
         [Header("Components")]
         [SerializeField] private Animator animator;
         [SerializeField] private RuntimeAnimatorController runtimeAnimatorController;
         [SerializeField] private EquipItemObject equipItemObject;
-        private readonly static int Clicked = Animator.StringToHash("TriggeredRare");
 
         public void Initiate(bool openable, EquipItemObject info)
         {
-            isOpenable = openable;
-            equipItemObject = info;
+            opened = false;
             
-            foreach (var image in images)
+            isOpenable = openable;
+            if (info != null)
             {
-                image.color = DataManager.Instance.itemManager.RareColorList[equipItemObject.rare];
+                equipItemObject = info;
+                itemImage.sprite = ResourcesLoad.LoadEquipmentSprite(info.rare, info.option);
+                foreach (var image in rareColorImages)
+                {
+                    image.color = DataManager.Instance.itemManager.RareColorList[equipItemObject.rare];
+                }
             }
         }
         
@@ -35,15 +43,17 @@ namespace UI.Gatcha
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (!isOpenable || opened) return;
+            
             SoundManager.Instance.PlayClip(4);
             OpenAndShowItem();
         }
 
         public void OpenAndShowItem()
         {
-            if (!isOpenable) return;
-
-            animator.SetInteger(Clicked, equipItemObject.rare);
+            opened = true;
+            
+            animator.SetInteger("TriggeredRare", equipItemObject.rare);
         }
     }
 }

@@ -3487,6 +3487,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2592641327069961246}
     m_Modifications:
+    - target: {fileID: 257163754929720722, guid: e74c990223194d84a91d48b2a10ea383, type: 3}
+      propertyPath: itemImage
+      value: 
+      objectReference: {fileID: 3503010328316887723}
     - target: {fileID: 863923495846232582, guid: e74c990223194d84a91d48b2a10ea383, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -3586,6 +3590,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 953882123881557847, guid: e74c990223194d84a91d48b2a10ea383, type: 3}
   m_PrefabInstance: {fileID: 2033749990659974218}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3503010328316887723 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3216807643622909665, guid: e74c990223194d84a91d48b2a10ea383, type: 3}
+  m_PrefabInstance: {fileID: 2033749990659974218}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3099798518035439041
 PrefabInstance:
   m_ObjectHideFlags: 0

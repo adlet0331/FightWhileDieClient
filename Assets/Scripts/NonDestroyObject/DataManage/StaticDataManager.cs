@@ -26,8 +26,6 @@ namespace NonDestroyObject.DataManage
             var totalLength = equipmentItemInfos.Count;
             var totalOptions = (int)(totalLength / 6);
 
-            Debug.Log($"{totalOptions * (rare - 1) + option}, rare: {rare}, option: {option}");
-
             var equipItemInfo = equipmentItemInfos[totalOptions * (rare - 1) + option];
             
             return equipItemInfo;
