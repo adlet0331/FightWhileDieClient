@@ -20,7 +20,7 @@ namespace Data
         // 2. 성장
         AtkAddValue = 2,
         AtkAddPercent = 3,
-        BaseAtkGainAddPercent = 4,
+        BaseAtkGainAddValue = 4,
         CoinGainAddValue = 5,
         CoinGainAddPercent = 6,
         // 3. 유틸

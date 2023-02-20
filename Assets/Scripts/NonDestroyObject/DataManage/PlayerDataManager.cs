@@ -165,7 +165,7 @@ namespace NonDestroyObject.DataManage
             stage += 1;
             if (stage > topStage)
                 topStage = stage;
-            baseAtk += 10 * (int)((100 + GetOptionValue(EquipmentOption.BaseAtkGainAddPercent)) / 100.0f);
+            baseAtk += 10 + GetOptionValue(EquipmentOption.BaseAtkGainAddValue);
             coin += stage;
             FetchAllStatus(false);
         }

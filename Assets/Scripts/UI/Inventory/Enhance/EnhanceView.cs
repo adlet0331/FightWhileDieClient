@@ -84,9 +84,15 @@ namespace UI.Inventory.Enhance
             {
                 disableGameObject.SetActive(false);
             }
+            
+            // Sound
+            SoundManager.Instance.PlayClip((int) ClipName.GatchaOpen);
 
             StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(enhancingTime, () =>
             {
+                // Sound
+                SoundManager.Instance.PlayClip(success ? (int) ClipName.EnhanceSuccess : (int) ClipName.EnhanceFail);
+                
                 noResponseTouchBoard.gameObject.SetActive(false);
                 
                 enhanceResultBoard.OpenWithData(success, level, () =>
