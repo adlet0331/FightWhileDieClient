@@ -76,7 +76,7 @@ namespace NonDestroyObject.DataManage
                 EquipItemObject equippedItem = DataManager.Instance.itemManager.GetEquipItemObjectWithId(equippedItemId);
 
                 if (equippedItem != null && equippedItem.Option == option)
-                    val += equippedItem.optionValue;
+                    val += equippedItem.GetOptionValue();
             }
 
             return val;

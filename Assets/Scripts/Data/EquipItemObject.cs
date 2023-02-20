@@ -17,6 +17,12 @@ namespace Data
             var itemStaticInfo = DataManager.Instance.staticDataManager.GetEquipItemInfo(rare, option);
             return string.Format(itemStaticInfo.descriptionList[locale], itemStaticInfo.optionValuePerLevelList[level]);
         }
+
+        public int GetOptionValue()
+        {
+            var itemStaticInfo = DataManager.Instance.staticDataManager.GetEquipItemInfo(rare, option);
+            return itemStaticInfo.optionValuePerLevelList[level];
+        }
         
         public int id;
         [SerializeField] private Rare Rare;
@@ -44,6 +50,5 @@ namespace Data
                 Option = (EquipmentOption)value;
             }
         }
-        public int optionValue;
     }
 }
