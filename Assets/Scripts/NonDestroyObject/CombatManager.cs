@@ -172,7 +172,7 @@ namespace NonDestroyObject
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
                         EndCombat(true);
-                        player.ResetAfterDie();
+                        // player.ResetAfterDie();
                         enemyAIList[currentEnemyIndex].ResetAfterDie();
                         _afterDeadCoroutine = null;
                     });
