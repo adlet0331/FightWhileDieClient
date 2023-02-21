@@ -36,6 +36,17 @@ namespace UI.Gatcha
             StartGatcha(10).Forget();
         }
 
+        public void WatchAdGatchaButton()
+        {
+            AdsManager.Instance.RequestRewardAds();
+        }
+
+        public void WatchAdEndAndStartGatcha()
+        {
+            if (gameObject.activeSelf)
+                StartGatcha(10).Forget();
+        }
+
         public void StartingGatchaButton()
         {
             StartOpening().Forget();

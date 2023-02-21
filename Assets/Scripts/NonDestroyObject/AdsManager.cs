@@ -52,8 +52,7 @@ namespace NonDestroyObject
             string adUnitId = "unexpected_platform";
 #endif
             this._rewardedAd = new RewardedAd(adUnitId);
-            
-            
+
             this._rewardedAd.OnAdLoaded += HandleRewardedAdLoaded;
             this._rewardedAd.OnAdFailedToLoad += HandleRewardedAdFailedToLoad;
             this._rewardedAd.OnAdOpening += HandleRewardedAdOpening;
@@ -100,6 +99,7 @@ namespace NonDestroyObject
         public void HandleRewardedAdClosed(object sender, EventArgs args)
         {
             Debug.Log("HandleRewardedAdClosed event received");
+            UIManager.Instance.gatchaPopup.WatchAdEndAndStartGatcha();
         }
         
         // Called when the user should be rewarded for interacting with the ad.
