@@ -24,6 +24,14 @@ namespace Data
             return itemStaticInfo.optionValuePerLevelList[level];
         }
         
+        public int GetNextOptionValue()
+        {
+            var itemStaticInfo = DataManager.Instance.staticDataManager.GetEquipItemInfo(rare, option);
+            if (level == itemStaticInfo.maxLevel) 
+                return 0;
+            return itemStaticInfo.optionValuePerLevelList[level + 1];
+        }
+        
         public int id;
         [SerializeField] private Rare Rare;
         public int rare

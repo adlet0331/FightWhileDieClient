@@ -56,8 +56,6 @@ namespace NonDestroyObject.DataManage
             var gatchaProbabilitysJson = JsonSL.LoadJson(JsonTitle.EnhanceInfo);
             if (gatchaProbabilitysJson != String.Empty)
                 enhanceInfos = JsonConvert.DeserializeObject<List<EnhanceInfo>>(gatchaProbabilitysJson);
-
-            GetStaticDatasFromServer().Forget();
         }
 
         private StaticDataVersion GetCurrentVersion(string title)
@@ -70,7 +68,7 @@ namespace NonDestroyObject.DataManage
             return null;
         }
 
-        private async UniTask GetStaticDatasFromServer()
+        public async UniTask GetStaticDatasFromServer()
         {
             // Get StaticDataVersion First
             serverVersions = new List<StaticDataVersion>();

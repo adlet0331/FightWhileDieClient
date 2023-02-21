@@ -166,7 +166,7 @@ namespace NonDestroyObject.DataManage
             if (stage > topStage)
                 topStage = stage;
             baseAtk += 10 + GetOptionValue(EquipmentOption.BaseAtkGainAddValue);
-            coin += stage;
+            coin += ClearCoin;
             FetchAllStatus(false);
         }
 

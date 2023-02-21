@@ -26,13 +26,15 @@ namespace UI.Inventory.Enhance
         [Header("UI Components")]
         [SerializeField] private IngredientBanner ingredientBanner;
         [SerializeField] private CoinUI playerCoinUI;
-        [SerializeField] private CoinUI afterUseCoinUI;
         [SerializeField] private CoinUI priceCoinUI;
         [SerializeField] private TextMeshProUGUI currLevelVal;
         [SerializeField] private TextMeshProUGUI nextLevelVal;
         [SerializeField] private TextMeshProUGUI basicProbabilityVal;
         [SerializeField] private TextMeshProUGUI additionalProbabilityVal;
         [SerializeField] private TextMeshProUGUI totalProbabilityVal;
+        [SerializeField] private TextMeshProUGUI beforeOptionVal;
+        [SerializeField] private TextMeshProUGUI afterOptionVal;
+        [SerializeField] private TextMeshProUGUI descriptionText;
         [SerializeField] private EnhanceTriggerObj enhanceTriggerObj;
         [SerializeField] private NoResponseTouch noResponseTouchBoard;
         [SerializeField] private GameObject[] disableWhileEnhancing;
@@ -84,6 +86,9 @@ namespace UI.Inventory.Enhance
             {
                 disableGameObject.SetActive(false);
             }
+            beforeOptionVal.text = selectedObject.GetOptionValue().ToString();
+            afterOptionVal.text = selectedObject.GetNextOptionValue().ToString();
+            descriptionText.text = selectedObject.GetDescriptionText(1);
             
             // Sound
             SoundManager.Instance.PlayClip((int) ClipName.GatchaOpen);
@@ -161,6 +166,10 @@ namespace UI.Inventory.Enhance
             enhanceTriggerObj.Select(itemObject);
             enhanceTriggerObj.SwitchStatus(EnhanceTriggerStatus.Selected);
             
+            beforeOptionVal.text = itemObject.GetOptionValue().ToString();
+            afterOptionVal.text = itemObject.GetNextOptionValue().ToString();
+            descriptionText.text = itemObject.GetDescriptionText(1);
+            
             addIngredientButton.InitRare(itemObject.rare, false);
 
             UpdateAllUI();
@@ -179,7 +188,7 @@ namespace UI.Inventory.Enhance
             
             enhanceTriggerObj.SwitchStatus(EnhanceTriggerStatus.NotSelected);
             enhanceTriggerObj.Select(null);
-            
+
             addIngredientButton.SelectIngredient(false);
 
             UpdateAllUI();
@@ -220,7 +229,6 @@ namespace UI.Inventory.Enhance
                 var additionalProbability = ingredientSelected ? enhanceInfo.addProbabilityPerLevelList[level] : 0;
                 
                 priceCoinUI.SetCoinValue(price);
-                afterUseCoinUI.SetCoinValue(playerCoin - price);
                 if (playerCoin < price)
                 {
                     startEnhanceButton.color = Color.gray;
