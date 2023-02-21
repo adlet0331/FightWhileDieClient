@@ -21,7 +21,6 @@ namespace UI.Gatcha
         [SerializeField] private GameObject gatchaStartingGoButton;
         [Header("Components")]
         [SerializeField] private CoinUI playerCoinUI;
-        [SerializeField] private CoinUI afterUseCoinUI;
         [SerializeField] private CoinUI priceCoinUI;
         [SerializeField] private GatchaTriggerObj inStartingPage;
         [SerializeField] private Image openGatchaImage;
@@ -151,7 +150,6 @@ namespace UI.Gatcha
             var price = DataManager.Instance.playerDataManager.GatchaCosts;
             playerCoinUI.SetCoinValue(playerCoin);
             priceCoinUI.SetCoinValue(price);
-            afterUseCoinUI.SetCoinValue(playerCoin - price);
             if (playerCoin < price)
             {
                 openGatchaImage.color = Color.gray;

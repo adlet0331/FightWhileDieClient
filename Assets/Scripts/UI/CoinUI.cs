@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using Utils;
 
 public class CoinUI : MonoBehaviour
 {
@@ -7,6 +8,6 @@ public class CoinUI : MonoBehaviour
 
     public void SetCoinValue(int val)
     {
-        coinValueText.text = val.ToString();
+        coinValueText.text = IntToUnitString.ToString(val);
     }
 }

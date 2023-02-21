@@ -50,9 +50,6 @@ namespace UI.Inventory.Enhance
         
         public void ButtonStartPressed()
         {
-            // Enable Block Touch Event
-            noResponseTouchBoard.gameObject.SetActive(true);
-
             int rare = selectedObject.rare;
             int level = selectedObject.level;
 
@@ -62,6 +59,9 @@ namespace UI.Inventory.Enhance
             
             // Check If There is Enough Coin
             if (price > playerCoin) return;
+            
+            // Enable Block Touch Event
+            noResponseTouchBoard.gameObject.SetActive(true);
             
             // Calculate If Enhance Success Or Fail
             Random random = new Random();
@@ -263,6 +263,8 @@ namespace UI.Inventory.Enhance
 
             enhanceTriggerObj.InitHandler(SlotClickHandler);
             animator.keepAnimatorControllerStateOnDisable = true;
+
+            UpdateAllUI();
         }
         protected override void AfterDeActivate()
         {

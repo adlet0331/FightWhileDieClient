@@ -1,6 +1,7 @@
 using System;
 using NonDestroyObject;
 using UnityEngine;
+using Utils;
 
 namespace Data
 {
@@ -15,7 +16,7 @@ namespace Data
         public string GetDescriptionText(int locale)
         {
             var itemStaticInfo = DataManager.Instance.staticDataManager.GetEquipItemInfo(rare, option);
-            return string.Format(itemStaticInfo.descriptionList[locale], itemStaticInfo.optionValuePerLevelList[level]);
+            return string.Format(itemStaticInfo.descriptionList[locale], IntToUnitString.ToString(itemStaticInfo.optionValuePerLevelList[level]));
         }
 
         public int GetOptionValue()

@@ -28,7 +28,6 @@ namespace NonDestroyObject
     public delegate void UIUpdateVoid();
     public class UIManager : Singleton<UIManager>
     {
-        [FormerlySerializedAs("_updating")]
         [Header("UI Enemy Hp Update")] 
         [SerializeField] private int updateCount;
         [SerializeField] private float updatingInterval;
@@ -52,7 +51,6 @@ namespace NonDestroyObject
         public Button inventoryButton;
         [Header("Transforms")] 
         [SerializeField] private float uiMovingTime;
-        public float UiMovingTime => uiMovingTime;
         [SerializeField] private Transform titleShowPosition;
         [SerializeField] private Transform titleHidePosition;
         
@@ -61,6 +59,8 @@ namespace NonDestroyObject
         [SerializeField] private TextMeshProUGUI _attackVal;
         [SerializeField] private TextMeshProUGUI _coinVal;
         [SerializeField] private Slider _enemyHp;
+        [SerializeField] private TextMeshProUGUI currentHpText;
+        [SerializeField] private TextMeshProUGUI maxHpText;
         
         public event UIUpdateVoid UpdateAllUIEvent;
 
@@ -91,6 +91,7 @@ namespace NonDestroyObject
                 else
                 {
                     _enemyHp.value -= updatingInterval;
+                    currentHpText.text = IntToUnitString.ToString((int)(DataManager.Instance.playerDataManager.CurrentEnemyHp * _enemyHp.value ));
                 }
                 updateCount -= 1;
             }
@@ -138,14 +139,17 @@ namespace NonDestroyObject
                 _name.text = name;
                 _name.color = Color.black;
             }
-            _stage.text = DataManager.Instance.playerDataManager.Stage.ToString();
-            _attackVal.text = DataManager.Instance.playerDataManager.Atk.ToString();
-            _coinVal.text = DataManager.Instance.playerDataManager.Coin.ToString();
+            _stage.text = IntToUnitString.ToString(DataManager.Instance.playerDataManager.Stage);
+            _attackVal.text = IntToUnitString.ToString(DataManager.Instance.playerDataManager.Atk);
+            _coinVal.text = IntToUnitString.ToString(DataManager.Instance.playerDataManager.Coin);
         }
 
         public void UpdateCombatUI()
         {
             UpdateEnemyHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
+            
+            currentHpText.text = IntToUnitString.ToString(DataManager.Instance.playerDataManager.CurrentEnemyHp);
+            maxHpText.text = IntToUnitString.ToString(DataManager.Instance.playerDataManager.CurrentEnemyHp);
         }
 
         public void UpdateEnemyHp(float end)

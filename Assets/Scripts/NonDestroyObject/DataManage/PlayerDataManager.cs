@@ -284,8 +284,8 @@ namespace NonDestroyObject.DataManage
             id = pid;
             topStage = 1;
             // For Debuging
-            baseAtk = 50000;
-            coin = 100000;
+            baseAtk = 50;
+            coin = 3000;
             dailyGatchaCount = 0;
             lastUpdated = GetCurrentTime();
 

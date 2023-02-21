@@ -1,6 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 namespace UI
 {
@@ -43,7 +44,7 @@ namespace UI
         public void ShowCoinEffect(int coinval, float time)
         {
             gameObject.SetActive(true);
-            CoinValText.text = coinval.ToString();
+            CoinValText.text = IntToUnitString.ToString(coinval);
             updating = true;
             updateTime = time;
             updateTotalTime = time;

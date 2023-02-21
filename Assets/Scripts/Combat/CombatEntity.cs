@@ -224,6 +224,8 @@ namespace Combat
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
             if (currentHp == 0)
             {
+                if (type == ObjectType.AI)
+                    UIManager.Instance.UpdateEnemyHp(0);
                 SwitchStatus(ObjectStatus.Dead);
                 WaitAndReturnToIdleWithOperation(GetAnimationTime("Dead"), () =>
                 {
