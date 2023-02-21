@@ -23,13 +23,13 @@ namespace UI.Inventory.Equip
             SlotClickHandler += handler;
         }
         
-        public void EquipEvent(EquipItemObject itemObject)
+        public bool EquipEvent(EquipItemObject itemObject)
         {
-            if (!equipAvailable) return;
+            if (!equipAvailable) return false;
             
             foreach (var equipItemObject in equipItemObjects)
             {
-                if (equipItemObject?.id == itemObject.id) return;
+                if (equipItemObject?.id == itemObject.id) return false;
             }
 
             equipItemObjects[beforeClicked] = itemObject;
@@ -41,6 +41,7 @@ namespace UI.Inventory.Equip
             
             // Update Datas Logic
             DataManager.Instance.playerDataManager.UpdateEquipItem(beforeClicked, itemObject.id);
+            return true;
         }
 
         private void SlotClicked(SlotClickArgs args)

@@ -114,15 +114,16 @@ namespace UI.Inventory
                 switch (upperViewStatus)
                 {
                     case UpperViewStatus.Equip:
-                        equipView.EquipEvent(args.EquipItemObject);
+                        if (equipView.EquipEvent(args.EquipItemObject))
+                            itemView.CancelSelected();
                         itemView.UpdateEquipedItem();
                         break;
                     case UpperViewStatus.Enhancement:
-                        enhanceView.SelectEvent(args.EquipItemObject);
+                        if (enhanceView.SelectEvent(args.EquipItemObject))
+                            itemView.CancelSelected();
                         SwitchStatus(UpperViewStatus.Enhancement, ItemViewMode.Hide);
                         break;
                     case UpperViewStatus.Decomposition:
-                        
                         break;
                 }
             }

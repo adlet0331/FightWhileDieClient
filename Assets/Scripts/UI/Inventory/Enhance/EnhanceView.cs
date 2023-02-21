@@ -154,9 +154,9 @@ namespace UI.Inventory.Enhance
 
         // Item View에서 눌렸을 때
         // SetItem
-        public void SelectEvent(EquipItemObject itemObject)
+        public bool SelectEvent(EquipItemObject itemObject)
         {
-            if (itemSelected) return;
+            if (itemSelected) return false;
 
             itemSelected = true;
             selectedObject = itemObject;
@@ -173,6 +173,8 @@ namespace UI.Inventory.Enhance
             addIngredientButton.InitRare(itemObject.rare, false);
 
             UpdateAllUI();
+
+            return true;
         }
 
         // 현재 View에서 눌렸을 때

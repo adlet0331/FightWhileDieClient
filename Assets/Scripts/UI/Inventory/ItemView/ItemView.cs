@@ -89,6 +89,13 @@ namespace UI.Inventory.ItemView
             
             currentMode = mode;
         }
+
+        public void CancelSelected()
+        {
+            itemSlotList[beforeClicked].Select(false);
+            SetItemDescription(-1);
+            selectedBefore = false;
+        }
         
         public void UpdateEquipedItem()
         {
