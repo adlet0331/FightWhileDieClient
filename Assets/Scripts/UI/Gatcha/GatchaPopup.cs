@@ -110,11 +110,12 @@ namespace UI.Gatcha
             DataManager.Instance.itemManager.AddItems(gatchaResult.ItemEquipmentList);
 
             var highestRare = 1;
-            foreach (var item in gatchaResult.ItemEquipmentList)
+            for (int i = 0; i < gatchaResult.ItemEquipmentList.Count - 2; i++)
             {
-                if (highestRare < item.rare)
+                var currRare = gatchaResult.ItemEquipmentList[i].rare;
+                if (highestRare < currRare)
                 {
-                    highestRare = item.rare;
+                    highestRare = currRare;
                 }
             }
             inStartingPage.Initiate(false, new EquipItemObject
