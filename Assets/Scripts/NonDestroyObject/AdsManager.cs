@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using GoogleMobileAds.Api;
 using UnityEngine;
 
@@ -11,21 +12,17 @@ namespace NonDestroyObject
         private void Start()
         {
             // Initialize the Google Mobile Ads SDK.
-            MobileAds.Initialize(initStatus => { });
-
-            RequestBanner();
+            MobileAds.Initialize(initStatus =>
+            {
+                RequestBanner();
+            });
         }
 
-        public void RequestRewardAds()
-        {
-            RequestRewardAd();
-        }
-        
         // 베너 광고 띄우기
         private void RequestBanner()
         {
 #if UNITY_ANDROID
-            string adUnitId = "ca-app-pub-3940256099942544/6300978111";
+            string adUnitId = "ca-app-pub-3940256099942544/6300978111"; 
 #elif UNITY_IPHONE
             string adUnitId = "ca-app-pub-3940256099942544/2934735716";
 #else
@@ -42,6 +39,11 @@ namespace NonDestroyObject
         }
         
         // 보상형 광고 띄우기
+        public void RequestRewardAds()
+        {
+            RequestRewardAd();
+        }
+        
         private void RequestRewardAd()
         {
 #if UNITY_ANDROID
@@ -51,6 +53,12 @@ namespace NonDestroyObject
 #else
             string adUnitId = "unexpected_platform";
 #endif
+            if (_rewardedAd != null)
+            {
+                _rewardedAd.Destroy();
+                _rewardedAd = null;
+            }
+            
             this._rewardedAd = new RewardedAd(adUnitId);
 
             this._rewardedAd.OnAdLoaded += HandleRewardedAdLoaded;
@@ -64,7 +72,15 @@ namespace NonDestroyObject
             AdRequest request = new AdRequest.Builder().Build();
             // Load the rewarded ad with the request.
             this._rewardedAd.LoadAd(request);
-            this._rewardedAd.Show();
+            UniTask.RunOnThreadPool(async () =>
+            {
+                while(!_rewardedAd.IsLoaded())
+                {
+                    await UniTask.DelayFrame(1);
+                }
+                await UniTask.SwitchToMainThread();
+                this._rewardedAd.Show();
+            }).Forget();
         }
         
         // Called when an ad request has successfully loaded.
