@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Data;
 using NonDestroyObject;
+using NonDestroyObject.DataManage;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +26,8 @@ namespace UI.Gatcha
         [Header("Components")]
         [SerializeField] private CoinUI playerCoinUI;
         [SerializeField] private CoinUI priceCoinUI;
+        [SerializeField] private Image watchAdButtonBackground;
+        [SerializeField] private TextMeshProUGUI watchAdLastText;
         [SerializeField] private GatchaTriggerObj inStartingPage;
         [SerializeField] private Image openGatchaImage;
         [SerializeField] private List<GatchaTriggerObj> gatchaTriggerObjs;
@@ -33,12 +37,14 @@ namespace UI.Gatcha
             var gatchaValue = DataManager.Instance.playerDataManager.GatchaCosts;
             if (DataManager.Instance.playerDataManager.Coin < gatchaValue)
                 return;
-            StartGatcha(10).Forget();
+            StartGatcha(10, false).Forget();
         }
 
         public void WatchAdGatchaButton()
         {
-            AdsManager.Instance.RequestRewardAds();
+            if (DataManager.Instance.playerDataManager.DailyLastAdCount == 0) return;
+
+                AdsManager.Instance.RequestRewardAds();
             UIManager.Instance.loadingPopup.Open();
             UniTask.RunOnThreadPool(async () =>
             {
@@ -56,8 +62,10 @@ namespace UI.Gatcha
         public void WatchAdEndAndStartGatcha()
         {
             UIManager.Instance.loadingPopup.Close();
+            if (NetworkManager.Instance.Connectable)
+                DataManager.Instance.playerDataManager.DailyLastAdCount -= 1;
             if (gameObject.activeSelf)
-                StartGatcha(10).Forget();
+                StartGatcha(10, true).Forget();
         }
 
         public void StartingGatchaButton()
@@ -82,7 +90,7 @@ namespace UI.Gatcha
             gatchaOpeningPage.SetActive(false);
         }
         
-        private async UniTaskVoid StartGatcha(int count)
+        private async UniTaskVoid StartGatcha(int count, bool isFree)
         {
             if (!NetworkManager.Instance.Connectable)
             {
@@ -100,12 +108,16 @@ namespace UI.Gatcha
             if (!gatchaResult.Success)
             {
                 NoInternetPopup.Open();
+                return;
             }
 
             var gatchaValue = DataManager.Instance.playerDataManager.GatchaCosts;
-            
-            DataManager.Instance.playerDataManager.SpendCoin(gatchaValue);
-            DataManager.Instance.playerDataManager.GatchaIncrement();
+
+            if (!isFree)
+            {
+                DataManager.Instance.playerDataManager.SpendCoin(gatchaValue);
+                DataManager.Instance.playerDataManager.GatchaIncrement();
+            }
             
             DataManager.Instance.itemManager.AddItems(gatchaResult.ItemEquipmentList);
 
@@ -165,6 +177,7 @@ namespace UI.Gatcha
             var price = DataManager.Instance.playerDataManager.GatchaCosts;
             playerCoinUI.SetCoinValue(playerCoin);
             priceCoinUI.SetCoinValue(price);
+            watchAdLastText.text = DataManager.Instance.playerDataManager.DailyLastAdCount.ToString();
             if (playerCoin < price)
             {
                 openGatchaImage.color = Color.gray;
@@ -181,6 +194,10 @@ namespace UI.Gatcha
             gatchaStartPage.SetActive(true);
             gatchaStartingPage.SetActive(false);
             gatchaOpeningPage.SetActive(false);
+            if (DataManager.Instance.playerDataManager.DailyLastAdCount == 0)
+            {
+                watchAdButtonBackground.color = Color.gray;
+            }
             base.Open();
             NoInternetPopup.Close();
             AdFailPopup.Close();

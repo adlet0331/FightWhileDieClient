@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Data;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -14,6 +15,18 @@ namespace NonDestroyObject.DataManage
         [ArrayElementTitle("id")]
 #endif
         [SerializeField] private List<EquipItemObject> itemEquipmentList;
+        public bool ItemAdded
+        {
+            get
+            {
+                if (!itemAdded)
+                    return false;
+                itemAdded = false;
+                return true;
+            }
+            private set => itemAdded = value;
+        }
+        [SerializeField] private bool itemAdded;
         [SerializeField] private List<Color> rareColorList; // TODO: Move to StaticDataManager 
 
         public List<EquipItemObject> ItemEquipments => itemEquipmentList;
@@ -57,6 +70,7 @@ namespace NonDestroyObject.DataManage
             rareColorList.Add(new Color(1.0f,0.0f,0.0f, 1.0f));
             rareColorList.Add(new Color(1.0f,0.8f,0.0f, 1.0f));
             rareColorList.Add(new Color(0.0f,0.0f,0.0f, 1.0f));
+            itemAdded = false;
         }
 
         public void Clear()
@@ -73,6 +87,8 @@ namespace NonDestroyObject.DataManage
             }
             var jsonString = JsonConvert.SerializeObject(itemEquipmentList);
             JsonSL.SaveJson(JsonTitle.PlayerEquipItemObjects, jsonString).Forget();
+            DataManager.Instance.playerDataManager.CallFetchAllStatus(true);
+            itemAdded = true;
         }
 
         public bool DeleteItems(List<EquipItemObject> itemIdList)

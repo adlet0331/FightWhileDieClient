@@ -62,6 +62,11 @@ namespace UI.Inventory.ItemView
 
         public void ChangeMode(ItemViewMode mode)
         {
+            if (DataManager.Instance.itemManager.ItemAdded)
+            {
+                BeforeActivate();
+            }
+            
             foreach (var slot in itemSlotList)
             {
                 slot.LoadItemUI();

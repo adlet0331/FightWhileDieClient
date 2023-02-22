@@ -1088,7 +1088,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38f5ca530023d548bf464db8a030de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _condition: 0
+  _condition: 1
   _rootURL: 
   connectable: 1
 --- !u!1 &322276781
@@ -4679,10 +4679,11 @@ MonoBehaviour:
     stage: 1
     baseAtk: 50
     coin: 10
-    dailyGatchaCount: 0
     enhanceIngredientList: 
     lastUpdated: 0
     equipedItemIdList: 
+    dailyGatchaCount: 0
+    dailyLastAdCount: 0
     topStage: 0
   staticDataManager:
     currentVersions: []
@@ -4692,6 +4693,7 @@ MonoBehaviour:
     enhanceInfos: []
   itemManager:
     itemEquipmentList: []
+    itemAdded: 0
     rareColorList: []
 --- !u!1 &1484660412
 GameObject:

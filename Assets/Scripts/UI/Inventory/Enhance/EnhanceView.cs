@@ -80,6 +80,7 @@ namespace UI.Inventory.Enhance
             if (success) selectedObject.level += 1;
             else if (selectedObject.level > 1) selectedObject.level -= 1;
             DataManager.Instance.itemManager.UpdateEquipItemObject(selectedObject);
+            DataManager.Instance.playerDataManager.CallFetchAllStatus(true);
             
             // UI
             foreach (var disableGameObject in disableWhileEnhancing)

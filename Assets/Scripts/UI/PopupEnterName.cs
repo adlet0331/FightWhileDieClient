@@ -27,7 +27,7 @@ namespace UI
             }
             else
             {
-                DataManager.Instance.playerDataManager.InitUser(-1, userName);
+                DataManager.Instance.playerDataManager.ResetUser(-1, userName);
                 Close();
             }
         }

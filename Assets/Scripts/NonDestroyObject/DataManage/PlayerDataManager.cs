@@ -34,6 +34,22 @@ namespace NonDestroyObject.DataManage
                 return dailyGatchaCount;
             }
         }
+
+        public int DailyLastAdCount
+        {
+            get
+            {
+                if (lastUpdated < GetCurrentTime())
+                    dailyLastAdCount = 3;
+                lastUpdated = GetCurrentTime();
+                return dailyLastAdCount;
+            }
+            set
+            {
+                dailyLastAdCount = value;
+                FetchAllStatus(false);
+            }
+        }
         public int GatchaCosts => gatchaStartCoin * (int)Math.Pow(2, DailyGatchaCount);
 
         public int Atk
@@ -93,12 +109,13 @@ namespace NonDestroyObject.DataManage
         [SerializeField] private int stage;
         [SerializeField] private int baseAtk;
         [SerializeField] private int coin;
-        [SerializeField] private int dailyGatchaCount;
         [SerializeField] private List<int> enhanceIngredientList;
         
         [Header("Non-Server Dependent Variables, Only handled in Client")]
         [SerializeField] private int lastUpdated;
         [SerializeField] private List<int> equipedItemIdList;
+        [SerializeField] private int dailyGatchaCount;
+        [SerializeField] private int dailyLastAdCount;
         
         [Header("Update Frequently")]
         [SerializeField] private int topStage;
@@ -108,13 +125,21 @@ namespace NonDestroyObject.DataManage
             LoadAllPrefs();
             FetchAllStatus(false);
         }
+
+        public void InitUserWithId(int idp, string userNameParam)
+        {
+            id = idp;
+            userName = userNameParam;
+            UIManager.Instance.UpdateMainUI();
+            FetchAllStatus(true);
+        }
         
         /// <summary>
         /// Must be called in Main Thread
         /// </summary>
         /// <param name="idp"></param>
         /// <param name="userNameParam"></param>
-        public void InitUser(int idp, string userNameParam)
+        public void ResetUser(int idp, string userNameParam)
         {
             UniTask.SwitchToMainThread();
             ClearAllPrefs(idp, userNameParam);
@@ -177,6 +202,7 @@ namespace NonDestroyObject.DataManage
             BaseAtk,
             Coin,
             DailyGatchaNum,
+            DailyLastAdNum,
             LastUpdated,
             
             EnhanceIngredient1,
@@ -231,6 +257,7 @@ namespace NonDestroyObject.DataManage
             baseAtk = LoadIntPrefs(IntPlayerPrefName.BaseAtk);
             coin = LoadIntPrefs(IntPlayerPrefName.Coin);
             dailyGatchaCount = LoadIntPrefs(IntPlayerPrefName.DailyGatchaNum);
+            dailyLastAdCount = LoadIntPrefs(IntPlayerPrefName.DailyLastAdNum);
             lastUpdated = LoadIntPrefs(IntPlayerPrefName.LastUpdated);
             
             enhanceIngredientList = new List<int>();
@@ -263,6 +290,7 @@ namespace NonDestroyObject.DataManage
             SaveIntPrefs(IntPlayerPrefName.BaseAtk, baseAtk);
             SaveIntPrefs(IntPlayerPrefName.Coin, coin);
             SaveIntPrefs(IntPlayerPrefName.DailyGatchaNum, dailyGatchaCount);
+            SaveIntPrefs(IntPlayerPrefName.DailyLastAdNum, dailyLastAdCount);
             SaveIntPrefs(IntPlayerPrefName.LastUpdated, lastUpdated);
             
             SaveIntPrefs(IntPlayerPrefName.EnhanceIngredient1, enhanceIngredientList[1]);
@@ -287,6 +315,7 @@ namespace NonDestroyObject.DataManage
             baseAtk = 50;
             coin = 3000;
             dailyGatchaCount = 0;
+            dailyLastAdCount = 3;
             lastUpdated = GetCurrentTime();
 
             for (int i = 0; i <= 1; i++)
@@ -307,6 +336,11 @@ namespace NonDestroyObject.DataManage
             var currentDate = DateTime.Today;
             var date2Int = int.Parse(currentDate.ToString("yyyyMMdd"));
             return date2Int;
+        }
+
+        public void CallFetchAllStatus(bool sendToServer)
+        {
+            FetchAllStatus(sendToServer);
         }
 
         private void FetchAllStatus(bool sendToServer)

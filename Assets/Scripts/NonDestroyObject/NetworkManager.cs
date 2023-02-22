@@ -43,6 +43,7 @@ namespace NonDestroyObject
 #if !UNITY_EDITOR
             _rootURL = "http://fwt-server.haje.org/playerserver/";  
   #endif
+            FetchUser().Forget();
             DataManager.Instance.staticDataManager.GetStaticDatasFromServer().Forget();
         }
 
@@ -163,7 +164,7 @@ namespace NonDestroyObject
                 return CreateNewUserResult.Fail;
             
             await UniTask.SwitchToMainThread();
-            DataManager.Instance.playerDataManager.InitUser(result.id, userName);
+            DataManager.Instance.playerDataManager.InitUserWithId(result.id, userName);
             return CreateNewUserResult.Success;
         }
 
