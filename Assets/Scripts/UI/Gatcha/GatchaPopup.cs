@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Data;
 using NonDestroyObject;
@@ -14,6 +15,7 @@ namespace UI.Gatcha
         [SerializeField] private bool gatchaLoaded;
         [Header("GameObjects")]
         [SerializeField] private Popup NoInternetPopup;
+        [SerializeField] private Popup AdFailPopup;
         [SerializeField] private GameObject gatchaStartPage;
         [SerializeField] private GameObject gatchaStartingPage;
         [SerializeField] private GameObject gatchaOpeningPage;
@@ -25,7 +27,6 @@ namespace UI.Gatcha
         [SerializeField] private GatchaTriggerObj inStartingPage;
         [SerializeField] private Image openGatchaImage;
         [SerializeField] private List<GatchaTriggerObj> gatchaTriggerObjs;
-        //[SerializeField] private GatchaTriggerObj gatchaTriggerObjAnimator;
 
         public void StartGatchaButton()
         {
@@ -38,10 +39,23 @@ namespace UI.Gatcha
         public void WatchAdGatchaButton()
         {
             AdsManager.Instance.RequestRewardAds();
+            UIManager.Instance.loadingPopup.Open();
+            UniTask.RunOnThreadPool(async () =>
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(5));
+
+                await UniTask.SwitchToMainThread();
+                if (UIManager.Instance.loadingPopup.gameObject.activeSelf)
+                {
+                    AdFailPopup.Open();
+                }
+                UIManager.Instance.loadingPopup.Close();
+            }).Forget();
         }
 
         public void WatchAdEndAndStartGatcha()
         {
+            UIManager.Instance.loadingPopup.Close();
             if (gameObject.activeSelf)
                 StartGatcha(10).Forget();
         }
@@ -167,12 +181,15 @@ namespace UI.Gatcha
             gatchaStartingPage.SetActive(false);
             gatchaOpeningPage.SetActive(false);
             base.Open();
+            NoInternetPopup.Close();
+            AdFailPopup.Close();
         }
 
         public new void Close()
         {
-            base.Close();
             NoInternetPopup.Close();
+            AdFailPopup.Close();
+            base.Close();
         }
     }
 }

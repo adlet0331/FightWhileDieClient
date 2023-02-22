@@ -67,20 +67,27 @@ namespace NonDestroyObject
             this._rewardedAd.OnAdFailedToShow += HandleRewardedAdFailedToShow;
             this._rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
             this._rewardedAd.OnAdClosed += HandleRewardedAdClosed;
-            
-            // Create an empty ad request.
-            AdRequest request = new AdRequest.Builder().Build();
-            // Load the rewarded ad with the request.
-            this._rewardedAd.LoadAd(request);
-            UniTask.RunOnThreadPool(async () =>
+
+            try
             {
-                while(!_rewardedAd.IsLoaded())
+                // Create an empty ad request.
+                AdRequest request = new AdRequest.Builder().Build();
+                // Load the rewarded ad with the request.
+                this._rewardedAd.LoadAd(request);
+                UniTask.RunOnThreadPool(async () =>
                 {
-                    await UniTask.DelayFrame(1);
-                }
-                await UniTask.SwitchToMainThread();
-                this._rewardedAd.Show();
-            }).Forget();
+                    while(!_rewardedAd.IsLoaded())
+                    {
+                        await UniTask.DelayFrame(1);
+                    }
+                    await UniTask.SwitchToMainThread();
+                    this._rewardedAd.Show();
+                }).Forget();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Ad Load Failed : \n" + e);
+            }
         }
         
         // Called when an ad request has successfully loaded.
