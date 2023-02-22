@@ -233,9 +233,9 @@ namespace NonDestroyObject.DataManage
             PlayerPrefs.SetString(name.ToString(), val);
         }
 
-        private int LoadIntPrefs(IntPlayerPrefName name)
+        private int LoadIntPrefs(IntPlayerPrefName name, int defaultValue)
         {
-            return PlayerPrefs.GetInt(name.ToString(), 0);
+            return PlayerPrefs.GetInt(name.ToString(), defaultValue);
         }
         
         private string LoadStringPrefs(StringPlayerPrefName name)
@@ -252,28 +252,28 @@ namespace NonDestroyObject.DataManage
         {
             userName = LoadStringPrefs(StringPlayerPrefName.Name);
             
-            id = LoadIntPrefs(IntPlayerPrefName.Id);
-            topStage = LoadIntPrefs(IntPlayerPrefName.TopStage);
-            baseAtk = LoadIntPrefs(IntPlayerPrefName.BaseAtk);
-            coin = LoadIntPrefs(IntPlayerPrefName.Coin);
-            dailyGatchaCount = LoadIntPrefs(IntPlayerPrefName.DailyGatchaNum);
-            dailyLastAdCount = LoadIntPrefs(IntPlayerPrefName.DailyLastAdNum);
-            lastUpdated = LoadIntPrefs(IntPlayerPrefName.LastUpdated);
+            id = LoadIntPrefs(IntPlayerPrefName.Id, -1);
+            topStage = LoadIntPrefs(IntPlayerPrefName.TopStage, 1);
+            baseAtk = LoadIntPrefs(IntPlayerPrefName.BaseAtk, 50);
+            coin = LoadIntPrefs(IntPlayerPrefName.Coin, 3000);
+            dailyGatchaCount = LoadIntPrefs(IntPlayerPrefName.DailyGatchaNum, 0);
+            dailyLastAdCount = LoadIntPrefs(IntPlayerPrefName.DailyLastAdNum, 3);
+            lastUpdated = LoadIntPrefs(IntPlayerPrefName.LastUpdated, 230223);
             
             enhanceIngredientList = new List<int>();
             enhanceIngredientList.Add(0);
-            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient1));
-            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient2));
-            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient3));
-            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient4));
-            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient5));
-            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient6));
-            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient7));
-            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient8));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient1, 0));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient2, 0));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient3, 0));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient4, 0));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient5, 0));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient6, 0));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient7, 0));
+            enhanceIngredientList.Add(LoadIntPrefs(IntPlayerPrefName.EnhanceIngredient8, 0));
 
             equipedItemIdList = new List<int>();
-            equipedItemIdList.Add(LoadIntPrefs(IntPlayerPrefName.EquipItem1Id));
-            equipedItemIdList.Add(LoadIntPrefs(IntPlayerPrefName.EquipItem2Id));
+            equipedItemIdList.Add(LoadIntPrefs(IntPlayerPrefName.EquipItem1Id, 0));
+            equipedItemIdList.Add(LoadIntPrefs(IntPlayerPrefName.EquipItem2Id, 0));
 
             if (userName == string.Empty)
             {
