@@ -15,18 +15,19 @@ namespace NonDestroyObject.DataManage
         [ArrayElementTitle("id")]
 #endif
         [SerializeField] private List<EquipItemObject> itemEquipmentList;
-        public bool ItemAdded
+        public bool ItemAddedOrDeleted
         {
             get
             {
-                if (!itemAdded)
+                // 인식 했으면 조치 했을거라 믿음
+                if (!itemAddOrDeleted)
                     return false;
-                itemAdded = false;
+                itemAddOrDeleted = false;
                 return true;
             }
-            private set => itemAdded = value;
+            private set => itemAddOrDeleted = value;
         }
-        [SerializeField] private bool itemAdded;
+        [SerializeField] private bool itemAddOrDeleted;
         [SerializeField] private List<Color> rareColorList; // TODO: Move to StaticDataManager 
 
         public List<EquipItemObject> ItemEquipments => itemEquipmentList;
@@ -70,13 +71,14 @@ namespace NonDestroyObject.DataManage
             rareColorList.Add(new Color(1.0f,0.0f,0.0f, 1.0f));
             rareColorList.Add(new Color(1.0f,0.8f,0.0f, 1.0f));
             rareColorList.Add(new Color(0.0f,0.0f,0.0f, 1.0f));
-            itemAdded = false;
+            itemAddOrDeleted = false;
         }
 
         public void Clear()
         {
             JsonSL.DeleteJsonFile(JsonTitle.PlayerEquipItemObjects).Forget();
             itemEquipmentList = new List<EquipItemObject>();
+            itemAddOrDeleted = true;
         }
 
         public void AddItems(List<EquipItemObject> itemEquipments)
@@ -88,7 +90,7 @@ namespace NonDestroyObject.DataManage
             var jsonString = JsonConvert.SerializeObject(itemEquipmentList);
             JsonSL.SaveJson(JsonTitle.PlayerEquipItemObjects, jsonString).Forget();
             DataManager.Instance.playerDataManager.CallFetchAllStatus(true);
-            itemAdded = true;
+            itemAddOrDeleted = true;
         }
 
         public bool DeleteItems(List<EquipItemObject> itemIdList)

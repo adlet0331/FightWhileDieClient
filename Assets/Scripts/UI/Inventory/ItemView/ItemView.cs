@@ -62,7 +62,7 @@ namespace UI.Inventory.ItemView
 
         public void ChangeMode(ItemViewMode mode)
         {
-            if (DataManager.Instance.itemManager.ItemAdded)
+            if (DataManager.Instance.itemManager.ItemAddedOrDeleted)
             {
                 BeforeActivate();
             }

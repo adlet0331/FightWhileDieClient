@@ -223,6 +223,16 @@ namespace UI.Inventory.Enhance
 
             if (itemSelected)
             {
+                // Check Selected Object Is Still in Inventory
+                if (DataManager.Instance.itemManager.GetEquipItemObjectWithId(selectedObject.id) == null)
+                {
+                    itemSelected = false;
+                    selectedObject = null;
+                    SwitchMode(EnhanceViewMode.ItemNotSelected);
+
+                    return;
+                }
+
                 int rare = selectedObject.rare;
                 int level = selectedObject.level;
 
