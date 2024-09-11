@@ -15,12 +15,14 @@ namespace NonDestroyObject
         [SerializeField] private Transform aiStartPosition;
         [SerializeField] private Transform aiStandingPosition;
         [SerializeField] private int currentEnemyIndex;
+        [SerializeField] private float strongAttackHoldTime;
         [Header("Status")]
         [SerializeField] private bool inputBlocked;
         [SerializeField] private bool timeBlocked;
         [SerializeField] private bool updateDelayed;
         [SerializeField] private float updateInterval;
         [SerializeField] private int randomSeed;
+        [SerializeField] private float holdTime;
         [Header("Auto Status")]
         [SerializeField] private float afterEndCombat;
 
@@ -80,29 +82,19 @@ namespace NonDestroyObject
         // Player Input
         private void Update()
         {
-            #region InputParticle
-            foreach (var touch in Input.touches)
-            {
-                if (touch.phase == TouchPhase.Began)
-                {
-                    var touchPosition = Camera.main.ScreenToWorldPoint(touch.position);
-                    touchPosition.z = 0;
-                    var clickParticle = Resources.Load("Prefabs/UI/TouchParticle") as GameObject;
-                    Instantiate(clickParticle, touchPosition, new Quaternion(0, 0, 0, 0));
-                }
-            }
-
-            if (Input.GetMouseButton(0))
+            // Spawn Particle - 언제나 터치 파티클은 보여주기
+            if (Input.GetMouseButtonDown(0))
             {
                 var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 mousePosition.z = 0;
                 var clickParticle = Resources.Load("Prefabs/UI/TouchParticle") as GameObject;
                 Instantiate(clickParticle, mousePosition, new Quaternion(0, 0, 0, 0));
             }
-            #endregion
-            
+
+            // Pause 때 Action 막기
             if (timeBlocked) return;
 
+            // Auto 켰을 때 자동조작
             if (AutoManager.Instance.IsAuto)
             {
                 // Skip Delay At First Pressed
@@ -128,19 +120,29 @@ namespace NonDestroyObject
                 }
             }
             
-            if (timeBlocked || inputBlocked || player.Attacking || player.Dying) return;
-            
-            foreach (var touch in Input.touches)
+            // 공격 액션
+            if (!inputBlocked && !player.Attacking && !player.Dying)
             {
-                if (touch.phase == TouchPhase.Began)
+                if (Input.GetMouseButtonDown(0))
                 {
-                    player.Action(ObjectStatus.Attack);
+                    holdTime = 0;
+                    player.Action(ObjectStatus.Charge);
                 }
-            }
-
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                player.Action(ObjectStatus.Attack);
+                if (Input.GetMouseButton(0))
+                {
+                    holdTime += Time.deltaTime;
+                }
+                if (holdTime > 0 && Input.GetMouseButtonUp(0))
+                {
+                    if (holdTime < strongAttackHoldTime)
+                    {
+                        player.Action(ObjectStatus.Attack);
+                    }
+                    else
+                    {
+                        player.Action(ObjectStatus.ChargeAttack);
+                    }
+                }
             }
         }
 
@@ -162,8 +164,10 @@ namespace NonDestroyObject
             {
                 player.CancelHittingJudgeCoroutine();
                 enemyAIList[currentEnemyIndex].CancelHittingJudgeCoroutine();
+
+                int damage = DataManager.Instance.playerDataManager.Atk * (int)player.AttackType;
                 
-                var dead = enemyAIList[currentEnemyIndex].Damaged(DataManager.Instance.playerDataManager.Atk);
+                var dead = enemyAIList[currentEnemyIndex].Damaged(damage);
                 if (dead)
                 {
                     // 코인 이펙트

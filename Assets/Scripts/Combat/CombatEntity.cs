@@ -12,26 +12,36 @@ namespace Combat
     {
         Idle = 0,
         Attack = 1,
-        AttackSlow = 2,
+        ChargeAttack = 2,
         Running = 3,
         Damaged = 4,
         JumpBack = 5,
         Dead = 6,
+        Charge = 7
     }
     public enum ObjectType
     {
         Player = 0,
         AI = 1
     }
+    public enum AttackType
+    {
+        Normal = 1,
+        Charge = 2
+    }
     public class CombatEntity : MonoBehaviour
     {
         [Header("Initial Setting")]
         [SerializeField] private int maxHp;
-        [SerializeField] private float attackDelay;
-        [SerializeField] private float attackEnd;
+        [SerializeField] private float attackBeforeDelay;
+        [SerializeField] private float attackHitDuration;
         [SerializeField] private float attackAfterDelay;
+        [SerializeField] private float chargeAttackBeforeDelay;
+        [SerializeField] private float chargeAttackHitDuration;
+        [SerializeField] private float chargeAttackAfterDelay;
         [SerializeField] private ObjectType type;
         [SerializeField] private ClipName hittingClip;
+        [SerializeField] private ClipName chargehittingClip;
         
         [Header("If enemyAI, Need to be Initialized")] 
         [SerializeField] public float runningSpeed;
@@ -41,8 +51,10 @@ namespace Combat
         public bool EnemyInRange => attackHitBox.EnemyInRange;
         // Current Status
         public bool Attacking => attacking;
+        public AttackType AttackType => attackType;
         public bool Hitting => hitting;
         public bool Dying => dying;
+        public bool Charging => charging;
         // Only For enemyAI
         public bool Running => running;
         public bool BackJumping => backJumping;
@@ -52,8 +64,10 @@ namespace Combat
         [SerializeField] public ObjectStatus currentStatus;
         [SerializeField] private int currentHp;
         [SerializeField] private bool attacking;
+        [SerializeField] private AttackType attackType;
         [SerializeField] private bool hitting;
         [SerializeField] private bool dying;
+        [SerializeField] private bool charging;
         [Header("Debugging Only For Enemy")]
         [SerializeField] private bool running;
         [SerializeField] private bool backJumping;
@@ -119,20 +133,41 @@ namespace Combat
             }
             _waitAndReturnToIdleCoroutine = null;
         }
-        private void WaitAndHandleHitting()
+        private void WaitAndHandleHitting(AttackType attackType)
         {
-            CancelHittingJudgeCoroutine();
-            _hittingJudgeCoroutine = CoroutineUtils.WaitAndOperationIEnum(attackDelay, () =>
+            this.attackType = attackType;
+            switch (attackType)
             {
-                hitting = true;
-                _hittingJudgeCoroutine = null;
-                SoundManager.Instance.PlayClip((int)hittingClip);
-            });
-            StartCoroutine(_hittingJudgeCoroutine);
-            StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(attackEnd, () =>
-            {
-                hitting = false;
-            }));
+                case AttackType.Normal:
+                    CancelHittingJudgeCoroutine();
+                    _hittingJudgeCoroutine = CoroutineUtils.WaitAndOperationIEnum(attackBeforeDelay, () =>
+                    {
+                        hitting = true;
+                        _hittingJudgeCoroutine = null;
+                        SoundManager.Instance.PlayClip((int)hittingClip);
+                    });
+                    StartCoroutine(_hittingJudgeCoroutine);
+                    StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(attackBeforeDelay + attackHitDuration, () =>
+                    {
+                        hitting = false;
+                    }));
+                    break;
+                case AttackType.Charge:
+                    CancelHittingJudgeCoroutine();
+                    _hittingJudgeCoroutine = CoroutineUtils.WaitAndOperationIEnum(chargeAttackBeforeDelay, () =>
+                    {
+                        hitting = true;
+                        _hittingJudgeCoroutine = null;
+                        SoundManager.Instance.PlayClip((int)hittingClip);
+                    });
+                    StartCoroutine(_hittingJudgeCoroutine);
+                    StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(chargeAttackBeforeDelay + chargeAttackHitDuration, () =>
+                    {
+                        hitting = false;
+                    }));
+                    break;
+            }
+            
         }
         
         private void SwitchStatus(ObjectStatus newStatus)
@@ -144,16 +179,21 @@ namespace Combat
             dying = false;
             running = false;
             backJumping = false;
+            charging = false;
             animator.SetBool(currentStatus.ToString(), false);
             
             currentStatus = newStatus;
             
             switch (currentStatus)
             {
+                case ObjectStatus.Charge:
+                    charging = true;
+                    break;
                 case ObjectStatus.Attack:
                     attacking = true;
                     break;
-                case ObjectStatus.AttackSlow:
+                case ObjectStatus.ChargeAttack:
+                    attacking = true;
                     break;
                 case ObjectStatus.Damaged:
                     damaging = true;
@@ -269,21 +309,25 @@ namespace Combat
 
             switch (objectStatus)
             {
+                // 차지
+                case ObjectStatus.Charge:
+                    break;
                 // 공격
                 case ObjectStatus.Attack:
                     // Hitting 변수
-                    WaitAndHandleHitting();
+                    WaitAndHandleHitting(AttackType.Normal);
                     // Idle로 리턴
-                    WaitAndReturnToIdleWithOperation(attackEnd + attackAfterDelay);
+                    WaitAndReturnToIdleWithOperation(attackHitDuration + attackAfterDelay);
                     break;
                 // 죽음 (플레이어만)
                 case ObjectStatus.Dead:
                     WaitAndReturnToIdleWithOperation(GetAnimationTime("Dead"));
                     break;
-                // 아래는 enemyAI 만 사용
-                // 느리게 공격
-                case ObjectStatus.AttackSlow:
-
+                // 차지 공격
+                case ObjectStatus.ChargeAttack:
+                    WaitAndHandleHitting(AttackType.Charge);
+                    // Idle로 리턴
+                    WaitAndReturnToIdleWithOperation(chargeAttackHitDuration + chargeAttackAfterDelay);
                     break;
                 // 움직임
                 case ObjectStatus.Running:

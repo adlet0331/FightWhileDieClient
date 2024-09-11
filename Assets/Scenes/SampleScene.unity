@@ -437,7 +437,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uAC8C\uC2A4\uD2B8"
+  m_text: Guest
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 066f64565882ac34daabfabdac8f453f, type: 2}
   m_sharedMaterial: {fileID: 2980274931481449449, guid: 066f64565882ac34daabfabdac8f453f, type: 2}
@@ -1088,7 +1088,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38f5ca530023d548bf464db8a030de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _condition: 1
+  _condition: 2
   _rootURL: 
   connectable: 1
 --- !u!1 &322276781
@@ -3493,11 +3493,13 @@ MonoBehaviour:
   aiStartPosition: {fileID: 441458117}
   aiStandingPosition: {fileID: 1050546257}
   currentEnemyIndex: 0
+  strongAttackHoldTime: 0.5
   inputBlocked: 0
   timeBlocked: 0
   updateDelayed: 0
   updateInterval: 0.1
   randomSeed: 0
+  holdTime: 0
   afterEndCombat: 0
 --- !u!1 &1042355073
 GameObject:
@@ -4693,7 +4695,7 @@ MonoBehaviour:
     enhanceInfos: []
   itemManager:
     itemEquipmentList: []
-    itemAdded: 0
+    itemAddOrDeleted: 0
     rareColorList: []
 --- !u!1 &1484660412
 GameObject:
@@ -7877,7 +7879,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: attackAfterDelay
-      value: 0.6
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: afterAttackTilEnd
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: attackBeforeDelay
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: attackHitDuration
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: chargeAttackAfterDelay
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: chargeAttackHitDuration
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: afterChargeAttackTillEnd
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 5935084497502917644, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_RootOrder
@@ -7922,6 +7948,34 @@ PrefabInstance:
     - target: {fileID: 5935084497502917644, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917645, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917645, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917645, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497502917645, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497732478262, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: m_Size.x
+      value: 0.8746086
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497732478262, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: m_Size.y
+      value: 0.19999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 5935084497732478262, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.31887683
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}

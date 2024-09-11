@@ -21,7 +21,7 @@ namespace NonDestroyObject
     {
         [SerializeField] private ClientCondition _condition;
         [SerializeField] private string _rootURL;
-        [SerializeField]private bool connectable;
+        [SerializeField] private bool connectable;
         private HttpClient _httpClient;
         public bool Connectable => connectable;
         
@@ -34,7 +34,7 @@ namespace NonDestroyObject
                     _rootURL = "http://fwt-server.haje.org/playerserver/";
                     break;
                 case ClientCondition.Localhost:
-                    _rootURL = "http://localhost:8000/playerserver/";
+                    _rootURL = "http://localhost:8253/playerserver/";
                     break;
                 case ClientCondition.NoConnectionTest:
                     _rootURL = "http://for-no-connection.haje.org/";
@@ -71,7 +71,7 @@ namespace NonDestroyObject
                 }
                 catch (Exception e)
                 {
-                    Debug.Log($"{url}, {cnt}\n" + e);
+                    Debug.Log($"{_rootURL + url}, {cnt}\n" + e);
                     cnt += 1;
                     continue;
                 }
@@ -115,7 +115,7 @@ namespace NonDestroyObject
 
             if (resultJson == string.Empty)
             {
-                connectable = false;
+                connectable = false;    
                 return CheckConnectionResult.NoConnectionToServer;
             }
             
