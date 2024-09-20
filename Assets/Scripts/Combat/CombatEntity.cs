@@ -33,10 +33,8 @@ namespace Combat
     {
         [Header("Initial Setting")]
         [SerializeField] private int maxHp;
-        [SerializeField] private float attackBeforeDelay;
         [SerializeField] private float attackHitDuration;
         [SerializeField] private float attackAfterDelay;
-        [SerializeField] private float chargeAttackBeforeDelay;
         [SerializeField] private float chargeAttackHitDuration;
         [SerializeField] private float chargeAttackAfterDelay;
         [SerializeField] private ObjectType type;
@@ -84,7 +82,7 @@ namespace Combat
 
             // Coroutines
             _waitAndReturnToIdleCoroutine = null;
-            _hittingJudgeCoroutine = null;
+            _hittingCancelCoroutine = null;
             
             currentStatus = ObjectStatus.Idle;
         }
@@ -96,22 +94,22 @@ namespace Combat
         {
             if (_waitAndReturnToIdleCoroutine != null)
                 StopCoroutine(_waitAndReturnToIdleCoroutine);
-            if (_hittingJudgeCoroutine != null)
-                StopCoroutine(_hittingJudgeCoroutine);
+            if (_hittingCancelCoroutine != null)
+                StopCoroutine(_hittingCancelCoroutine);
         }
 
         public void RestartAllCoroutines()
         {
             if (_waitAndReturnToIdleCoroutine != null)
                 StartCoroutine(_waitAndReturnToIdleCoroutine);
-            if (_hittingJudgeCoroutine != null)
-                StartCoroutine(_hittingJudgeCoroutine);
+            if (_hittingCancelCoroutine != null)
+                StartCoroutine(_hittingCancelCoroutine);
         }
         
         // 기다렸다가 IDLE로 전환
         private IEnumerator _waitAndReturnToIdleCoroutine;
         // 공격 판정변수 설정
-        private IEnumerator _hittingJudgeCoroutine;
+        private IEnumerator _hittingCancelCoroutine;
         private delegate void OperationWaitAndReturnToIdle();
         private void WaitAndReturnToIdleWithOperation(float sec, OperationWaitAndReturnToIdle operation = null)
         {
@@ -133,41 +131,31 @@ namespace Combat
             }
             _waitAndReturnToIdleCoroutine = null;
         }
-        private void WaitAndHandleHitting(AttackType attackType)
+        private void HandleHitting(AttackType attackType)
         {
             this.attackType = attackType;
+            CancelHittingJudgeCoroutine();
+            hitting = true;
             switch (attackType)
             {
                 case AttackType.Normal:
-                    CancelHittingJudgeCoroutine();
-                    _hittingJudgeCoroutine = CoroutineUtils.WaitAndOperationIEnum(attackBeforeDelay, () =>
+                    SoundManager.Instance.PlayClip((int)hittingClip);
+                    _hittingCancelCoroutine = CoroutineUtils.WaitAndOperationIEnum(attackHitDuration, () =>
                     {
-                        hitting = true;
-                        _hittingJudgeCoroutine = null;
-                        SoundManager.Instance.PlayClip((int)hittingClip);
-                    });
-                    StartCoroutine(_hittingJudgeCoroutine);
-                    StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(attackBeforeDelay + attackHitDuration, () =>
-                    {
+                        _hittingCancelCoroutine = null;
                         hitting = false;
-                    }));
+                    });
                     break;
                 case AttackType.Charge:
-                    CancelHittingJudgeCoroutine();
-                    _hittingJudgeCoroutine = CoroutineUtils.WaitAndOperationIEnum(chargeAttackBeforeDelay, () =>
+                    SoundManager.Instance.PlayClip((int)hittingClip);
+                    _hittingCancelCoroutine = CoroutineUtils.WaitAndOperationIEnum(chargeAttackHitDuration, () =>
                     {
-                        hitting = true;
-                        _hittingJudgeCoroutine = null;
-                        SoundManager.Instance.PlayClip((int)hittingClip);
-                    });
-                    StartCoroutine(_hittingJudgeCoroutine);
-                    StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(chargeAttackBeforeDelay + chargeAttackHitDuration, () =>
-                    {
+                        _hittingCancelCoroutine = null;
                         hitting = false;
-                    }));
+                    });
                     break;
             }
-            
+            StartCoroutine(_hittingCancelCoroutine);
         }
         
         private void SwitchStatus(ObjectStatus newStatus)
@@ -214,10 +202,10 @@ namespace Combat
         public void CancelHittingJudgeCoroutine()
         {
             hitting = false;
-            if (_hittingJudgeCoroutine != null)
+            if (_hittingCancelCoroutine != null)
             {
-                StopCoroutine(_hittingJudgeCoroutine);
-                _hittingJudgeCoroutine = null;
+                StopCoroutine(_hittingCancelCoroutine);
+                _hittingCancelCoroutine = null;
             }
         }
         #endregion
@@ -285,7 +273,7 @@ namespace Combat
 
         public void Action(ObjectStatus objectStatus)
         {
-            // 공격 중이면 Action 안 받음
+            // hitting 도중 액션이면 안 받음
             if (hitting) return;
             
             // Animation 및 변수들 처리
@@ -294,7 +282,8 @@ namespace Combat
             // Player Action WhiteList
             if (type == ObjectType.Player &&
                 (objectStatus != ObjectStatus.Idle && objectStatus != ObjectStatus.Attack &&
-                 objectStatus != ObjectStatus.Dead && objectStatus != ObjectStatus.Running))
+                 objectStatus != ObjectStatus.Dead && objectStatus != ObjectStatus.Running &&
+                 objectStatus != ObjectStatus.ChargeAttack))
             {
                 Debug.LogAssertion("Player Action Rejected: " + objectStatus);
                 return;
@@ -307,15 +296,17 @@ namespace Combat
                 return;
             }
 
+            CancelWaitAndReturnToIdleCoroutine();
             switch (objectStatus)
             {
                 // 차지
                 case ObjectStatus.Charge:
+                    // 공격 도중 
                     break;
                 // 공격
                 case ObjectStatus.Attack:
                     // Hitting 변수
-                    WaitAndHandleHitting(AttackType.Normal);
+                    HandleHitting(AttackType.Normal);
                     // Idle로 리턴
                     WaitAndReturnToIdleWithOperation(attackHitDuration + attackAfterDelay);
                     break;
@@ -325,7 +316,7 @@ namespace Combat
                     break;
                 // 차지 공격
                 case ObjectStatus.ChargeAttack:
-                    WaitAndHandleHitting(AttackType.Charge);
+                    HandleHitting(AttackType.Charge);
                     // Idle로 리턴
                     WaitAndReturnToIdleWithOperation(chargeAttackHitDuration + chargeAttackAfterDelay);
                     break;

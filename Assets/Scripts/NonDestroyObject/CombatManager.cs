@@ -121,7 +121,7 @@ namespace NonDestroyObject
             }
             
             // 공격 액션
-            if (!inputBlocked && !player.Attacking && !player.Dying)
+            if (!inputBlocked && !player.Hitting && !player.Dying)
             {
                 if (Input.GetMouseButtonDown(0))
                 {

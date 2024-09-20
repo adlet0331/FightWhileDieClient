@@ -7873,38 +7873,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: hittingClip
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: attackAfterDelay
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: afterAttackTilEnd
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: attackBeforeDelay
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: attackHitDuration
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: chargeAttackAfterDelay
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: chargeAttackHitDuration
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917640, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: afterChargeAttackTillEnd
-      value: 0.15
-      objectReference: {fileID: 0}
     - target: {fileID: 5935084497502917644, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -7949,33 +7917,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917645, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917645, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917645, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917645, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5935084497732478262, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_Size.x
-      value: 0.8746086
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497732478262, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_Size.y
-      value: 0.19999999
+      value: 0.84683704
       objectReference: {fileID: 0}
     - target: {fileID: 5935084497732478262, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_Offset.x
-      value: 0.31887683
+      value: 0.30499107
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
