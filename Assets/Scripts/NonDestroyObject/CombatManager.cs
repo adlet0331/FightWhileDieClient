@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Combat;
 using UnityEngine;
+using UnityEngine.UI;
 using Utils;
 using Random = System.Random;
 
@@ -16,12 +18,18 @@ namespace NonDestroyObject
         [SerializeField] private Transform aiStandingPosition;
         [SerializeField] private int currentEnemyIndex;
         [SerializeField] private float strongAttackHoldTime;
+        [SerializeField] private float strongAttackHoldRandomMaxTime;
+        [SerializeField] private float perfectAttackTimeInterval;
+        [SerializeField] private Slider holdSliderUI;
+        // [AttackType] per Rate
+        [SerializeField] private List<float> playerDamagePerAttackRate;
         [Header("Status")]
         [SerializeField] private bool inputBlocked;
         [SerializeField] private bool timeBlocked;
         [SerializeField] private bool updateDelayed;
         [SerializeField] private float updateInterval;
         [SerializeField] private int randomSeed;
+        [SerializeField] private bool isHolded;
         [SerializeField] private float holdTime;
         [Header("Auto Status")]
         [SerializeField] private float afterEndCombat;
@@ -63,6 +71,8 @@ namespace NonDestroyObject
         {
             IsInCombat = false;
             inputBlocked = true;
+            // Input isHolded
+            isHolded = false;
             // Coroutines
             _afterDeadCoroutine = null;
             // Random
@@ -121,20 +131,29 @@ namespace NonDestroyObject
             }
             
             // 공격 액션
-            if (!inputBlocked && !player.Hitting && !player.Dying)
+            if (!inputBlocked && !player.Hitting && !player.Attacking && !player.Dying)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    holdTime = 0;
+                    float initrandomtime = _random.Next(0, (int)(strongAttackHoldRandomMaxTime * 100)) * 0.01f;
+                    holdTime = initrandomtime;
                     player.Action(ObjectStatus.Charge);
+                    isHolded = true;
+                    holdSliderUI.value = holdTime;
                 }
-                if (Input.GetMouseButton(0))
+                if (Input.GetMouseButton(0) && isHolded)
                 {
                     holdTime += Time.deltaTime;
+                    holdSliderUI.value = Math.Min(holdTime, 1.0f);
                 }
-                if (holdTime > 0 && Input.GetMouseButtonUp(0))
+                if (isHolded && holdTime > 0 && Input.GetMouseButtonUp(0))
                 {
-                    if (holdTime < strongAttackHoldTime)
+                    holdSliderUI.value = 0;
+                    if (strongAttackHoldTime - perfectAttackTimeInterval <= holdTime && holdTime <= strongAttackHoldTime + perfectAttackTimeInterval)
+                    {
+                        player.Action(ObjectStatus.PerfectChargeAttack);
+                    }
+                    else if (holdTime < strongAttackHoldTime)
                     {
                         player.Action(ObjectStatus.Attack);
                     }
@@ -142,6 +161,7 @@ namespace NonDestroyObject
                     {
                         player.Action(ObjectStatus.ChargeAttack);
                     }
+                    isHolded = false;
                 }
             }
         }
@@ -160,12 +180,14 @@ namespace NonDestroyObject
 
             #region CheckHitting
             // enemyAI 피격 판정 우선 - 동시에 때리면 플레이어 판정이 우세 
-            if (player.Hitting && player.EnemyInRange)
+            if ((player.AttackType == AttackType.Normal && player.Hitting && player.EnemyInRange) ||
+                (player.AttackType == AttackType.Charge && player.Hitting && player.EnemyInChargeRange) ||
+                (player.AttackType == AttackType.PerfectCharge && player.Hitting && player.EnemyInPerfectChargeRange))
             {
                 player.CancelHittingJudgeCoroutine();
                 enemyAIList[currentEnemyIndex].CancelHittingJudgeCoroutine();
 
-                int damage = DataManager.Instance.playerDataManager.Atk * (int)player.AttackType;
+                int damage = (int)(DataManager.Instance.playerDataManager.Atk * playerDamagePerAttackRate[(int)player.AttackType]);
                 
                 var dead = enemyAIList[currentEnemyIndex].Damaged(damage);
                 if (dead)

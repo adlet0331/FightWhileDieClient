@@ -17,17 +17,20 @@ namespace Combat
         Damaged = 4,
         JumpBack = 5,
         Dead = 6,
-        Charge = 7
+        Charge = 7,
+        PerfectChargeAttack = 8
     }
     public enum ObjectType
     {
         Player = 0,
         AI = 1
     }
+    [Serializable]
     public enum AttackType
     {
-        Normal = 1,
-        Charge = 2
+        Normal = 0,
+        Charge = 1,
+        PerfectCharge = 2,
     }
     public class CombatEntity : MonoBehaviour
     {
@@ -37,9 +40,12 @@ namespace Combat
         [SerializeField] private float attackAfterDelay;
         [SerializeField] private float chargeAttackHitDuration;
         [SerializeField] private float chargeAttackAfterDelay;
+        [SerializeField] private float perfectChargeAttackHitDuration;
+        [SerializeField] private float perfectChargeAttackAfterDelay;
         [SerializeField] private ObjectType type;
         [SerializeField] private ClipName hittingClip;
         [SerializeField] private ClipName chargehittingClip;
+        [SerializeField] private ClipName perfecthittingClip;
         
         [Header("If enemyAI, Need to be Initialized")] 
         [SerializeField] public float runningSpeed;
@@ -47,6 +53,8 @@ namespace Combat
         [SerializeField] public float knockBackXInterval;
 
         public bool EnemyInRange => attackHitBox.EnemyInRange;
+        public bool EnemyInChargeRange => chargeAttackHitBox.EnemyInRange;
+        public bool EnemyInPerfectChargeRange => perfectChargeAttackHitBox.EnemyInRange;
         // Current Status
         public bool Attacking => attacking;
         public AttackType AttackType => attackType;
@@ -74,6 +82,8 @@ namespace Combat
         [Header("Set In Unity")]
         [SerializeField] private Animator animator;
         [SerializeField] private AttackRangeObject attackHitBox;
+        [SerializeField] private AttackRangeObject chargeAttackHitBox;
+        [SerializeField] private AttackRangeObject perfectChargeAttackHitBox;
 
         #region Start
         private void Start()
@@ -131,10 +141,12 @@ namespace Combat
             }
             _waitAndReturnToIdleCoroutine = null;
         }
-        private void HandleHitting(AttackType attackType)
+        private void HandleAttack(AttackType attackType)
         {
             this.attackType = attackType;
             CancelHittingJudgeCoroutine();
+            CancelWaitAndReturnToIdleCoroutine();
+            attacking = true;
             hitting = true;
             switch (attackType)
             {
@@ -145,6 +157,12 @@ namespace Combat
                         _hittingCancelCoroutine = null;
                         hitting = false;
                     });
+                    _waitAndReturnToIdleCoroutine = CoroutineUtils.WaitAndOperationIEnum(attackHitDuration + attackAfterDelay, () =>
+                    {
+                        Action(ObjectStatus.Idle);
+                        attacking = false;
+                        _waitAndReturnToIdleCoroutine = null;
+                    });
                     break;
                 case AttackType.Charge:
                     SoundManager.Instance.PlayClip((int)hittingClip);
@@ -153,21 +171,38 @@ namespace Combat
                         _hittingCancelCoroutine = null;
                         hitting = false;
                     });
+                    _waitAndReturnToIdleCoroutine = CoroutineUtils.WaitAndOperationIEnum(chargeAttackHitDuration + chargeAttackAfterDelay, () =>
+                    {
+                        Action(ObjectStatus.Idle);
+                        attacking = false;
+                        _waitAndReturnToIdleCoroutine = null;
+                    });
+                    break;
+                case AttackType.PerfectCharge:
+                    SoundManager.Instance.PlayClip((int)hittingClip);
+                    _hittingCancelCoroutine = CoroutineUtils.WaitAndOperationIEnum(perfectChargeAttackHitDuration, () =>
+                    {
+                        _hittingCancelCoroutine = null;
+                        hitting = false;
+                    });
+                    _waitAndReturnToIdleCoroutine = CoroutineUtils.WaitAndOperationIEnum(perfectChargeAttackHitDuration + perfectChargeAttackAfterDelay, () =>
+                    {
+                        Action(ObjectStatus.Idle);
+                        attacking = false;
+                        _waitAndReturnToIdleCoroutine = null;
+                    });
                     break;
             }
             StartCoroutine(_hittingCancelCoroutine);
+            
+            StartCoroutine(_waitAndReturnToIdleCoroutine);
         }
         
         private void SwitchStatus(ObjectStatus newStatus)
         {
             if (currentStatus == newStatus) return;
             
-            attacking = false;
-            damaging = false;
-            dying = false;
-            running = false;
-            backJumping = false;
-            charging = false;
+            attacking = damaging = dying = running = backJumping = charging = false;
             animator.SetBool(currentStatus.ToString(), false);
             
             currentStatus = newStatus;
@@ -181,6 +216,9 @@ namespace Combat
                     attacking = true;
                     break;
                 case ObjectStatus.ChargeAttack:
+                    attacking = true;
+                    break;
+                case ObjectStatus.PerfectChargeAttack:
                     attacking = true;
                     break;
                 case ObjectStatus.Damaged:
@@ -273,9 +311,6 @@ namespace Combat
 
         public void Action(ObjectStatus objectStatus)
         {
-            // hitting 도중 액션이면 안 받음
-            if (hitting) return;
-            
             // Animation 및 변수들 처리
             SwitchStatus(objectStatus);
             
@@ -283,7 +318,7 @@ namespace Combat
             if (type == ObjectType.Player &&
                 (objectStatus != ObjectStatus.Idle && objectStatus != ObjectStatus.Attack &&
                  objectStatus != ObjectStatus.Dead && objectStatus != ObjectStatus.Running &&
-                 objectStatus != ObjectStatus.ChargeAttack))
+                 objectStatus != ObjectStatus.ChargeAttack && objectStatus != ObjectStatus.PerfectChargeAttack))
             {
                 Debug.LogAssertion("Player Action Rejected: " + objectStatus);
                 return;
@@ -306,19 +341,18 @@ namespace Combat
                 // 공격
                 case ObjectStatus.Attack:
                     // Hitting 변수
-                    HandleHitting(AttackType.Normal);
-                    // Idle로 리턴
-                    WaitAndReturnToIdleWithOperation(attackHitDuration + attackAfterDelay);
+                    HandleAttack(AttackType.Normal);
+                    break;
+                // 차지 공격
+                case ObjectStatus.ChargeAttack:
+                    HandleAttack(AttackType.Charge);
+                    break;
+                case ObjectStatus.PerfectChargeAttack:
+                    HandleAttack(AttackType.PerfectCharge);
                     break;
                 // 죽음 (플레이어만)
                 case ObjectStatus.Dead:
                     WaitAndReturnToIdleWithOperation(GetAnimationTime("Dead"));
-                    break;
-                // 차지 공격
-                case ObjectStatus.ChargeAttack:
-                    HandleHitting(AttackType.Charge);
-                    // Idle로 리턴
-                    WaitAndReturnToIdleWithOperation(chargeAttackHitDuration + chargeAttackAfterDelay);
                     break;
                 // 움직임
                 case ObjectStatus.Running:
