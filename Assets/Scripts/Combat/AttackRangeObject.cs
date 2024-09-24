@@ -7,7 +7,7 @@ namespace Combat
     public class AttackRangeObject : MonoBehaviour
     {
         [Header("Set in Unity")]
-        [SerializeField] private CombatEntity combatEntity;
+        [SerializeField] private PlayerEntity playerEntity;
         [SerializeField] private BoxCollider2D attackRangeCollider;
         [SerializeField] private bool initiallized;
         

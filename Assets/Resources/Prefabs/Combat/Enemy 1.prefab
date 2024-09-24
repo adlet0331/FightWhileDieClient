@@ -1,5 +1,80 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &296918076
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 296918077}
+  - component: {fileID: 296918079}
+  - component: {fileID: 296918078}
+  m_Layer: 0
+  m_Name: Charge Attack Range
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &296918077
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296918076}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3973778045446700010}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &296918079
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296918076}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.08684349}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.8, y: 1.8}
+    newSize: {x: 1.8, y: 1.8}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.4, y: 0.344338}
+  m_EdgeRadius: 0
+--- !u!114 &296918078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296918076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b2d7df074ef4fd99df24c9a08658301, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerEntity: {fileID: 0}
+  attackRangeCollider: {fileID: 296918079}
+  initiallized: 0
+  enemyInRange: 0
 --- !u!1 &3117746138525706423
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,14 +164,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3973778045446700010}
-  - component: {fileID: 3973778045446700020}
+  - component: {fileID: 1804785328}
   m_Layer: 0
   m_Name: Enemy 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3973778045446700010
 Transform:
   m_ObjectHideFlags: 0
@@ -112,10 +187,11 @@ Transform:
   - {fileID: 357295799747485809}
   - {fileID: 619299585975022419}
   - {fileID: 4841184698498943013}
+  - {fileID: 296918077}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3973778045446700020
+--- !u!114 &1804785328
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,27 +200,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 3973778045446700009}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c74e43d6efb84058b0e231366e8a6bd3, type: 3}
+  m_Script: {fileID: 11500000, guid: aa3d538a46604cab988a7af0034f3c67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 50
-  attackDelay: 0.3
-  attackEnd: 0.5
-  attackAfterDelay: 0.2
-  type: 1
-  runningSpeed: 5
-  backJumpSpeed: 4
-  knockBackXInterval: 4.5
+  maxHp: 0
+  attackHitDuration: 0
+  attackAfterDelay: 0
+  chargeAttackHitDuration: 0
+  chargeAttackAfterDelay: 0
+  hittingClip: 0
+  chargehittingClip: 0
+  runningSpeed: 3
+  backJumpSpeed: 2
+  knockBackXInterval: 3
   currentStatus: 0
-  currentHp: 50
-  attacking: 0
+  currentHp: 0
+  attackType: 0
   hitting: 0
-  dying: 0
-  running: 0
-  backJumping: 0
-  damaging: 0
   animator: {fileID: 8716881376094445978}
   attackHitBox: {fileID: 2627309879538169791}
+  chargeAttackHitBox: {fileID: 296918078}
 --- !u!1 &6236031841351185537
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,7 +291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2d7df074ef4fd99df24c9a08658301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  combatEntity: {fileID: 3973778045446700020}
+  playerEntity: {fileID: 0}
   attackRangeCollider: {fileID: 6834736573181525728}
   initiallized: 0
   enemyInRange: 0

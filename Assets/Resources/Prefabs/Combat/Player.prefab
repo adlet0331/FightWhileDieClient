@@ -71,7 +71,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2d7df074ef4fd99df24c9a08658301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  combatEntity: {fileID: 5935084497502917640}
+  playerEntity: {fileID: 0}
   attackRangeCollider: {fileID: 406238757}
   initiallized: 0
   enemyInRange: 0
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2d7df074ef4fd99df24c9a08658301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  combatEntity: {fileID: 5935084497502917640}
+  playerEntity: {fileID: 0}
   attackRangeCollider: {fileID: 1527997364}
   initiallized: 0
   enemyInRange: 0
@@ -275,31 +275,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 1
   attackHitDuration: 0.1
-  attackAfterDelay: 0.1
   chargeAttackHitDuration: 0.15
-  chargeAttackAfterDelay: 0.15
-  perfectChargeAttackHitDuration: 0.2
-  perfectChargeAttackAfterDelay: 0.05
-  type: 0
   hittingClip: 1
   chargehittingClip: 0
-  perfecthittingClip: 0
   runningSpeed: 0
   backJumpSpeed: 0
   knockBackXInterval: 0
   currentStatus: 0
   currentHp: 1
-  attacking: 0
   attackType: 0
   hitting: 0
-  dying: 0
-  charging: 0
-  running: 0
-  backJumping: 0
-  damaging: 0
   animator: {fileID: 5935084497502917634}
   attackHitBox: {fileID: 5935084497732478257}
   chargeAttackHitBox: {fileID: 406238756}
+  perfectChargeAttackHitDuration: 0.2
   perfectChargeAttackHitBox: {fileID: 1527997363}
 --- !u!61 &5935084497502917646
 BoxCollider2D:
@@ -419,7 +408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2d7df074ef4fd99df24c9a08658301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  combatEntity: {fileID: 5935084497502917640}
+  playerEntity: {fileID: 0}
   attackRangeCollider: {fileID: 5935084497732478262}
   initiallized: 0
   enemyInRange: 0

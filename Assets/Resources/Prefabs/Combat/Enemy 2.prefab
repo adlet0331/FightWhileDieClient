@@ -1,5 +1,80 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1138888564
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1138888565}
+  - component: {fileID: 1138888567}
+  - component: {fileID: 1138888566}
+  m_Layer: 0
+  m_Name: Attack Range (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1138888565
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1138888564}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3973778045446700010}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1138888567
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1138888564}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.17870024, y: 0.04751438}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.8, y: 1.8}
+    newSize: {x: 1.8, y: 1.8}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.0483339, y: 0.58484626}
+  m_EdgeRadius: 0
+--- !u!114 &1138888566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1138888564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b2d7df074ef4fd99df24c9a08658301, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerEntity: {fileID: 0}
+  attackRangeCollider: {fileID: 1138888567}
+  initiallized: 0
+  enemyInRange: 0
 --- !u!1 &3117746138525706423
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,7 +226,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2d7df074ef4fd99df24c9a08658301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  combatEntity: {fileID: 3973778045446700020}
+  playerEntity: {fileID: 0}
   attackRangeCollider: {fileID: 8789761679208962417}
   initiallized: 0
   enemyInRange: 0
@@ -164,14 +239,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3973778045446700010}
-  - component: {fileID: 3973778045446700020}
+  - component: {fileID: 968244820}
   m_Layer: 0
   m_Name: Enemy 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3973778045446700010
 Transform:
   m_ObjectHideFlags: 0
@@ -187,10 +262,11 @@ Transform:
   - {fileID: 357295799747485809}
   - {fileID: 619299585975022419}
   - {fileID: 3916773252245370256}
+  - {fileID: 1138888565}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3973778045446700020
+--- !u!114 &968244820
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -199,27 +275,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 3973778045446700009}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c74e43d6efb84058b0e231366e8a6bd3, type: 3}
+  m_Script: {fileID: 11500000, guid: aa3d538a46604cab988a7af0034f3c67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 50
-  attackDelay: 0.2
-  attackEnd: 0.3
-  attackAfterDelay: 0.1
-  type: 1
-  runningSpeed: 8
-  backJumpSpeed: 5
-  knockBackXInterval: 6
+  maxHp: 0
+  attackHitDuration: 0
+  chargeAttackHitDuration: 0
+  hittingClip: 0
+  chargehittingClip: 0
+  runningSpeed: 0
+  backJumpSpeed: 0
+  knockBackXInterval: 0
   currentStatus: 0
-  currentHp: 50
-  attacking: 0
+  currentHp: 0
+  attackType: 0
   hitting: 0
-  dying: 0
-  running: 0
-  backJumping: 0
-  damaging: 0
   animator: {fileID: 8716881376094445978}
   attackHitBox: {fileID: 7678641069016650699}
+  chargeAttackHitBox: {fileID: 1138888566}
 --- !u!1 &6365470792853590273
 GameObject:
   m_ObjectHideFlags: 0
