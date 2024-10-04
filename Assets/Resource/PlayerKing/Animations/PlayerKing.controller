@@ -424,7 +424,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: IdleAttack
+  m_Name: PlayerKing
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Attack
@@ -432,43 +432,43 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Dying
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Running
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Idle
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Charge
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: ChargeAttack
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: PerfectChargeAttack
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -601,7 +601,7 @@ AnimatorStateMachine:
     m_Position: {x: 340, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -5825159341889501290}
-    m_Position: {x: 600, y: 0, z: 0}
+    m_Position: {x: 930, y: -80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7379947564379024138}
     m_Position: {x: 340, y: 450, z: 0}
@@ -610,13 +610,13 @@ AnimatorStateMachine:
     m_Position: {x: 340, y: -30, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3674325630597118573}
-    m_Position: {x: 620, y: 440, z: 0}
+    m_Position: {x: 1000, y: 440, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3228439568408574757}
-    m_Position: {x: 990, y: 130, z: 0}
+    m_Position: {x: 580, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -48079869857796704}
-    m_Position: {x: 630, y: 200, z: 0}
+    m_Position: {x: 980, y: 70, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
