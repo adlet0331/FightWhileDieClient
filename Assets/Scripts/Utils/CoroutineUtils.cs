@@ -27,12 +27,13 @@ namespace Utils
         /// <returns></returns>
         public static IEnumerator TransformMove(float time, Transform source, Transform target, AfterWaitOperation afterEndOperation)
         {
-            int count = (int)(time / (Time.fixedDeltaTime));
-            Vector3 interval = (target.localPosition - source.localPosition) / count;
-            for (int i = 0; i < count; i++)
+            float elapsedTime = 0;
+            Vector3 sourceInitPosition = source.localPosition;
+            while(elapsedTime <= time)
             {
-                yield return new WaitForFixedUpdate();
-                source.localPosition += interval;
+                yield return null;
+                elapsedTime += Time.deltaTime;
+                source.localPosition = sourceInitPosition * (1 - (float)elapsedTime / (float)time) + target.localPosition * ((float)elapsedTime / (float)time);
             }
             afterEndOperation();
         }

@@ -201,7 +201,6 @@ namespace NonDestroyObject
                     // Update enemyAI[currentEnemyIndex]'s Random Seed
                     UpdateRandomSeed();
                 }
-                Debug.Log(CurrentEnemyEntity.CurrentHpRatio);
                 UIManager.Instance.UpdateEnemyHp(CurrentEnemyEntity.CurrentHpRatio);
                 return;
             }
