@@ -28,10 +28,9 @@ namespace NonDestroyObject
     public delegate void UIUpdateVoid();
     public class UIManager : Singleton<UIManager>
     {
-        [Header("UI Enemy Hp Update")] 
-        [SerializeField] private int updateCount;
-        [SerializeField] private float updatingInterval;
-        [SerializeField] private float updatingEndValue;
+        [Header("UI Enemy Hp Update")]
+        [SerializeField] private float updateIntervalConstant;
+        private IEnumerator _hpUpdateCoroutine;
         [Header("Popup")]
         public GatchaPopup gatchaPopup;
         public Popup noInternetInGatchaPopup;
@@ -53,7 +52,6 @@ namespace NonDestroyObject
         [SerializeField] private float uiMovingTime;
         [SerializeField] private Transform titleShowPosition;
         [SerializeField] private Transform titleHidePosition;
-        
         [SerializeField] private TextMeshProUGUI _name;
         [SerializeField] private TextMeshProUGUI _stage;
         [SerializeField] private TextMeshProUGUI _attackVal;
@@ -78,23 +76,6 @@ namespace NonDestroyObject
             UpdateAllUIEvent += UpdateCombatUI;
             
             UpdateMainUI();
-        }
-
-        private void FixedUpdate()
-        {
-            if (updateCount > 0)
-            {
-                if (updateCount == 1)
-                {
-                    _enemyHp.value = updatingEndValue;
-                }
-                else
-                {
-                    _enemyHp.value -= updatingInterval;
-                    currentHpText.text = IntToUnitString.ToString((int)(DataManager.Instance.playerDataManager.CurrentEnemyHp * _enemyHp.value ));
-                }
-                updateCount -= 1;
-            }
         }
 
         public void ShowCoinEffect()
@@ -147,16 +128,38 @@ namespace NonDestroyObject
         public void UpdateCombatUI()
         {
             UpdateEnemyHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
-            
             currentHpText.text = IntToUnitString.ToString(DataManager.Instance.playerDataManager.CurrentEnemyHp);
             maxHpText.text = IntToUnitString.ToString(DataManager.Instance.playerDataManager.CurrentEnemyHp);
         }
 
+        private void CancelUpdateEnemyHpCoroutine()
+        {
+            if (_hpUpdateCoroutine != null)
+            {
+                StopCoroutine(_hpUpdateCoroutine);
+                _hpUpdateCoroutine = null;
+            }
+        }
+
+        IEnumerator UpdateHpSliderIEnumerator(float endval)
+        {
+            float elapsedTime = 0;
+            float startval = _enemyHp.value;
+            while(elapsedTime < updateIntervalConstant)
+            {
+                elapsedTime += Time.deltaTime;
+                _enemyHp.value = startval * (1.0f - elapsedTime / updateIntervalConstant) + endval * (elapsedTime / updateIntervalConstant);
+                yield return null;
+            }
+            _enemyHp.value = endval;
+            _hpUpdateCoroutine = null;
+        }
+        
         public void UpdateEnemyHp(float end)
         {
-            updateCount = (int) (0.5f / Time.fixedDeltaTime);
-            updatingInterval = (float) Math.Round((_enemyHp.value - end)/ updateCount, 3);
-            updatingEndValue = end;
+            CancelUpdateEnemyHpCoroutine();
+            _hpUpdateCoroutine = UpdateHpSliderIEnumerator(end);
+            StartCoroutine(_hpUpdateCoroutine);
         }
         
         private IEnumerator _stageHpMoveCoroutine;

@@ -8,7 +8,7 @@ namespace Combat
         [SerializeField] private float perfectChargeAttackHitDuration;
         [SerializeField] private AttackRangeObject perfectChargeAttackHitBox;
         
-        public bool EnemyInPerfectChargeRange => perfectChargeAttackHitBox.EnemyInRange;
+        public bool EnemyInPerfectChargeRange => perfectChargeAttackHitBox.OpponentInRange;
 
         public override bool EntityAction(CombatEntityStatus combatEntityStatus)
         {
@@ -17,7 +17,8 @@ namespace Combat
             switch (combatEntityStatus)
             {
                 case CombatEntityStatus.PerfectChargeAttack:
-                    
+                    WaitAndReturnToIdleWithOperation(GetAnimationTime("PerfectChargeAttack"));
+                    StartHitJudgeAndEndAfter(perfectChargeAttackHitDuration);
                     return true;
             }
 

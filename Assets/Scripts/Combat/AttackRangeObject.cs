@@ -7,17 +7,16 @@ namespace Combat
     public class AttackRangeObject : MonoBehaviour
     {
         [Header("Set in Unity")]
-        [SerializeField] private PlayerEntity playerEntity;
         [SerializeField] private BoxCollider2D attackRangeCollider;
-        [SerializeField] private bool initiallized;
+        [SerializeField] private string opponentTagName;
         
-        public bool EnemyInRange => enemyInRange;
+        public bool OpponentInRange => opponentInRange;
         
-        [SerializeField] private bool enemyInRange;
+        [SerializeField] private bool opponentInRange;
 
         public void WhenShow()
         {
-            initiallized = false;
+           
         }
 
         public void WhenHide()
@@ -27,32 +26,26 @@ namespace Combat
                 
         public void ResetInRange()
         {
-            enemyInRange = false;
+            opponentInRange = false;
         }
 
         private void Start()
         {
-            initiallized = false;
             ResetInRange();
         }
 
         private void OnTriggerEnter2D(Collider2D col)
         {
-            if (!initiallized)
+            if (col.CompareTag(opponentTagName))
             {
-                initiallized = true;
-                return;
-            }
-            if (col.CompareTag("Player"))
-            {
-                enemyInRange = true;
+                opponentInRange = true;
             }
         }
         private void OnTriggerExit2D(Collider2D col)
         {
-            if (col.CompareTag("Player"))
+            if (col.CompareTag(opponentTagName))
             {
-                enemyInRange = false;
+                opponentInRange = false;
             }
         }
     }

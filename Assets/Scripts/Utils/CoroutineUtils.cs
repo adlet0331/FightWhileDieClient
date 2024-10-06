@@ -15,10 +15,7 @@ namespace Utils
         /// <returns></returns>
         public static IEnumerator WaitAndOperationIEnum(float sec, AfterWaitOperation operation)
         {
-            for (int i = 0; i < (int)(sec / Time.fixedDeltaTime); i++)
-            {
-                yield return new WaitForFixedUpdate();
-            }
+            yield return new WaitForSeconds(sec);
             operation();
         }
         /// <summary>
@@ -34,7 +31,7 @@ namespace Utils
             Vector3 interval = (target.localPosition - source.localPosition) / count;
             for (int i = 0; i < count; i++)
             {
-                yield return new WaitForSeconds(Time.fixedDeltaTime);
+                yield return new WaitForFixedUpdate();
                 source.localPosition += interval;
             }
             afterEndOperation();

@@ -36,7 +36,7 @@ namespace Combat
     public abstract class CombatEntityParent : MonoBehaviour
     {
         [Header("Initial Setting (CombatEntity Parent)")]
-        [SerializeField] private int maxHp;
+        [SerializeField] protected int maxHp;
         [SerializeField] private float attackHitDuration;
         [SerializeField] private float chargeAttackHitDuration;
         [SerializeField] private ClipName hittingClip;
@@ -45,8 +45,8 @@ namespace Combat
         [SerializeField] public float backJumpSpeed;
         [SerializeField] public float knockBackXInterval;
 
-        public bool EnemyInRange => attackHitBox.EnemyInRange;
-        public bool EnemyInChargeRange => chargeAttackHitBox.EnemyInRange;
+        public bool OpponentInRange => attackHitBox.OpponentInRange;
+        public bool EnemyInChargeRange => chargeAttackHitBox.OpponentInRange;
         // Current Status
         public AttackType AttackType => attackType;
         public CombatEntityStatus CurrentStatus => currentStatus;
@@ -54,7 +54,7 @@ namespace Combat
         public bool Hitting => hitting;
         [Header("Entity Status (CombatEntity Parent)")]
         [SerializeField] protected CombatEntityStatus currentStatus;
-        [SerializeField] private int currentHp;
+        [SerializeField] protected int currentHp;
         [SerializeField] private AttackType attackType;
         [SerializeField] private bool hitting;
         [Header("Set In Unity (CombatEntity Parent)")]
@@ -107,8 +107,7 @@ namespace Combat
         {
             if (currentStatus == newStatus) return;
             animator.SetBool(currentStatus.ToString(), false);
-            currentStatus = newStatus;
-            animator.SetBool(currentStatus.ToString(), true);
+            animator.SetBool(newStatus.ToString(), true);
         }
 
         /// <summary>
@@ -140,6 +139,14 @@ namespace Combat
         }
 
         // Virtual Functions
+
+        /// <summary>
+        /// This Entity Hit is triggered
+        /// </summary>
+        public void MyAttackHitted()
+        {
+            hitting = false;
+        }
         
         /// <summary>
         /// Called When Game's Time Blocked
@@ -196,7 +203,6 @@ namespace Combat
             attackHitBox.ResetInRange();
             chargeAttackHitBox.ResetInRange();
             CancelAllCoroutine();
-            EntityAction(CombatEntityStatus.Idle);
         }
 
         /// <summary>
@@ -206,19 +212,20 @@ namespace Combat
         /// <returns></returns>
         public virtual bool Damaged(int damage)
         {
-            Debug.Log("Damaged!!");
             CancelAllCoroutine();
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
             if (currentHp == 0)
             {
                 SwitchStatusAndAnimation(CombatEntityStatus.Dying);
-                WaitAndReturnToIdleWithOperation(GetAnimationTime("Dead"), ResetAfterDead);
+                currentStatus = CombatEntityStatus.Dying;
+                WaitAndReturnToIdleWithOperation(GetAnimationTime("Dying"), ResetAfterDead);
                 return true;
             }
             else
             {
                 SwitchStatusAndAnimation(CombatEntityStatus.Damaged);
-                WaitAndReturnToIdleWithOperation(GetAnimationTime("Damaged"), ResetAfterDead);
+                currentStatus = CombatEntityStatus.Damaged;
+                WaitAndReturnToIdleWithOperation(GetAnimationTime("Damaged"));
                 return false;
             }
         }
@@ -232,6 +239,7 @@ namespace Combat
         {
             // Animation 처리
             SwitchStatusAndAnimation(combatEntityStatus);
+            currentStatus = combatEntityStatus;
             // 변수 및 Coroutine 처리
             switch (combatEntityStatus)
             {
@@ -248,10 +256,6 @@ namespace Combat
                 case CombatEntityStatus.ChargeAttack:
                     WaitAndReturnToIdleWithOperation(GetAnimationTime("ChargeAttack"));
                     StartHitJudgeAndEndAfter(chargeAttackHitDuration);
-                    return true;
-                // 죽음
-                case CombatEntityStatus.Dying:
-                    WaitAndReturnToIdleWithOperation(GetAnimationTime("Dead"));
                     return true;
                 // 움직임
                 case CombatEntityStatus.Running:
