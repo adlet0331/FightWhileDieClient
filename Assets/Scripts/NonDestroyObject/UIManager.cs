@@ -48,6 +48,7 @@ namespace NonDestroyObject
         public Button startButton;
         public Button gatchaButton;
         public Button inventoryButton;
+        public Slider attackChargeGageSlider;
         [Header("Transforms")] 
         [SerializeField] private float uiMovingTime;
         [SerializeField] private Transform titleShowPosition;
@@ -98,8 +99,13 @@ namespace NonDestroyObject
             enterYourNamePopup.Close();
             simpleTextPopup.Close();
         }
+
+        public void ActiveCombatUIs(bool show)
+        {
+            attackChargeGageSlider.gameObject.SetActive(show);
+        }
         
-        public void ShowHideButtons(bool show)
+        public void ActiveMainPagesButtons(bool show)
         {
             startButton.gameObject.SetActive(show);
             gatchaButton.gameObject.SetActive(show);
@@ -161,11 +167,16 @@ namespace NonDestroyObject
             _hpUpdateCoroutine = UpdateHpSliderIEnumerator(end);
             StartCoroutine(_hpUpdateCoroutine);
         }
+
+        public void UpdateAttackGageSlider(float val)
+        {
+            attackChargeGageSlider.value = val;
+        }
         
         private IEnumerator _stageHpMoveCoroutine;
         private IEnumerator _titleMoveCoroutine;
         
-        public void TitleEnemyHpSwitch(bool showHp)
+        public void SwitchMainPage2CombatUI(bool isCombat)
         {
             if (_stageHpMoveCoroutine != null)
             {
@@ -176,13 +187,14 @@ namespace NonDestroyObject
                 StopCoroutine(_titleMoveCoroutine);
             }
             
-            if (showHp)
+            if (isCombat)
             {
                 stageHpTransform.gameObject.SetActive(true);
                 _stageHpMoveCoroutine = CoroutineUtils.TransformMove(uiMovingTime, stageHpTransform, titleShowPosition, () => { _stageHpMoveCoroutine = null; });
                 _titleMoveCoroutine = CoroutineUtils.TransformMove(uiMovingTime, titleTransform, titleHidePosition, () => { _titleMoveCoroutine = null; });
                 
-                ShowHideButtons(false);
+                ActiveMainPagesButtons(false);
+                ActiveCombatUIs(true);
             }
             else
             {
@@ -190,7 +202,8 @@ namespace NonDestroyObject
                 _stageHpMoveCoroutine = CoroutineUtils.TransformMove(uiMovingTime, stageHpTransform, titleHidePosition, () => { _stageHpMoveCoroutine = null; });
                 _titleMoveCoroutine = CoroutineUtils.TransformMove(uiMovingTime, titleTransform, titleShowPosition, () => { _titleMoveCoroutine = null; });
                 
-                ShowHideButtons(true);
+                ActiveMainPagesButtons(true);
+                ActiveCombatUIs(false);
             }
             
             StartCoroutine(_stageHpMoveCoroutine);

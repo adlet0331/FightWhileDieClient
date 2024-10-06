@@ -138,16 +138,16 @@ namespace NonDestroyObject
                     holdTime = initrandomtime;
                     player.EntityAction(CombatEntityStatus.Charge);
                     isHolded = true;
-                    holdSliderUI.value = holdTime;
+                    UIManager.Instance.UpdateAttackGageSlider(holdTime);
                 }
                 if (Input.GetMouseButton(0) && isHolded)
                 {
                     holdTime += Time.deltaTime;
-                    holdSliderUI.value = Math.Min(holdTime, 1.0f);
+                    UIManager.Instance.UpdateAttackGageSlider(Math.Min(holdTime, 1.0f));
                 }
                 if (isHolded && holdTime > 0 && Input.GetMouseButtonUp(0))
                 {
-                    holdSliderUI.value = 0;
+                    UIManager.Instance.UpdateAttackGageSlider(0);
                     if (strongAttackHoldTime - perfectAttackTimeInterval <= holdTime && holdTime <= strongAttackHoldTime + perfectAttackTimeInterval)
                     {
                         player.EntityAction(CombatEntityStatus.PerfectChargeAttack);
@@ -297,7 +297,7 @@ namespace NonDestroyObject
             IsInCombat = true;
             inputBlocked = false;
             InitAiPos(false);
-            UIManager.Instance.TitleEnemyHpSwitch(true);
+            UIManager.Instance.SwitchMainPage2CombatUI(true);
         }
 
         private void EndCombat(bool cleared)
@@ -313,7 +313,7 @@ namespace NonDestroyObject
             {
                 IsInCombat = false;
                 inputBlocked = true;
-                UIManager.Instance.TitleEnemyHpSwitch(false);
+                UIManager.Instance.SwitchMainPage2CombatUI(false);
                 DataManager.Instance.playerDataManager.StageReset();
                 InitAiPos(true);
                 afterEndCombat = 0.0f;
