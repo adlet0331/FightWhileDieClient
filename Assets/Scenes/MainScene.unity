@@ -15530,33 +15530,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 926359774}
     m_Modifications:
-    - target: {fileID: 296918078, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
-      propertyPath: opponentTagName
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 296918079, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2627309879538169791, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
-      propertyPath: opponentTagName
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 2941824332708101191, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3117746138525706423, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
-      propertyPath: m_TagString
-      value: Enemy
-      objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700009, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
       propertyPath: m_Name
       value: Enemy 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3973778045446700009, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700010, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
       propertyPath: m_RootOrder
@@ -15601,14 +15577,6 @@ PrefabInstance:
     - target: {fileID: 3973778045446700010, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383551722597679850, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
-      propertyPath: m_GravityScale
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6834736573181525728, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
@@ -16292,41 +16260,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 926359774}
     m_Modifications:
-    - target: {fileID: 106988534, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_TagString
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 106988536, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 106988537, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_GravityScale
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 406238756, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: opponentTagName
-      value: Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 406238757, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1527997363, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: opponentTagName
-      value: Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 1527997364, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5935084497502917635, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497502917635, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 5935084497502917644, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_RootOrder
@@ -16371,14 +16307,6 @@ PrefabInstance:
     - target: {fileID: 5935084497502917644, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497732478257, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: opponentTagName
-      value: Enemy
-      objectReference: {fileID: 0}
-    - target: {fileID: 5935084497732478262, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}

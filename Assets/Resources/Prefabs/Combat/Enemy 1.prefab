@@ -46,7 +46,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.08684349}
+  m_Offset: {x: -0.6078246, y: 0.15948567}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -57,7 +57,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.4, y: 0.344338}
+  m_Size: {x: 0.4714452, y: 0.79856974}
   m_EdgeRadius: 0
 --- !u!114 &296918078
 MonoBehaviour:
@@ -72,8 +72,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRangeCollider: {fileID: 296918079}
-  initiallized: 0
-  enemyInRange: 0
+  opponentTagName: Player
+  opponentInRange: 0
 --- !u!1 &3117746138525706423
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4383551722597679850}
   m_Layer: 0
   m_Name: Body Collider
-  m_TagString: Player
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -148,7 +148,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -203,8 +203,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 0
-  attackHitDuration: 0
-  chargeAttackHitDuration: 0
+  attackHitDuration: 0.15
+  chargeAttackHitDuration: 0.15
   hittingClip: 0
   chargehittingClip: 0
   runningSpeed: 3
@@ -217,6 +217,8 @@ MonoBehaviour:
   animator: {fileID: 8716881376094445978}
   attackHitBox: {fileID: 2627309879538169791}
   chargeAttackHitBox: {fileID: 296918078}
+  chargeFullTime: 1
+  chargeElapsedTime: 0
 --- !u!1 &6236031841351185537
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,7 +265,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.08684349}
+  m_Offset: {x: -0.12429591, y: 0.08887279}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -274,7 +276,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.4, y: 0.344338}
+  m_Size: {x: 0.5519482, y: 0.61882985}
   m_EdgeRadius: 0
 --- !u!114 &2627309879538169791
 MonoBehaviour:
@@ -289,8 +291,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRangeCollider: {fileID: 6834736573181525728}
-  initiallized: 0
-  enemyInRange: 0
+  opponentTagName: Player
+  opponentInRange: 0
 --- !u!1 &6365470792853590273
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,7 +367,7 @@ SpriteRenderer:
   m_SortingLayerID: -831797151
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4723107735738678597, guid: fc46633b0eb321e46838bcb9ff2d4150, type: 3}
+  m_Sprite: {fileID: -7385789195546760866, guid: fc46633b0eb321e46838bcb9ff2d4150, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using NonDestroyObject;
 using Unity.VisualScripting;
@@ -35,6 +36,13 @@ namespace Combat
     }
     public abstract class CombatEntityParent : MonoBehaviour
     {
+        protected CombatEntityStatus[] combatEntityAttackStatus = new CombatEntityStatus[]
+        {
+            CombatEntityStatus.Attack,
+            CombatEntityStatus.ChargeAttack,
+            CombatEntityStatus.PerfectChargeAttack
+        };
+        
         [Header("Initial Setting (CombatEntity Parent)")]
         [SerializeField] protected int maxHp;
         [SerializeField] private float attackHitDuration;
@@ -46,12 +54,12 @@ namespace Combat
         [SerializeField] public float knockBackXInterval;
 
         public bool OpponentInRange => attackHitBox.OpponentInRange;
-        public bool EnemyInChargeRange => chargeAttackHitBox.OpponentInRange;
+        public bool OpponentInChargeRange => chargeAttackHitBox.OpponentInRange;
         // Current Status
         public AttackType AttackType => attackType;
         public CombatEntityStatus CurrentStatus => currentStatus;
-        public bool Attacking => (currentStatus == CombatEntityStatus.Attack) || (currentStatus == CombatEntityStatus.ChargeAttack) || (currentStatus == CombatEntityStatus.PerfectChargeAttack);
-        public bool Hitting => hitting;
+        public virtual bool Attacking => combatEntityAttackStatus.Contains(currentStatus);
+        protected bool Hitting => hitting;
         [Header("Entity Status (CombatEntity Parent)")]
         [SerializeField] protected CombatEntityStatus currentStatus;
         [SerializeField] protected int currentHp;
@@ -63,6 +71,11 @@ namespace Combat
         [SerializeField] private AttackRangeObject chargeAttackHitBox;
 
         private void Start()
+        {
+            WhenStart();
+        }
+
+        protected virtual void WhenStart()
         {
             // Coroutines
             CancelAllCoroutine();
@@ -87,8 +100,9 @@ namespace Combat
             });
             StartCoroutine(_waitAndReturnToIdleCoroutine);
         }
-        protected void StartHitJudgeAndEndAfter(float sec, OperationWaitAndDisableHitting operation = null)
+        protected void StartAttack(float sec, AttackType attackType, OperationWaitAndDisableHitting operation = null)
         {
+            this.attackType = attackType;
             CancelHittingJudgeCoroutine();
             hitting = true;
             _hittingDisableCoroutine = CoroutineUtils.WaitAndOperationIEnum(sec, () =>
@@ -103,7 +117,7 @@ namespace Combat
         /// Switch "currentStatus" and Animation Variable
         /// </summary>
         /// <param name="newStatus"></param>
-        private void SwitchStatusAndAnimation(CombatEntityStatus newStatus)
+        protected void SwitchStatusAndAnimation(CombatEntityStatus newStatus)
         {
             if (currentStatus == newStatus) return;
             animator.SetBool(currentStatus.ToString(), false);
@@ -210,25 +224,7 @@ namespace Combat
         /// </summary>
         /// <param name="damage"></param>
         /// <returns></returns>
-        public virtual bool Damaged(int damage)
-        {
-            CancelAllCoroutine();
-            currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
-            if (currentHp == 0)
-            {
-                SwitchStatusAndAnimation(CombatEntityStatus.Dying);
-                currentStatus = CombatEntityStatus.Dying;
-                WaitAndReturnToIdleWithOperation(GetAnimationTime("Dying"), ResetAfterDead);
-                return true;
-            }
-            else
-            {
-                SwitchStatusAndAnimation(CombatEntityStatus.Damaged);
-                currentStatus = CombatEntityStatus.Damaged;
-                WaitAndReturnToIdleWithOperation(GetAnimationTime("Damaged"));
-                return false;
-            }
-        }
+        public abstract bool Damaged(int damage);
 
         /// <summary>
         /// Return If Action Success
@@ -237,6 +233,7 @@ namespace Combat
         /// <returns></returns>
         public virtual bool EntityAction(CombatEntityStatus combatEntityStatus)
         {
+            Debug.Log(combatEntityStatus.ToString());
             // Animation 처리
             SwitchStatusAndAnimation(combatEntityStatus);
             currentStatus = combatEntityStatus;
@@ -250,12 +247,12 @@ namespace Combat
                 case CombatEntityStatus.Attack:
                     // Hitting 변수
                     WaitAndReturnToIdleWithOperation(GetAnimationTime("Attack"));
-                    StartHitJudgeAndEndAfter(attackHitDuration);
+                    StartAttack(attackHitDuration, AttackType.Normal);
                     return true;
                 // 차지 공격
                 case CombatEntityStatus.ChargeAttack:
                     WaitAndReturnToIdleWithOperation(GetAnimationTime("ChargeAttack"));
-                    StartHitJudgeAndEndAfter(chargeAttackHitDuration);
+                    StartAttack(chargeAttackHitDuration, AttackType.Charge);
                     return true;
                 // 움직임
                 case CombatEntityStatus.Running:

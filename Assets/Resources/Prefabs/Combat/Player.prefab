@@ -74,7 +74,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRangeCollider: {fileID: 406238757}
-  initiallized: 0
-  enemyInRange: 0
+  opponentTagName: Enemy
+  opponentInRange: 0
 --- !u!1 &1527997361
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,8 +226,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRangeCollider: {fileID: 1527997364}
-  initiallized: 0
-  enemyInRange: 0
+  opponentTagName: Enemy
+  opponentInRange: 0
 --- !u!1 &1794184630
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,7 +300,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 496655725
-  m_SortingLayer: 4
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 4723107735738678597, guid: 0e3502a80399d164ea01f1868f65acbf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -471,5 +471,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRangeCollider: {fileID: 5935084497732478262}
-  initiallized: 0
-  enemyInRange: 0
+  opponentTagName: Enemy
+  opponentInRange: 0

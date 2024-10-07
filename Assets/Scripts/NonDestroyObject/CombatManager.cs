@@ -35,8 +35,7 @@ namespace NonDestroyObject
         [SerializeField] private float afterEndCombat;
 
         public bool IsInCombat { get; private set; }
-
-
+        
         public EnemyEntity CurrentEnemyEntity
         {
             get => enemyAIList[currentEnemyIndex];
@@ -165,23 +164,13 @@ namespace NonDestroyObject
             }
         }
 
-        private IEnumerator _delayedCoroutine;
-        private IEnumerator UpdateDelay(float second)
-        {
-            yield return new WaitForSeconds(second);
-            updateDelayed = false;
-            _delayedCoroutine = null;
-        }
-
         private void FixedUpdate()
         {
             if (timeBlocked || inputBlocked) return;
 
             #region CheckHitting
             // enemyAI 피격 판정 우선 - 동시에 때리면 플레이어 판정이 우세 
-            if ((player.AttackType == AttackType.Normal && player.Hitting && player.OpponentInRange) ||
-                (player.AttackType == AttackType.Charge && player.Hitting && player.EnemyInChargeRange) ||
-                (player.AttackType == AttackType.PerfectCharge && player.Hitting && player.EnemyInPerfectChargeRange))
+            if (player.PlayerHittingEnemy)
             {
                 player.MyAttackHitted();
                 int damage = (int)(DataManager.Instance.playerDataManager.Atk * playerDamagePerAttackRate[(int)player.AttackType]);
@@ -206,7 +195,7 @@ namespace NonDestroyObject
             }
 
             // Player 피격 판정
-            if (CurrentEnemyEntity.Hitting && CurrentEnemyEntity.OpponentInRange)
+            if (CurrentEnemyEntity.IsEnemyHittingPlayer)
             {
                 // Player's Hp is always 1
                 var dead = player.Damaged(1);
@@ -220,12 +209,12 @@ namespace NonDestroyObject
                     });
                     StartCoroutine(_afterDeadCoroutine);
                 }
-
                 return;
             }
             #endregion
 
-            // enemyAI[currentEnemyIndex] Transform Moving
+            CurrentEnemyEntity.ActionUpdate();
+            // Enemy Entity Moving
             if (CurrentEnemyEntity.CurrentStatus == CombatEntityStatus.Damaged)
             {
                 CurrentEnemyEntity.transform.position += Vector3.right * (CurrentEnemyEntity.knockBackXInterval * Time.fixedDeltaTime);
@@ -240,38 +229,6 @@ namespace NonDestroyObject
             {
                 CurrentEnemyEntity.transform.position += Vector3.right * (CurrentEnemyEntity.backJumpSpeed * Time.fixedDeltaTime);
                 return;
-            }
-
-            if (CurrentEnemyEntity.CurrentStatus == CombatEntityStatus.Dying) return;
-            
-            updateDelayed = true;
-            AIAction();
-            if (_delayedCoroutine != null)
-            {
-                StopCoroutine(_delayedCoroutine);
-            }
-            _delayedCoroutine = UpdateDelay(updateInterval);
-            StartCoroutine(_delayedCoroutine);
-        }
-
-        private void AIAction()
-        {
-            if (CurrentEnemyEntity.OpponentInRange)
-            {
-                int rand = _random.Next(1, 100);
-                if (rand <= _random.Next(1, 100))
-                {
-                    CurrentEnemyEntity.EntityAction(CombatEntityStatus.Attack);
-                }
-                else
-                {
-                    CurrentEnemyEntity.EntityAction(CombatEntityStatus.JumpBack);
-                }
-                UpdateRandomSeed();
-            }
-            else
-            {
-                CurrentEnemyEntity.EntityAction(CombatEntityStatus.Running);
             }
         }
 

@@ -9,7 +9,29 @@ namespace Combat
         [SerializeField] private AttackRangeObject perfectChargeAttackHitBox;
         
         public bool EnemyInPerfectChargeRange => perfectChargeAttackHitBox.OpponentInRange;
+        public bool PlayerHittingEnemy => Attacking && Hitting && ((AttackType == AttackType.Normal && OpponentInRange) ||
+                                                                   (AttackType == AttackType.Charge && OpponentInChargeRange) ||
+                                                                   (AttackType == AttackType.PerfectCharge && EnemyInPerfectChargeRange));
 
+        public override bool Damaged(int damage)
+        {
+            CancelAllCoroutine();
+            currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
+            if (currentHp == 0)
+            {
+                SwitchStatusAndAnimation(CombatEntityStatus.Dying);
+                currentStatus = CombatEntityStatus.Dying;
+                WaitAndReturnToIdleWithOperation(GetAnimationTime("Dying"), ResetAfterDead);
+                return true;
+            }
+            else
+            {
+                SwitchStatusAndAnimation(CombatEntityStatus.Damaged);
+                currentStatus = CombatEntityStatus.Damaged;
+                WaitAndReturnToIdleWithOperation(GetAnimationTime("Damaged"));
+                return false;
+            }
+        }
         public override bool EntityAction(CombatEntityStatus combatEntityStatus)
         {
             if (base.EntityAction(combatEntityStatus)) return true;
@@ -18,7 +40,7 @@ namespace Combat
             {
                 case CombatEntityStatus.PerfectChargeAttack:
                     WaitAndReturnToIdleWithOperation(GetAnimationTime("PerfectChargeAttack"));
-                    StartHitJudgeAndEndAfter(perfectChargeAttackHitDuration);
+                    StartAttack(perfectChargeAttackHitDuration, AttackType.PerfectCharge);
                     return true;
             }
 

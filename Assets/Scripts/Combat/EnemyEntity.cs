@@ -1,9 +1,89 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 namespace Combat
 {
     public class EnemyEntity : CombatEntityParent
     {
+        [Header("EnemyEntity Init In Unity Variables")]
+        [SerializeField] private float chargeFullTime;
+        [Header("EnemyEntity Variables")]
+        [SerializeField] private float chargeElapsedTime;
         public float CurrentHpRatio => (float)currentHp / (float)maxHp;
+        public virtual bool IsEnemyHittingPlayer => Attacking && Hitting && ((AttackType == AttackType.Normal && OpponentInRange) || 
+                                                                             (AttackType == AttackType.Charge && OpponentInChargeRange));
+
+        protected override void WhenStart()
+        {
+            base.WhenStart();
+            chargeElapsedTime = 0;
+        }
+        
+        public virtual void ActionUpdate()
+        {
+            if (enemyActionBlockList.Contains(currentStatus)) return;
+            if (!OpponentInRange && !OpponentInChargeRange)
+            {
+                EntityAction(CombatEntityStatus.Running);
+            }
+            else if (OpponentInChargeRange && CurrentHpRatio <= 0.5f)
+            {
+                if (chargeElapsedTime == 0.0f)
+                {
+                    EntityAction(CombatEntityStatus.Charge);
+                    chargeElapsedTime += Time.deltaTime;
+                }
+                else if (chargeElapsedTime <= chargeFullTime)
+                {
+                    chargeElapsedTime += Time.deltaTime;
+                }
+                else
+                {
+                    EntityAction(CombatEntityStatus.ChargeAttack);
+                    WaitAndReturnToIdleWithOperation(GetAnimationTime("ChargeAttack"));
+                    chargeElapsedTime = 0.0f;
+                }
+            }
+            else if (OpponentInRange)
+            {
+                EntityAction(CombatEntityStatus.Attack);
+            }
+        }
+        
+        protected CombatEntityStatus[] enemyActionBlockList = new CombatEntityStatus[]
+        {
+            CombatEntityStatus.Damaged,
+            CombatEntityStatus.Dying,
+            CombatEntityStatus.Attack,
+            CombatEntityStatus.ChargeAttack
+        };
+        public override bool Damaged(int damage)
+        {
+            CancelAllCoroutine();
+            currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
+            if (currentHp == 0)
+            {
+                SwitchStatusAndAnimation(CombatEntityStatus.Dying);
+                currentStatus = CombatEntityStatus.Dying;
+                WaitAndReturnToIdleWithOperation(GetAnimationTime("Dying"), ResetAfterDead);
+                return true;
+            }
+            else
+            {
+                SwitchStatusAndAnimation(CombatEntityStatus.Damaged);
+                currentStatus = CombatEntityStatus.Damaged;
+                WaitAndReturnToIdleWithOperation(GetAnimationTime("Damaged"));
+                return false;
+            }
+        }
+        public override bool EntityAction(CombatEntityStatus combatEntityStatus)
+        {
+            if (base.EntityAction(combatEntityStatus))
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }
