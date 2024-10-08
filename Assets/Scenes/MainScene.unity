@@ -11272,7 +11272,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3973778045446700009, guid: c805d09748bd69c41a815e89f1e77e71, type: 3}
       propertyPath: m_Name
-      value: Enemy 2
+      value: SquareKnight
       objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700010, guid: c805d09748bd69c41a815e89f1e77e71, type: 3}
       propertyPath: m_RootOrder
@@ -14039,7 +14039,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3973778045446700009, guid: 03568f5c74189014ab7886089ed32a0e, type: 3}
       propertyPath: m_Name
-      value: Enemy 3
+      value: RedRobbery
       objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700010, guid: 03568f5c74189014ab7886089ed32a0e, type: 3}
       propertyPath: m_RootOrder
@@ -15532,7 +15532,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3973778045446700009, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
       propertyPath: m_Name
-      value: Enemy 1
+      value: SilverKnight
       objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700010, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
       propertyPath: m_RootOrder

@@ -197,6 +197,7 @@ namespace NonDestroyObject
             // Player 피격 판정
             if (CurrentEnemyEntity.IsEnemyHittingPlayer)
             {
+                CurrentEnemyEntity.MyAttackHitted();
                 // Player's Hp is always 1
                 var dead = player.Damaged(1);
                 if (dead)

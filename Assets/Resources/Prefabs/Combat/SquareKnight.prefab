@@ -71,10 +71,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2d7df074ef4fd99df24c9a08658301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerEntity: {fileID: 0}
   attackRangeCollider: {fileID: 1138888567}
-  initiallized: 0
-  enemyInRange: 0
+  opponentTagName: 
+  opponentInRange: 0
 --- !u!1 &3117746138525706423
 GameObject:
   m_ObjectHideFlags: 0
@@ -226,10 +225,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b2d7df074ef4fd99df24c9a08658301, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerEntity: {fileID: 0}
   attackRangeCollider: {fileID: 8789761679208962417}
-  initiallized: 0
-  enemyInRange: 0
+  opponentTagName: 
+  opponentInRange: 0
 --- !u!1 &3973778045446700009
 GameObject:
   m_ObjectHideFlags: 0
@@ -241,12 +239,12 @@ GameObject:
   - component: {fileID: 3973778045446700010}
   - component: {fileID: 968244820}
   m_Layer: 0
-  m_Name: Enemy 2
+  m_Name: SquareKnight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3973778045446700010
 Transform:
   m_ObjectHideFlags: 0
@@ -293,6 +291,8 @@ MonoBehaviour:
   animator: {fileID: 8716881376094445978}
   attackHitBox: {fileID: 7678641069016650699}
   chargeAttackHitBox: {fileID: 1138888566}
+  chargeFullTime: 0
+  chargeElapsedTime: 0
 --- !u!1 &6365470792853590273
 GameObject:
   m_ObjectHideFlags: 0
