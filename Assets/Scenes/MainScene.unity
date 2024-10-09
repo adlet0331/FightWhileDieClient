@@ -925,8 +925,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a4d9c44483543bab5d2ec628a39a42e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bgmOn: 0
-  clipOn: 0
+  bgmOn: 1
+  clipOn: 1
   clipVolume: 0
   bgmVolume: 0
   clipSlider: {fileID: 1515197418}
@@ -1968,7 +1968,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 441458116}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.7, y: -2.561, z: 0}
+  m_LocalPosition: {x: 5, y: -2.561, z: 0}
   m_LocalScale: {x: 3.5, y: 3.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11274,10 +11274,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: SquareKnight
       objectReference: {fileID: 0}
-    - target: {fileID: 3973778045446700009, guid: c805d09748bd69c41a815e89f1e77e71, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700010, guid: c805d09748bd69c41a815e89f1e77e71, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -14044,10 +14040,6 @@ PrefabInstance:
     - target: {fileID: 3973778045446700009, guid: 03568f5c74189014ab7886089ed32a0e, type: 3}
       propertyPath: m_Name
       value: RedRobbery
-      objectReference: {fileID: 0}
-    - target: {fileID: 3973778045446700009, guid: 03568f5c74189014ab7886089ed32a0e, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700010, guid: 03568f5c74189014ab7886089ed32a0e, type: 3}
       propertyPath: m_RootOrder

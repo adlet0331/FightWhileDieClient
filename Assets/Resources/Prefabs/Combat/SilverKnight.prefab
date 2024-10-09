@@ -205,8 +205,8 @@ MonoBehaviour:
   maxHp: 0
   attackHitDuration: 0.15
   chargeAttackHitDuration: 0.15
-  hittingClip: 0
-  chargehittingClip: 0
+  attackClip: 1
+  chargeAttackClip: 3
   runningSpeed: 3
   backJumpSpeed: 2
   knockBackXInterval: 3

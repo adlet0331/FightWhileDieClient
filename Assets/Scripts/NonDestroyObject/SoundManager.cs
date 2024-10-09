@@ -8,9 +8,9 @@ namespace NonDestroyObject
     public enum ClipName
     {
         ButtonClick = 0,
-        Hit1 = 1,
-        Hit2 = 2,
-        Hit3 = 3,
+        Attack = 1,
+        PlayerPerfectAttack = 2,
+        ChargeAttack = 3,
         GatchaOpen = 4,
         EnhanceSuccess = 5,
         EnhanceFail = 6,
@@ -77,13 +77,13 @@ namespace NonDestroyObject
         
         [SerializeField] private SoundClip[] audioClip;
 
-        public void PlayClip(int clipName)
+        public void PlayClip(ClipName clipName)
         {
             if (!clipOn) return;
             
             foreach (var clip in audioClip)
             {
-                if ((int)clip.ClipName == clipName)
+                if (clip.ClipName == clipName)
                 {
                     clipSource.clip = clip.AudioClip;
                     clipSource.Play();

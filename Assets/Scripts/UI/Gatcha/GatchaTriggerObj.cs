@@ -45,7 +45,7 @@ namespace UI.Gatcha
         {
             if (!isOpenable || opened) return;
             
-            SoundManager.Instance.PlayClip(4);
+            SoundManager.Instance.PlayClip(ClipName.GatchaOpen);
             OpenAndShowItem();
         }
 

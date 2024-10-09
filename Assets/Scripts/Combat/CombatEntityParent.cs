@@ -47,8 +47,8 @@ namespace Combat
         [SerializeField] protected int maxHp;
         [SerializeField] private float attackHitDuration;
         [SerializeField] private float chargeAttackHitDuration;
-        [SerializeField] private ClipName hittingClip;
-        [SerializeField] private ClipName chargehittingClip;
+        [SerializeField] private ClipName attackClip;
+        [SerializeField] private ClipName chargeAttackClip;
         [SerializeField] public float runningSpeed;
         [SerializeField] public float backJumpSpeed;
         [SerializeField] public float knockBackXInterval;
@@ -248,11 +248,13 @@ namespace Combat
                     // Hitting 변수
                     WaitAndReturnToIdleWithOperation(GetAnimationTime("Attack"));
                     StartAttack(attackHitDuration, AttackType.Normal);
+                    SoundManager.Instance.PlayClip(attackClip);
                     return true;
                 // 차지 공격
                 case CombatEntityStatus.ChargeAttack:
                     WaitAndReturnToIdleWithOperation(GetAnimationTime("ChargeAttack"));
                     StartAttack(chargeAttackHitDuration, AttackType.Charge);
+                    SoundManager.Instance.PlayClip(chargeAttackClip);
                     return true;
                 // 움직임
                 case CombatEntityStatus.Running:

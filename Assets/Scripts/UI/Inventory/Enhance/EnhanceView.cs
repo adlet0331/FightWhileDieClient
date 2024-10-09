@@ -92,12 +92,12 @@ namespace UI.Inventory.Enhance
             descriptionText.text = selectedObject.GetDescriptionText(1);
             
             // Sound
-            SoundManager.Instance.PlayClip((int) ClipName.GatchaOpen);
+            SoundManager.Instance.PlayClip(ClipName.GatchaOpen);
 
             StartCoroutine(CoroutineUtils.WaitAndOperationIEnum(enhancingTime, () =>
             {
                 // Sound
-                SoundManager.Instance.PlayClip(success ? (int) ClipName.EnhanceSuccess : (int) ClipName.EnhanceFail);
+                SoundManager.Instance.PlayClip(success ? ClipName.EnhanceSuccess : ClipName.EnhanceFail);
                 
                 noResponseTouchBoard.gameObject.SetActive(false);
                 

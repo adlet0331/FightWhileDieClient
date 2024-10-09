@@ -244,7 +244,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3973778045446700010
 Transform:
   m_ObjectHideFlags: 0
@@ -279,8 +279,8 @@ MonoBehaviour:
   maxHp: 0
   attackHitDuration: 0
   chargeAttackHitDuration: 0
-  hittingClip: 0
-  chargehittingClip: 0
+  attackClip: 1
+  chargeAttackClip: 3
   runningSpeed: 0
   backJumpSpeed: 0
   knockBackXInterval: 0

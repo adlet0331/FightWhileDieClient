@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NonDestroyObject;
+using UnityEngine;
 
 namespace Combat
 {
@@ -41,6 +42,7 @@ namespace Combat
                 case CombatEntityStatus.PerfectChargeAttack:
                     WaitAndReturnToIdleWithOperation(GetAnimationTime("PerfectChargeAttack"));
                     StartAttack(perfectChargeAttackHitDuration, AttackType.PerfectCharge);
+                    SoundManager.Instance.PlayClip(ClipName.PlayerPerfectAttack);
                     return true;
             }
 
