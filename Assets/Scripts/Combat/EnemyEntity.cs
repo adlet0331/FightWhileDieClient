@@ -49,6 +49,11 @@ namespace Combat
                 EntityAction(CombatEntityStatus.Attack);
             }
         }
+
+        protected virtual void WhenDamagedUpdateVal()
+        {
+            chargeElapsedTime = 0;
+        }
         
         protected CombatEntityStatus[] enemyActionBlockList = new CombatEntityStatus[]
         {
@@ -60,6 +65,7 @@ namespace Combat
         public override bool Damaged(int damage)
         {
             CancelAllCoroutine();
+            WhenDamagedUpdateVal();
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
             if (currentHp == 0)
             {

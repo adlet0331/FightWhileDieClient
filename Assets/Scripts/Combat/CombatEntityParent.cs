@@ -233,7 +233,6 @@ namespace Combat
         /// <returns></returns>
         public virtual bool EntityAction(CombatEntityStatus combatEntityStatus)
         {
-            Debug.Log(combatEntityStatus.ToString());
             // Animation 처리
             SwitchStatusAndAnimation(combatEntityStatus);
             currentStatus = combatEntityStatus;

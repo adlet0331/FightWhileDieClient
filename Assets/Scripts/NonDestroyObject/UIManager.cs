@@ -49,6 +49,7 @@ namespace NonDestroyObject
         public Button gatchaButton;
         public Button inventoryButton;
         public Slider attackChargeGageSlider;
+        public GameObject attackPerfectEffectObject;
         [Header("Transforms")] 
         [SerializeField] private float uiMovingTime;
         [SerializeField] private Transform titleShowPosition;
@@ -103,6 +104,11 @@ namespace NonDestroyObject
         public void ActiveCombatUIs(bool show)
         {
             attackChargeGageSlider.gameObject.SetActive(show);
+        }
+
+        public void ActivePerfectEffect(bool show)
+        {
+            attackPerfectEffectObject.SetActive(show);
         }
         
         public void ActiveMainPagesButtons(bool show)

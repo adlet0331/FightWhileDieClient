@@ -143,22 +143,31 @@ namespace NonDestroyObject
                 {
                     holdTime += Time.deltaTime;
                     UIManager.Instance.UpdateAttackGageSlider(Math.Min(holdTime, 1.0f));
+                    if (strongAttackHoldTime - perfectAttackTimeInterval <= holdTime && holdTime <= strongAttackHoldTime + perfectAttackTimeInterval)
+                    {
+                        UIManager.Instance.ActivePerfectEffect(true);
+                    }
+                    else
+                    {
+                        UIManager.Instance.ActivePerfectEffect(false);
+                    }
                 }
                 if (isHolded && holdTime > 0 && Input.GetMouseButtonUp(0))
                 {
                     UIManager.Instance.UpdateAttackGageSlider(0);
-                    if (strongAttackHoldTime - perfectAttackTimeInterval <= holdTime && holdTime <= strongAttackHoldTime + perfectAttackTimeInterval)
-                    {
-                        player.EntityAction(CombatEntityStatus.PerfectChargeAttack);
-                    }
-                    else if (holdTime < strongAttackHoldTime)
+                    if (holdTime < strongAttackHoldTime)
                     {
                         player.EntityAction(CombatEntityStatus.Attack);
+                    }
+                    else if (strongAttackHoldTime - perfectAttackTimeInterval <= holdTime && holdTime <= strongAttackHoldTime + perfectAttackTimeInterval)
+                    {
+                        player.EntityAction(CombatEntityStatus.PerfectChargeAttack);
                     }
                     else
                     {
                         player.EntityAction(CombatEntityStatus.ChargeAttack);
                     }
+                    UIManager.Instance.ActivePerfectEffect(false);
                     isHolded = false;
                 }
             }
