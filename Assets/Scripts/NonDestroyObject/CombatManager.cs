@@ -12,8 +12,8 @@ namespace NonDestroyObject
     public class CombatManager : Singleton<CombatManager>
     {
         [Header("Need Initialize In Unity")] 
-        public PlayerEntity player;
-        public EnemyEntity[] enemyAIList;
+        [SerializeField] private PlayerEntity player;
+        [SerializeField] private EnemyEntity[] enemyAIList;
         [SerializeField] private Transform aiStartPosition;
         [SerializeField] private Transform aiStandingPosition;
         [SerializeField] private int currentEnemyIndex;
@@ -21,6 +21,7 @@ namespace NonDestroyObject
         [SerializeField] private float strongAttackHoldRandomMaxTime;
         [SerializeField] private float perfectAttackTimeInterval;
         [SerializeField] private Slider holdSliderUI;
+        [SerializeField] private Camera MainCamera;
         // [AttackType] per Rate
         [SerializeField] private List<float> playerDamagePerAttackRate;
         [Header("Status")]
@@ -47,21 +48,15 @@ namespace NonDestroyObject
             {
                 timeBlocked = value;
                 // 시간이 멈춤
+                ActivateCoroutines(value);
                 if (value)
                 {
-                    if (_afterDeadCoroutine != null)
-                    {
-                        StopCoroutine(_afterDeadCoroutine);
-                    }
                     player.TimeBlocked();
                     CurrentEnemyEntity.TimeBlocked();
                 }
                 else
                 {
-                    if (_afterDeadCoroutine != null)
-                    {
-                        StartCoroutine(_afterDeadCoroutine);
-                    }
+                    
                     player.TimeResumed();
                     CurrentEnemyEntity.TimeResumed();
                 }
@@ -82,6 +77,32 @@ namespace NonDestroyObject
             _random = new Random(randomSeed);
             UpdateRandomEnemyAI();
             UpdateRandomSeed();
+        }
+
+        private void ActivateCoroutines(bool active)
+        {
+            if (active)
+            {
+                if (_afterDeadCoroutine != null)
+                {
+                    StopCoroutine(_afterDeadCoroutine);
+                }
+                if (_shakeCameraCoroutine != null)
+                {
+                    StopCoroutine(_shakeCameraCoroutine);
+                }
+            }
+            else
+            {
+                if (_afterDeadCoroutine != null)
+                {
+                    StartCoroutine(_afterDeadCoroutine);
+                }
+                if (_shakeCameraCoroutine != null)
+                {
+                    StartCoroutine(_shakeCameraCoroutine);
+                }
+            }
         }
 
         private void UpdateRandomEnemyAI()
@@ -199,6 +220,10 @@ namespace NonDestroyObject
                     // Update enemyAI[currentEnemyIndex]'s Random Seed
                     UpdateRandomSeed();
                 }
+                else
+                {
+                    ShakeCamera(1, 1, 1f);
+                }
                 UIManager.Instance.UpdateEnemyHp(CurrentEnemyEntity.CurrentHpRatio);
                 return;
             }
@@ -255,6 +280,33 @@ namespace NonDestroyObject
             player.InitHp(1);
             CurrentEnemyEntity.InitHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
         }
+
+        private IEnumerator CameraShake(float roughness, float magnitude, float duration)
+        {
+            float halfDuration = duration / 2;
+            float elapsed = 0f;
+            float tick = _random.Next(-10, 10);
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime / halfDuration;
+
+                tick += Time.deltaTime * roughness;
+                MainCamera.transform.position = new Vector3(
+                    Mathf.PerlinNoise(tick, 0) - .5f,
+                    Mathf.PerlinNoise(0, tick) - .5f,
+                    0) * magnitude * Mathf.PingPong(elapsed, halfDuration) + new Vector3(0, 0, -10);
+
+                yield return null;
+            }
+            _shakeCameraCoroutine = null;
+        }
+        
+        private void ShakeCamera(float roughness, float magnitude, float duration)
+        {
+            _shakeCameraCoroutine = CameraShake(roughness, magnitude, duration);
+            StartCoroutine(_shakeCameraCoroutine);
+        }
         
         public void StartCombat()
         {
@@ -296,5 +348,6 @@ namespace NonDestroyObject
         
         // IEnumerator
         private IEnumerator _afterDeadCoroutine;
+        private IEnumerator _shakeCameraCoroutine;
     }
 }

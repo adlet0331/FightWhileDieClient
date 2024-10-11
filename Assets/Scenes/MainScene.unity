@@ -11621,6 +11621,7 @@ MonoBehaviour:
   strongAttackHoldRandomMaxTime: 0.5
   perfectAttackTimeInterval: 0.05
   holdSliderUI: {fileID: 767361354}
+  MainCamera: {fileID: 519420031}
   playerDamagePerAttackRate:
   - 1
   - 1.75
