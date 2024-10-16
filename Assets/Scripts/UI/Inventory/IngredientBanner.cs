@@ -62,7 +62,7 @@ namespace UI.Inventory
         {
             for (int i = 1; i <= 6; i++)
             {
-                var color = DataManager.Instance.itemManager.RareColorList[i];
+                var color = DataManager.Instance.staticDataManager.RareColorList[i];
                 
                 if (usePlayerData)
                 {

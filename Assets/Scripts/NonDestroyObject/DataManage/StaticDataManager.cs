@@ -14,6 +14,8 @@ namespace NonDestroyObject.DataManage
     [Serializable]
     public class StaticDataManager
     {
+        public List<Color> RareColorList => rareColorList;
+        
         [SerializeField] private List<StaticDataVersion> currentVersions;
         [SerializeField] private List<StaticDataVersion> serverVersions;
 
@@ -21,6 +23,7 @@ namespace NonDestroyObject.DataManage
         [SerializeField] private List<GatchaProbability> gatchaProbabilitys;
         
         [SerializeField] private List<EquipItemInfo> equipmentItemInfos;
+        private List<Color> rareColorList;
         public EquipItemInfo GetEquipItemInfo(int rare, int option)
         {
             var totalLength = equipmentItemInfos.Count;
@@ -56,6 +59,15 @@ namespace NonDestroyObject.DataManage
             var gatchaProbabilitysJson = JsonSL.LoadJson(JsonTitle.EnhanceInfo);
             if (gatchaProbabilitysJson != String.Empty)
                 enhanceInfos = JsonConvert.DeserializeObject<List<EnhanceInfo>>(gatchaProbabilitysJson);
+            
+            rareColorList = new List<Color>();
+            rareColorList.Add(new Color(0.0f,0.0f,0.0f, 1.0f));
+            rareColorList.Add(new Color(0.5f,0.5f,0.5f, 1.0f));
+            rareColorList.Add(new Color(0.0f,0.1f,1.0f, 1.0f));
+            rareColorList.Add(new Color(0.8f,0.0f,1.0f, 1.0f));
+            rareColorList.Add(new Color(1.0f,0.0f,0.0f, 1.0f));
+            rareColorList.Add(new Color(1.0f,0.8f,0.0f, 1.0f));
+            rareColorList.Add(new Color(0.0f,0.0f,0.0f, 1.0f));
         }
 
         private StaticDataVersion GetCurrentVersion(string title)

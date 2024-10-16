@@ -152,7 +152,7 @@ namespace UI.Inventory.ItemView
             if (index < 0 || index >= itemSlotList.Count)
             {
                 nameText.text = "";
-                rareImage.color = DataManager.Instance.itemManager.RareColorList[1];
+                rareImage.color = DataManager.Instance.staticDataManager.RareColorList[1];
                 levelText.text = "";
                 descriptionText.text = "";
                 return;
@@ -160,7 +160,7 @@ namespace UI.Inventory.ItemView
             
             var itemInfo = itemSlotList[index].EquipItemObjectInfo;
             nameText.text = itemInfo.GetName(0);
-            rareImage.color = DataManager.Instance.itemManager.RareColorList[itemInfo.rare];
+            rareImage.color = DataManager.Instance.staticDataManager.RareColorList[itemInfo.rare];
             levelText.text = itemInfo.level.ToString();
             descriptionText.text = itemInfo.GetDescriptionText(1);
         }

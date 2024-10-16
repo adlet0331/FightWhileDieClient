@@ -31,7 +31,7 @@ namespace UI.Gatcha
                 itemImage.sprite = ResourcesLoad.LoadEquipmentSprite(info.rare, info.option);
                 foreach (var image in rareColorImages)
                 {
-                    image.color = DataManager.Instance.itemManager.RareColorList[equipItemObject.rare];
+                    image.color = DataManager.Instance.staticDataManager.RareColorList[equipItemObject.rare];
                 }
             }
         }

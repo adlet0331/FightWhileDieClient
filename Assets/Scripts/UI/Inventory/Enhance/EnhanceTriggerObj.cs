@@ -88,7 +88,7 @@ namespace UI.Inventory.Enhance
             if (itemObject == null)
                 itemBorder.color = Color.white;
             else
-                itemBorder.color = DataManager.Instance.itemManager.RareColorList[itemObject.rare];
+                itemBorder.color = DataManager.Instance.staticDataManager.RareColorList[itemObject.rare];
             
             itemSlot.UpdateItemObjectAndMode(itemObject, ItemSlotMode.OnlyItem);
         }

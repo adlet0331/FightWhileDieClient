@@ -109,7 +109,7 @@ namespace UI.Inventory
                 
                 case ItemSlotMode.OnlyFrame:
                     slotBorder.gameObject.SetActive(true);
-                    slotBorder.color = DataManager.Instance.itemManager.RareColorList[rare];
+                    slotBorder.color = DataManager.Instance.staticDataManager.RareColorList[rare];
                     break;
 
                 case ItemSlotMode.OnlyItem:
@@ -130,7 +130,7 @@ namespace UI.Inventory
                     level.text = !isNull ? lev.ToString() : "";
                     
                     slotBorder.gameObject.SetActive(true);
-                    slotBorder.color = DataManager.Instance.itemManager.RareColorList[rare];
+                    slotBorder.color = DataManager.Instance.staticDataManager.RareColorList[rare];
                     
                     equiped.gameObject.SetActive(true);
                     break;
@@ -147,7 +147,7 @@ namespace UI.Inventory
                     level.text = lev != 0 ? lev.ToString() : "";
                     
                     slotBorder.gameObject.SetActive(true);
-                    slotBorder.color = DataManager.Instance.itemManager.RareColorList[rare];
+                    slotBorder.color = DataManager.Instance.staticDataManager.RareColorList[rare];
                     
                     equiped.gameObject.SetActive(true);
                     break;

@@ -17,7 +17,7 @@ namespace UI.Inventory.Enhance
         public void InitRare(int rare, bool select)
         {
             currentRare = rare;
-            currentColor = DataManager.Instance.itemManager.RareColorList[rare];
+            currentColor = DataManager.Instance.staticDataManager.RareColorList[rare];
             SelectIngredient(select);
         }
         

@@ -28,10 +28,7 @@ namespace NonDestroyObject.DataManage
             private set => itemAddOrDeleted = value;
         }
         [SerializeField] private bool itemAddOrDeleted;
-        [SerializeField] private List<Color> rareColorList; // TODO: Move to StaticDataManager 
-
         public List<EquipItemObject> ItemEquipments => itemEquipmentList;
-        public List<Color> RareColorList => rareColorList;
 
         public EquipItemObject GetEquipItemObjectWithId(int id)
         {
@@ -63,14 +60,6 @@ namespace NonDestroyObject.DataManage
             {
                 itemEquipmentList = JsonConvert.DeserializeObject<List<EquipItemObject>>(jsonString);
             }
-            rareColorList = new List<Color>();
-            rareColorList.Add(new Color(0.0f,0.0f,0.0f, 1.0f));
-            rareColorList.Add(new Color(0.5f,0.5f,0.5f, 1.0f));
-            rareColorList.Add(new Color(0.0f,0.1f,1.0f, 1.0f));
-            rareColorList.Add(new Color(0.8f,0.0f,1.0f, 1.0f));
-            rareColorList.Add(new Color(1.0f,0.0f,0.0f, 1.0f));
-            rareColorList.Add(new Color(1.0f,0.8f,0.0f, 1.0f));
-            rareColorList.Add(new Color(0.0f,0.0f,0.0f, 1.0f));
             itemAddOrDeleted = false;
         }
 
