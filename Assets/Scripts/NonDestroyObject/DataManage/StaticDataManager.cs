@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Newtonsoft.Json;
+using Newtonsoft.Json; // Still needed for deserializing server responses (network data)
 using UnityEngine;
 using Utils;
 
