@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Data;
-using Newtonsoft.Json;
 using UnityEngine;
 using Utils;
 
@@ -45,7 +44,8 @@ namespace NonDestroyObject.DataManage
             var index = itemEquipmentList.FindIndex((val) => val.id == equipItemObject.id);
             itemEquipmentList[index] = equipItemObject;
 
-            var jsonString = JsonConvert.SerializeObject(itemEquipmentList);
+            var wrapper = new EquipItemObjectListWrapper { items = itemEquipmentList };
+            var jsonString = JsonUtility.ToJson(wrapper);
             JsonSL.SaveJson(JsonTitle.PlayerEquipItemObjects, jsonString).Forget();
         }
         
@@ -58,7 +58,8 @@ namespace NonDestroyObject.DataManage
             }
             else
             {
-                itemEquipmentList = JsonConvert.DeserializeObject<List<EquipItemObject>>(jsonString);
+                var wrapper = JsonUtility.FromJson<EquipItemObjectListWrapper>(jsonString);
+                itemEquipmentList = wrapper != null ? wrapper.items : new List<EquipItemObject>();
             }
             itemAddOrDeleted = false;
         }
@@ -76,7 +77,8 @@ namespace NonDestroyObject.DataManage
             {
                 itemEquipmentList.Add(item);
             }
-            var jsonString = JsonConvert.SerializeObject(itemEquipmentList);
+            var wrapper = new EquipItemObjectListWrapper { items = itemEquipmentList };
+            var jsonString = JsonUtility.ToJson(wrapper);
             JsonSL.SaveJson(JsonTitle.PlayerEquipItemObjects, jsonString).Forget();
             DataManager.Instance.playerDataManager.CallFetchAllStatus(true);
             itemAddOrDeleted = true;
