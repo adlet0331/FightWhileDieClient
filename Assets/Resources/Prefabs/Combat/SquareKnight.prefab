@@ -72,7 +72,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRangeCollider: {fileID: 1138888567}
-  opponentTagName: 
+  opponentTagName: Player
   opponentInRange: 0
 --- !u!1 &3117746138525706423
 GameObject:
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4383551722597679850}
   m_Layer: 0
   m_Name: BodyCollider
-  m_TagString: Player
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRangeCollider: {fileID: 8789761679208962417}
-  opponentTagName: 
+  opponentTagName: Player
   opponentInRange: 0
 --- !u!1 &3973778045446700009
 GameObject:
@@ -277,13 +277,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 0
-  attackHitDuration: 0
-  chargeAttackHitDuration: 0
+  attackHitDuration: 0.15
+  chargeAttackHitDuration: 0.15
   attackClip: 1
   chargeAttackClip: 3
-  runningSpeed: 0
-  backJumpSpeed: 0
-  knockBackXInterval: 0
+  runningSpeed: 2
+  backJumpSpeed: 3
+  knockBackXInterval: 3
   currentStatus: 0
   currentHp: 0
   attackType: 0
@@ -291,7 +291,7 @@ MonoBehaviour:
   animator: {fileID: 8716881376094445978}
   attackHitBox: {fileID: 7678641069016650699}
   chargeAttackHitBox: {fileID: 1138888566}
-  chargeFullTime: 0
+  chargeFullTime: 1
   chargeElapsedTime: 0
 --- !u!1 &6365470792853590273
 GameObject:
@@ -380,7 +380,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &8716881376094445978
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -397,4 +397,5 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

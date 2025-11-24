@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -11614,6 +11613,8 @@ MonoBehaviour:
   player: {fileID: 1887054077}
   enemyAIList:
   - {fileID: 1804785328}
+  - {fileID: 1737123248}
+  - {fileID: 1902948598}
   aiStartPosition: {fileID: 441458117}
   aiStandingPosition: {fileID: 1050546257}
   currentEnemyIndex: 0
@@ -13043,7 +13044,6 @@ MonoBehaviour:
   itemManager:
     itemEquipmentList: []
     itemAddOrDeleted: 0
-    rareColorList: []
 --- !u!1 &1484660412
 GameObject:
   m_ObjectHideFlags: 0
@@ -13256,6 +13256,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 712827045
   m_SortingOrder: 0
@@ -14552,6 +14553,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3973778045446700010, guid: c805d09748bd69c41a815e89f1e77e71, type: 3}
   m_PrefabInstance: {fileID: 968244818}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1737123248 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 968244820, guid: c805d09748bd69c41a815e89f1e77e71, type: 3}
+  m_PrefabInstance: {fileID: 968244818}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa3d538a46604cab988a7af0034f3c67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1766770794
 GameObject:
   m_ObjectHideFlags: 0
@@ -14968,6 +14980,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5935084497502917644, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
   m_PrefabInstance: {fileID: 5935084497776999669}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1902948598 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1708057960, guid: 03568f5c74189014ab7886089ed32a0e, type: 3}
+  m_PrefabInstance: {fileID: 1708057958}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa3d538a46604cab988a7af0034f3c67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1943873659
 GameObject:
   m_ObjectHideFlags: 0
@@ -16371,10 +16394,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 926359774}
     m_Modifications:
-    - target: {fileID: 1527997364, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
-      propertyPath: m_Size.x
-      value: 1.72
-      objectReference: {fileID: 0}
     - target: {fileID: 5935084497502917635, guid: 5c2aef4bfb87a434ca331471dc9bf896, type: 3}
       propertyPath: m_Name
       value: Player
