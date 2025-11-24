@@ -98,7 +98,7 @@ namespace UI.Inventory.Enhance
             if (initialized) return;
             
             SlotClickHandler = clickHandler;
-            animator.keepAnimatorControllerStateOnDisable = true;
+            animator.keepAnimatorStateOnDisable = true;
             runtimeAnimatorController = animator.runtimeAnimatorController;
 
             itemSlot.Init(0, null, clickHandler, UpperViewStatus.Enhancement.ToString(), ItemSlotMode.OnlyItem);

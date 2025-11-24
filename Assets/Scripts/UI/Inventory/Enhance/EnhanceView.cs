@@ -148,7 +148,7 @@ namespace UI.Inventory.Enhance
         private event SlotClickHandler SlotClickHandler;
         public void InitHandler(SlotClickHandler handler)
         {
-            animator.keepAnimatorControllerStateOnDisable = true;
+            animator.keepAnimatorStateOnDisable = true;
             SlotClickHandler = handler;
             SlotClickHandler += SlotClicked;
         }
@@ -273,7 +273,7 @@ namespace UI.Inventory.Enhance
             addIngredientButton.InitRare(6, false);
 
             enhanceTriggerObj.InitHandler(SlotClickHandler);
-            animator.keepAnimatorControllerStateOnDisable = true;
+            animator.keepAnimatorStateOnDisable = true;
 
             UpdateAllUI();
         }

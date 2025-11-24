@@ -167,7 +167,7 @@ namespace UI.Inventory.ItemView
 
         protected override void BeforeActivate()
         {
-            animator.keepAnimatorControllerStateOnDisable = true;
+            animator.keepAnimatorStateOnDisable = true;
 
             beforeClicked = 0;
             selectedBefore = false;
