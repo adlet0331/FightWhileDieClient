@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using UnityEngine;
 using Utils;
 
@@ -24,7 +23,8 @@ namespace NonDestroyObject
             var logJsonString = JsonSL.LoadJson(JsonTitle.CustomLog);
             try
             {
-                CustomLogList = JsonConvert.DeserializeObject<List<CustomLog>>(logJsonString);
+                var wrapper = JsonUtility.FromJson<CustomLogListWrapper>(logJsonString);
+                CustomLogList = wrapper != null ? wrapper.items : new List<CustomLog>();
             }
             catch (Exception e)
             {
@@ -49,7 +49,8 @@ namespace NonDestroyObject
         
         public void SaveLog(bool sendServer)
         {
-            var jsonString = JsonConvert.SerializeObject(CustomLogList);
+            var wrapper = new CustomLogListWrapper { items = CustomLogList };
+            var jsonString = JsonUtility.ToJson(wrapper);
             JsonSL.SaveJson(JsonTitle.CustomLog, jsonString).Forget();
             if (sendServer)
             {

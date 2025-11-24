@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Newtonsoft.Json;
+using Newtonsoft.Json; // Still needed for deserializing server responses (network data)
 using UnityEngine;
 using Utils;
 
@@ -46,19 +46,31 @@ namespace NonDestroyObject.DataManage
             currentVersions = new List<StaticDataVersion>();
             var versionJson = JsonSL.LoadJson(JsonTitle.StaticDataVersion);
             if (versionJson != String.Empty)
-                currentVersions = JsonConvert.DeserializeObject<List<StaticDataVersion>>(versionJson);
+            {
+                var wrapper = JsonUtility.FromJson<StaticDataVersionListWrapper>(versionJson);
+                currentVersions = wrapper != null ? wrapper.items : new List<StaticDataVersion>();
+            }
             
             var gatchaProbabilityJson = JsonSL.LoadJson(JsonTitle.GatchaProbability);
             if (gatchaProbabilityJson != String.Empty)
-                gatchaProbabilitys = JsonConvert.DeserializeObject<List<GatchaProbability>>(gatchaProbabilityJson);
+            {
+                var wrapper = JsonUtility.FromJson<GatchaProbabilityListWrapper>(gatchaProbabilityJson);
+                gatchaProbabilitys = wrapper != null ? wrapper.items : new List<GatchaProbability>();
+            }
             
             var equipmentItemInfosJson = JsonSL.LoadJson(JsonTitle.EquipItemInfo);
             if (equipmentItemInfosJson != String.Empty)
-                equipmentItemInfos = JsonConvert.DeserializeObject<List<EquipItemInfo>>(equipmentItemInfosJson);
+            {
+                var wrapper = JsonUtility.FromJson<EquipItemInfoListWrapper>(equipmentItemInfosJson);
+                equipmentItemInfos = wrapper != null ? wrapper.items : new List<EquipItemInfo>();
+            }
             
             var gatchaProbabilitysJson = JsonSL.LoadJson(JsonTitle.EnhanceInfo);
             if (gatchaProbabilitysJson != String.Empty)
-                enhanceInfos = JsonConvert.DeserializeObject<List<EnhanceInfo>>(gatchaProbabilitysJson);
+            {
+                var wrapper = JsonUtility.FromJson<EnhanceInfoListWrapper>(gatchaProbabilitysJson);
+                enhanceInfos = wrapper != null ? wrapper.items : new List<EnhanceInfo>();
+            }
             
             rareColorList = new List<Color>();
             rareColorList.Add(new Color(0.0f,0.0f,0.0f, 1.0f));
@@ -147,27 +159,31 @@ namespace NonDestroyObject.DataManage
                     case nameof(JsonTitle.GatchaProbability):
                         gatchaProbabilitys = JsonConvert.DeserializeObject<List<GatchaProbability>>(staticDatas[i]);
                         
-                        var gatchaProbJsonString = JsonConvert.SerializeObject(gatchaProbabilitys);
+                        var gatchaProbWrapper = new GatchaProbabilityListWrapper { items = gatchaProbabilitys };
+                        var gatchaProbJsonString = JsonUtility.ToJson(gatchaProbWrapper);
                         JsonSL.SaveJson(JsonTitle.GatchaProbability, gatchaProbJsonString).Forget();
                         break;
                     
                     case nameof(JsonTitle.EquipItemInfo):
                         equipmentItemInfos = JsonConvert.DeserializeObject<List<EquipItemInfo>>(staticDatas[i]);
                         
-                        var equipmentItemInfosJsonString = JsonConvert.SerializeObject(equipmentItemInfos);
+                        var equipmentItemInfosWrapper = new EquipItemInfoListWrapper { items = equipmentItemInfos };
+                        var equipmentItemInfosJsonString = JsonUtility.ToJson(equipmentItemInfosWrapper);
                         JsonSL.SaveJson(JsonTitle.EquipItemInfo, equipmentItemInfosJsonString).Forget();
                         break;
                     
                     case nameof(JsonTitle.EnhanceInfo):
                         enhanceInfos = JsonConvert.DeserializeObject<List<EnhanceInfo>>(staticDatas[i]);
                         
-                        var enhanceInfosJsonString = JsonConvert.SerializeObject(enhanceInfos);
+                        var enhanceInfosWrapper = new EnhanceInfoListWrapper { items = enhanceInfos };
+                        var enhanceInfosJsonString = JsonUtility.ToJson(enhanceInfosWrapper);
                         JsonSL.SaveJson(JsonTitle.EnhanceInfo, enhanceInfosJsonString).Forget();
                         break;
                 }
             }
             
-            var toJsonString = JsonConvert.SerializeObject(serverVersions);
+            var versionWrapper = new StaticDataVersionListWrapper { items = serverVersions };
+            var toJsonString = JsonUtility.ToJson(versionWrapper);
             JsonSL.SaveJson(JsonTitle.StaticDataVersion, toJsonString).Forget();
         }
     }
