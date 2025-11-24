@@ -13,7 +13,7 @@ namespace Combat
     {
         [Header("Defensive Enemy Settings")]
         [SerializeField] private float defensiveChargeThreshold = 0.8f; // 80% HP에서 차지 공격 시작
-        [SerializeField] private float normalAttackCooldown = 0f; // 일반 공격 쿨다운
+        private float normalAttackCooldown = 0f; // 일반 공격 쿨다운 (런타임 상태)
         [SerializeField] private float normalAttackCooldownTime = 2f; // 일반 공격 쿨다운 시간
         
         protected override void WhenStart()

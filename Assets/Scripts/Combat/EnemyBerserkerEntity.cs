@@ -15,9 +15,9 @@ namespace Combat
         [SerializeField] private float berserkerPhase1Threshold = 0.75f; // 1단계: 75% HP
         [SerializeField] private float berserkerPhase2Threshold = 0.5f;  // 2단계: 50% HP
         [SerializeField] private float berserkerPhase3Threshold = 0.25f; // 3단계: 25% HP
-        [SerializeField] private float phase1ChargeTime; // 1단계 차지 시간
-        [SerializeField] private float phase2ChargeTime; // 2단계 차지 시간 (더 빠름)
-        [SerializeField] private float phase3ChargeTime; // 3단계 차지 시간 (매우 빠름)
+        [SerializeField] private float phase1ChargeTimeMultiplier = 1.0f; // 1단계 차지 시간 배율
+        [SerializeField] private float phase2ChargeTimeMultiplier = 0.7f; // 2단계 차지 시간 배율 (더 빠름)
+        [SerializeField] private float phase3ChargeTimeMultiplier = 0.4f; // 3단계 차지 시간 배율 (매우 빠름)
         
         private int currentBerserkerPhase = 0;
         
@@ -25,11 +25,6 @@ namespace Combat
         {
             base.WhenStart();
             currentBerserkerPhase = 0;
-            
-            // 차지 시간 초기화 (기본값이 없으면 설정)
-            if (phase1ChargeTime == 0f) phase1ChargeTime = chargeFullTime;
-            if (phase2ChargeTime == 0f) phase2ChargeTime = chargeFullTime * 0.7f;
-            if (phase3ChargeTime == 0f) phase3ChargeTime = chargeFullTime * 0.4f;
         }
         
         private int GetCurrentPhase()
@@ -44,9 +39,9 @@ namespace Combat
         {
             switch (currentBerserkerPhase)
             {
-                case 1: return phase1ChargeTime;
-                case 2: return phase2ChargeTime;
-                case 3: return phase3ChargeTime;
+                case 1: return chargeFullTime * phase1ChargeTimeMultiplier;
+                case 2: return chargeFullTime * phase2ChargeTimeMultiplier;
+                case 3: return chargeFullTime * phase3ChargeTimeMultiplier;
                 default: return chargeFullTime;
             }
         }
@@ -93,15 +88,7 @@ namespace Combat
             // 일반 공격 범위 안에 있을 때
             else if (OpponentInRange)
             {
-                // 3단계에서는 일반 공격도 더 빠르게
-                if (currentBerserkerPhase >= 3)
-                {
-                    EntityAction(CombatEntityStatus.Attack);
-                }
-                else
-                {
-                    EntityAction(CombatEntityStatus.Attack);
-                }
+                EntityAction(CombatEntityStatus.Attack);
             }
         }
         
