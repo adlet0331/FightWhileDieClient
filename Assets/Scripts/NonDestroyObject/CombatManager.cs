@@ -150,7 +150,7 @@ namespace NonDestroyObject
             }
             
             // 공격 액션
-            if (!inputBlocked && !player.Attacking && player.CurrentStatus != CombatEntityStatus.Dying)
+            if (!inputBlocked && player.CurrentStatus != CombatEntityStatus.Dying)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
