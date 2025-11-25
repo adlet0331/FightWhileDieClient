@@ -1286,7 +1286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38f5ca530023d548bf464db8a030de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _condition: 2
+  _condition: 1
   _rootURL: 
   connectable: 1
 --- !u!1 &312927820
@@ -1462,6 +1462,7 @@ GameObject:
   - component: {fileID: 347473373}
   - component: {fileID: 347473372}
   - component: {fileID: 347473371}
+  - component: {fileID: 347473374}
   m_Layer: 5
   m_Name: Pause Button
   m_TagString: Untagged
@@ -1545,18 +1546,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 253368797}
-        m_TargetAssemblyTypeName: NonDestroyObject.SoundManager, Assembly-CSharp
-        m_MethodName: PlayClip
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
 --- !u!114 &347473372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1595,6 +1584,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 347473369}
   m_CullTransparentMesh: 1
+--- !u!114 &347473374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 347473369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6dc6269ca93a4368a1d5faa7a636c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clipName: 0
 --- !u!1 &354223951
 GameObject:
   m_ObjectHideFlags: 0
@@ -11752,6 +11754,7 @@ GameObject:
   - component: {fileID: 1092650150}
   - component: {fileID: 1092650149}
   - component: {fileID: 1092650148}
+  - component: {fileID: 1092650151}
   m_Layer: 5
   m_Name: Start Button
   m_TagString: Untagged
@@ -11836,18 +11839,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 253368797}
-        m_TargetAssemblyTypeName: NonDestroyObject.SoundManager, Assembly-CSharp
-        m_MethodName: PlayClip
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1092650149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11886,6 +11877,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1092650146}
   m_CullTransparentMesh: 1
+--- !u!114 &1092650151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1092650146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6dc6269ca93a4368a1d5faa7a636c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clipName: 0
 --- !u!1 &1094523909
 GameObject:
   m_ObjectHideFlags: 0
@@ -12792,6 +12796,7 @@ GameObject:
   - component: {fileID: 1333269098}
   - component: {fileID: 1333269097}
   - component: {fileID: 1333269096}
+  - component: {fileID: 1333269099}
   m_Layer: 5
   m_Name: Gatcha Buton
   m_TagString: Untagged
@@ -12875,18 +12880,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 253368797}
-        m_TargetAssemblyTypeName: NonDestroyObject.SoundManager, Assembly-CSharp
-        m_MethodName: PlayClip
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
 --- !u!114 &1333269097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12925,6 +12918,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1333269094}
   m_CullTransparentMesh: 1
+--- !u!114 &1333269099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333269094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6dc6269ca93a4368a1d5faa7a636c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clipName: 0
 --- !u!1 &1395092097
 GameObject:
   m_ObjectHideFlags: 0
@@ -13536,6 +13542,7 @@ GameObject:
   - component: {fileID: 1603540258}
   - component: {fileID: 1603540257}
   - component: {fileID: 1603540256}
+  - component: {fileID: 1603540259}
   m_Layer: 5
   m_Name: Inventory Button
   m_TagString: Untagged
@@ -13619,18 +13626,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 253368797}
-        m_TargetAssemblyTypeName: NonDestroyObject.SoundManager, Assembly-CSharp
-        m_MethodName: PlayClip
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
 --- !u!114 &1603540257
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13669,6 +13664,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1603540254}
   m_CullTransparentMesh: 1
+--- !u!114 &1603540259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603540254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6dc6269ca93a4368a1d5faa7a636c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clipName: 0
 --- !u!114 &1610530285 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9092912528040437798, guid: 04e7ded11fefec3419ffc83f4c7c418c, type: 3}
