@@ -59,7 +59,6 @@ namespace Combat
         {
             CombatEntityStatus.Damaged,
             CombatEntityStatus.Dying,
-            CombatEntityStatus.Attack,
             CombatEntityStatus.ChargeAttack
         };
         public override bool Damaged(int damage)
