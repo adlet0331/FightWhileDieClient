@@ -59,26 +59,25 @@ namespace UI.Inventory.Enhance
         
         public void SetEnhanceResult(bool success)
         {
-            animator.SetBool(AnimParams.EnhanceEndBool.ToString(), true);
-            animator.SetBool(AnimParams.EnhancingBool.ToString(), true);
-            animator.SetBool(AnimParams.EnhanceSuccessBool.ToString(), success);
+            var animationName = success ? AnimationName.EnhanceSuccessed.ToString() : AnimationName.EnhanceFailed.ToString();
+            animator.Play(animationName);
         }
         
         public void SwitchStatus(EnhanceTriggerStatus status)
         {
             currentStatus = status;
 
-            animator.SetBool(AnimParams.SelectedBool.ToString(), false);
-            animator.SetBool(AnimParams.EnhancingBool.ToString(), false);
-            animator.SetBool(AnimParams.EnhanceEndBool.ToString(), false);
-
+            // Play animation directly based on status
             switch (status)
             {
                 case EnhanceTriggerStatus.NotSelected:
-                    animator.SetBool(AnimParams.SelectedBool.ToString(), false);
+                    animator.Play("NotSelected");
                     break;
                 case EnhanceTriggerStatus.Selected:
-                    animator.SetBool(AnimParams.SelectedBool.ToString(), true);
+                    animator.Play("Selected");
+                    break;
+                case EnhanceTriggerStatus.Enhancing:
+                    animator.Play(AnimationName.Enhancing.ToString());
                     break;
             }
         }

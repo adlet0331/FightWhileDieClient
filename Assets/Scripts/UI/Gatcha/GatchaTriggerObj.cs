@@ -53,7 +53,9 @@ namespace UI.Gatcha
         {
             opened = true;
             
-            animator.SetInteger("TriggeredRare", equipItemObject.rare);
+            // Play animation directly based on rare value
+            // Assumes animation states are named: "Rare0", "Rare1", "Rare2", etc.
+            animator.Play($"Rare{equipItemObject.rare}");
         }
     }
 }

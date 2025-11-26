@@ -71,24 +71,18 @@ namespace UI.Inventory.ItemView
             {
                 slot.LoadItemUI();
             }
-            
-            foreach (AnimParams parameter in Enum.GetValues(typeof(AnimParams)))
-            {
-                animator.SetBool(parameter.ToString(), false);
-            }
 
+            // Play animation directly based on mode
             switch (mode)
             {
                 case ItemViewMode.ItemSlotsWithInfo:
-                    animator.SetBool(AnimParams.ItemInfoView.ToString(), true);
+                    animator.Play(AnimParams.ItemInfoView.ToString());
                     break;
                 case ItemViewMode.ItemSlots:
-                    animator.SetBool(AnimParams.OnlySlots.ToString(), true);
+                    animator.Play(AnimParams.OnlySlots.ToString());
                     break;
                 case ItemViewMode.Hide:
-                    if (currentMode == ItemViewMode.ItemSlotsWithInfo)
-                        animator.SetBool(AnimParams.OnlySlots.ToString(), true);
-                    animator.SetBool(AnimParams.Hide.ToString(), true);
+                    animator.Play(AnimParams.Hide.ToString());
                     break;
             }
             
