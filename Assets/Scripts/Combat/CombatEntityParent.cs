@@ -75,11 +75,11 @@ namespace Combat
             WhenStart();
         }
 
-        protected virtual void WhenStart()
+        public virtual void WhenStart()
         {
             // Coroutines
             CancelAllCoroutine();
-            currentStatus = CombatEntityStatus.Idle;
+            EntityAction(CombatEntityStatus.Idle);
         }
 
         // 기다렸다가 IDLE로 전환
@@ -118,9 +118,8 @@ namespace Combat
         /// Switch "currentStatus" and Animation using Animator.Play()
         /// </summary>
         /// <param name="newStatus"></param>
-        protected void SwitchStatusAndAnimation(CombatEntityStatus newStatus)
+        protected void PlayAnimation(CombatEntityStatus newStatus)
         {
-            if (currentStatus == newStatus) return;
             animator.Play(newStatus.ToString());
         }
 
@@ -235,7 +234,7 @@ namespace Combat
         {
             // Animation 처리
             Debug.Log($"$[{name}] EntityAction Called: {combatEntityStatus}");
-            SwitchStatusAndAnimation(combatEntityStatus);
+            PlayAnimation(combatEntityStatus);
             currentStatus = combatEntityStatus;
             // 변수 및 Coroutine 처리
             switch (combatEntityStatus)

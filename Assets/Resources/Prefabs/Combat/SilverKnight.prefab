@@ -72,8 +72,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRangeCollider: {fileID: 296918079}
-  opponentTagName: Player
-  opponentInRange: 0
+  isPlayer: 0
+  opponentInRanges: 
 --- !u!1 &3117746138525706423
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4383551722597679850}
   m_Layer: 0
   m_Name: Body Collider
-  m_TagString: Enemy
+  m_TagString: EnemyR
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -291,8 +291,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRangeCollider: {fileID: 6834736573181525728}
-  opponentTagName: Player
-  opponentInRange: 0
+  isPlayer: 0
+  opponentInRanges: 
 --- !u!1 &6365470792853590273
 GameObject:
   m_ObjectHideFlags: 0
@@ -380,7 +380,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &8716881376094445978
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -397,4 +397,5 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

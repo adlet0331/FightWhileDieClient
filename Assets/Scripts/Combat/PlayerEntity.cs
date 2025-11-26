@@ -39,14 +39,14 @@ namespace Combat
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
             if (currentHp == 0)
             {
-                SwitchStatusAndAnimation(CombatEntityStatus.Dying);
+                PlayAnimation(CombatEntityStatus.Dying);
                 currentStatus = CombatEntityStatus.Dying;
                 WaitAndReturnToIdleWithOperation(GetAnimationTime("Dying"), ResetAfterDead);
                 return true;
             }
             else
             {
-                SwitchStatusAndAnimation(CombatEntityStatus.Damaged);
+                PlayAnimation(CombatEntityStatus.Damaged);
                 currentStatus = CombatEntityStatus.Damaged;
                 WaitAndReturnToIdleWithOperation(GetAnimationTime("Damaged"));
                 return false;

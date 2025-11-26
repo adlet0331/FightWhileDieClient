@@ -86,7 +86,6 @@ namespace NonDestroyObject
             randomSeed = DateTime.Now.Millisecond * 103729;
             _random = new Random(randomSeed);
             UpdateRandomEnemyAI();
-            UpdateRandomSeed();
         }
 
         private void ActivateCoroutines(bool active)
@@ -125,6 +124,7 @@ namespace NonDestroyObject
 
         private void UpdateRandomEnemyAI()
         {
+            UpdateRandomSeed();
             CurrentLeftEnemyEntity.Hide();
             CurrentRightEnemyEntity.Hide();
             currentLeftEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2 + 1;
@@ -224,18 +224,26 @@ namespace NonDestroyObject
                     var delay = targetEnemy.GetAnimationTime("Dying");
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
-                        EndCombat(true);
+                        var otherEnemy = (i % 2 == 0) ? CurrentRightEnemyEntity : CurrentLeftEnemyEntity;
+                        if (otherEnemy.CurrentStatus == CombatEntityStatus.Dying)
+                        {
+                            StartCombat();
+                            UpdateRandomEnemyAI();
+                            DataManager.Instance.playerDataManager.StageCleared();
+                        }
                         _afterDeadCoroutine = null;
                     });
                     StartCoroutine(_afterDeadCoroutine);
-                    // Update enemyAI[currentEnemyIndex]'s Random Seed
-                    UpdateRandomSeed();
                 }
                 else
                 {
                     ShakeCamera(1, 1, 1f);
                 }
                 UIManager.Instance.UpdateEnemyHp(targetEnemy.CurrentHpRatio);
+            }
+            if (hittingEnemys.Any(hitting => hitting))
+            {
+                return;
             }
 
             // Player 피격 판정
@@ -249,7 +257,7 @@ namespace NonDestroyObject
                     var delay = player.GetAnimationTime("Dying");
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
-                        EndCombat(false);
+                        EndCombat();
                         _afterDeadCoroutine = null;
                     });
                     StartCoroutine(_afterDeadCoroutine);
@@ -266,7 +274,7 @@ namespace NonDestroyObject
                     var delay = player.GetAnimationTime("Dying");
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
-                        EndCombat(false);
+                        EndCombat();
                         _afterDeadCoroutine = null;
                     });
                     StartCoroutine(_afterDeadCoroutine);
@@ -357,6 +365,7 @@ namespace NonDestroyObject
         {
             DataManager.Instance.playerDataManager.StageReset();
             InitPlayerEnemyHp();
+            player.transform.localScale = new Vector3(Mathf.Abs(player.transform.localScale.x), player.transform.localScale.y, player.transform.localScale.z);
 
             IsInCombat = true;
             inputBlocked = false;
@@ -373,31 +382,18 @@ namespace NonDestroyObject
             BackgroundManager.Instance.Play();
         }
 
-        private void EndCombat(bool cleared)
+        private void EndCombat()
         {
-            if (cleared)
-            {
-                // 스테이지 클리어 처리
-                UpdateRandomEnemyAI();
-                DataManager.Instance.playerDataManager.StageCleared();
-                player.transform.localScale = new Vector3(Mathf.Abs(player.transform.localScale.x), player.transform.localScale.y, player.transform.localScale.z);
-                
-                // Start stage transition: player runs, background moves, then enemy spawns
-                if (_stageTransitionCoroutine != null)
-                    StopCoroutine(_stageTransitionCoroutine);
-                _stageTransitionCoroutine = StageTransition();
-                StartCoroutine(_stageTransitionCoroutine);
-            }
-            else
-            {
-                IsInCombat = false;
-                inputBlocked = true;
-                UIManager.Instance.SwitchMainPage2CombatUI(false);
-                DataManager.Instance.playerDataManager.StageReset();
-                InitAiPos(true);
-                BackgroundManager.Instance.Stop();
-                InitPlayerEnemyHp();
-            }
+            IsInCombat = false;
+            inputBlocked = true;
+            UIManager.Instance.SwitchMainPage2CombatUI(false);
+            DataManager.Instance.playerDataManager.StageReset();
+            InitAiPos(true);
+            BackgroundManager.Instance.Stop();
+            InitPlayerEnemyHp();
+            CurrentLeftEnemyEntity.WhenStart();
+            CurrentRightEnemyEntity.WhenStart();
+            player.transform.localScale = new Vector3(Mathf.Abs(player.transform.localScale.x), player.transform.localScale.y, player.transform.localScale.z);
         }
         
         private IEnumerator StageTransition()
@@ -405,6 +401,8 @@ namespace NonDestroyObject
             // Play player running animation
             player.EntityAction(CombatEntityStatus.Running);
             InitAiPos(false);
+            CurrentLeftEnemyEntity.WhenStart();
+            CurrentRightEnemyEntity.WhenStart();
             BackgroundManager.Instance.Play();
             
             // Wait 1 second for transition
