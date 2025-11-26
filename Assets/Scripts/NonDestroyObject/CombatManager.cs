@@ -14,8 +14,10 @@ namespace NonDestroyObject
         [Header("Need Initialize In Unity")] 
         [SerializeField] private PlayerEntity player;
         [SerializeField] private EnemyEntity[] enemyAIList;
-        [SerializeField] private Transform aiStartPosition;
-        [SerializeField] private Transform aiStandingPosition;
+        [SerializeField] private Transform aiRightStartPosition;
+        [SerializeField] private Transform aiRightStandingPosition;
+        [SerializeField] private Transform aiLeftStartPosition;
+        [SerializeField] private Transform aiLeftStandingPosition;
         [SerializeField] private int currentEnemyIndex;
         [SerializeField] private float strongAttackHoldTime;
         [SerializeField] private float strongAttackHoldRandomMaxTime;
@@ -32,8 +34,6 @@ namespace NonDestroyObject
         [SerializeField] private int randomSeed;
         [SerializeField] private bool isHolded;
         [SerializeField] private float holdTime;
-        [Header("Auto Status")]
-        [SerializeField] private float afterEndCombat;
 
         public bool IsInCombat { get; private set; }
         
@@ -72,6 +72,8 @@ namespace NonDestroyObject
             isHolded = false;
             // Coroutines
             _afterDeadCoroutine = null;
+            _shakeCameraCoroutine = null;
+            _stageTransitionCoroutine = null;
             // Random
             randomSeed = DateTime.Now.Millisecond * 103729;
             _random = new Random(randomSeed);
@@ -91,6 +93,10 @@ namespace NonDestroyObject
                 {
                     StopCoroutine(_shakeCameraCoroutine);
                 }
+                if (_stageTransitionCoroutine != null)
+                {
+                    StopCoroutine(_stageTransitionCoroutine);
+                }
             }
             else
             {
@@ -101,6 +107,10 @@ namespace NonDestroyObject
                 if (_shakeCameraCoroutine != null)
                 {
                     StartCoroutine(_shakeCameraCoroutine);
+                }
+                if (_stageTransitionCoroutine != null)
+                {
+                    StartCoroutine(_stageTransitionCoroutine);
                 }
             }
         }
@@ -126,28 +136,6 @@ namespace NonDestroyObject
 
             // Pause 때 Action 막기
             if (timeBlocked) return;
-
-            // Auto 켰을 때 자동조작
-            if (AutoManager.Instance.IsAuto)
-            {
-                // Skip Delay At First Pressed
-                if (AutoManager.Instance.IsFirst)
-                {
-                    afterEndCombat = 3.0f;
-                }
-                
-                if (afterEndCombat < 3.0f)
-                {
-                    afterEndCombat += Time.deltaTime;
-                    return;
-                }
-                
-                if (!IsInCombat)
-                {
-                    StartCombat();
-                }
-                // TODO: 오토 켰을 때 플레이어 액션 메커니즘 넣어야함
-            }
             
             // 공격 액션
             if (!inputBlocked && !player.Attacking && player.CurrentStatus != CombatEntityStatus.Dying)
@@ -191,6 +179,8 @@ namespace NonDestroyObject
                     isHolded = false;
                 }
             }
+
+            BackgroundManager.Instance.UpdateBackground(Time.deltaTime);
         }
 
         private void FixedUpdate()
@@ -269,9 +259,15 @@ namespace NonDestroyObject
         private void InitAiPos(bool playerDie)
         {
             if (playerDie)
-                CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiStandingPosition.localPosition, aiStandingPosition.rotation);
+            {
+                CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStandingPosition.localPosition, aiRightStandingPosition.rotation);
+                // CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStandingPosition.localPosition, aiLeftStandingPosition.rotation);
+            }
             else
-                CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiStartPosition.localPosition, aiStartPosition.rotation);
+            {
+                CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStartPosition.localPosition, aiRightStartPosition.rotation);
+                // CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStartPosition.localPosition, aiLeftStartPosition.rotation);
+            }
         }
 
         private void InitPlayerEnemyHp()
@@ -316,6 +312,12 @@ namespace NonDestroyObject
             inputBlocked = false;
             InitAiPos(false);
             UIManager.Instance.SwitchMainPage2CombatUI(true);
+
+            // Start stage transition: player runs, background moves, then enemy spawns
+            if (_stageTransitionCoroutine != null)
+                StopCoroutine(_stageTransitionCoroutine);
+            _stageTransitionCoroutine = StageTransition();
+            StartCoroutine(_stageTransitionCoroutine);
             
             // Start background movement when combat begins
             BackgroundManager.Instance.Play();
@@ -342,7 +344,6 @@ namespace NonDestroyObject
                 UIManager.Instance.SwitchMainPage2CombatUI(false);
                 DataManager.Instance.playerDataManager.StageReset();
                 InitAiPos(true);
-                afterEndCombat = 0.0f;
                 BackgroundManager.Instance.Stop();
                 InitPlayerEnemyHp();
             }
@@ -352,15 +353,16 @@ namespace NonDestroyObject
         {
             // Play player running animation
             player.EntityAction(CombatEntityStatus.Running);
+            InitAiPos(false);
+            BackgroundManager.Instance.Play();
             
             // Wait 1 second for transition
             yield return new WaitForSeconds(1.0f);
             
             // Stop player running and return to idle
-            player.EntityAction(CombatEntityStatus.Idle);
-            
-            // Initialize enemy position
-            InitAiPos(false);
+            if (player.CurrentStatus == CombatEntityStatus.Running)
+                player.EntityAction(CombatEntityStatus.Idle);
+            BackgroundManager.Instance.Stop();
             
             // Initialize HP for new stage
             InitPlayerEnemyHp();

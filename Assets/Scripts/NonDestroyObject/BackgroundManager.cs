@@ -34,7 +34,7 @@ public class BackgroundManager : NonDestroyObject.Singleton<BackgroundManager>
         isPlaying = false;
     }
 
-    private void Update()
+    public void UpdateBackground(float deltaTime)
     {
         if (!isPlaying) return;
 
@@ -45,7 +45,7 @@ public class BackgroundManager : NonDestroyObject.Singleton<BackgroundManager>
             {
                 // Move left by velocity * deltaTime
                 Vector3 position = background.objectTransform.position;
-                position.x -= background.velocity * Time.deltaTime;
+                position.x -= background.velocity * deltaTime;
                 background.objectTransform.position = position;
             }
         }

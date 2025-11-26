@@ -9951,8 +9951,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateIntervalConstant: 0.5
-  gatchaPopup: {fileID: 0}
-  noInternetInGatchaPopup: {fileID: 0}
   inventoryPopup: {fileID: 6452312196389776645}
   rankingPopup: {fileID: 1610530285}
   pausePopup: {fileID: 1515197417}
@@ -9963,7 +9961,6 @@ MonoBehaviour:
   titleTransform: {fileID: 428150855}
   stageHpTransform: {fileID: 1695623987}
   startButton: {fileID: 1092650148}
-  gatchaButton: {fileID: 0}
   inventoryButton: {fileID: 1603540256}
   attackChargeGageSlider: {fileID: 767361354}
   attackPerfectEffectObject: {fileID: 685325399}
@@ -11634,8 +11631,10 @@ MonoBehaviour:
   - {fileID: 1804785328}
   - {fileID: 1737123248}
   - {fileID: 1902948598}
-  aiStartPosition: {fileID: 441458117}
-  aiStandingPosition: {fileID: 1050546257}
+  aiRightStartPosition: {fileID: 441458117}
+  aiRightStandingPosition: {fileID: 1050546257}
+  aiLeftStartPosition: {fileID: 141849264}
+  aiLeftStandingPosition: {fileID: 2082817824}
   currentEnemyIndex: 0
   strongAttackHoldTime: 1
   strongAttackHoldRandomMaxTime: 0.5
