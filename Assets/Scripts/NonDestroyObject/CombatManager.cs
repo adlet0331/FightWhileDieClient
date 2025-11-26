@@ -150,19 +150,18 @@ namespace NonDestroyObject
             }
             
             // 공격 액션
-            if (!inputBlocked && player.CurrentStatus != CombatEntityStatus.Dying)
+            if (!inputBlocked && !player.Attacking && player.CurrentStatus != CombatEntityStatus.Dying)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    float initrandomtime = _random.Next(0, (int)(strongAttackHoldRandomMaxTime * 100)) * 0.01f;
-                    holdTime = initrandomtime;
+                    holdTime = 0;
                     player.EntityAction(CombatEntityStatus.Charge);
                     isHolded = true;
                     UIManager.Instance.UpdateAttackGageSlider(holdTime);
                 }
                 if (Input.GetMouseButton(0) && isHolded)
                 {
-                    holdTime += Time.deltaTime;
+                    holdTime += Time.deltaTime * 2; //TODO: 캐릭터 스텟에 따른 변화
                     UIManager.Instance.UpdateAttackGageSlider(Math.Min(holdTime, 1.0f));
                     if (strongAttackHoldTime - perfectAttackTimeInterval <= holdTime && holdTime <= strongAttackHoldTime + perfectAttackTimeInterval)
                     {
