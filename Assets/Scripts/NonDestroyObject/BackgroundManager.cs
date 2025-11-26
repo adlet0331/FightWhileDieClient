@@ -15,4 +15,39 @@ public class BackgroundManager : NonDestroyObject.Singleton<BackgroundManager>
     }
     [Header("Forest")]
     [SerializeField] private List<TransformTpPosition> ForestBackgrounds;
+    
+    private bool isPlaying = false;
+
+    /// <summary>
+    /// Start moving backgrounds to the left based on their velocities
+    /// </summary>
+    public void Play()
+    {
+        isPlaying = true;
+    }
+
+    /// <summary>
+    /// Stop moving backgrounds
+    /// </summary>
+    public void Stop()
+    {
+        isPlaying = false;
+    }
+
+    private void Update()
+    {
+        if (!isPlaying) return;
+
+        // Move each background transform to the left based on velocity
+        foreach (TransformTpPosition background in ForestBackgrounds)
+        {
+            if (background.objectTransform != null)
+            {
+                // Move left by velocity * deltaTime
+                Vector3 position = background.objectTransform.position;
+                position.x -= background.velocity * Time.deltaTime;
+                background.objectTransform.position = position;
+            }
+        }
+    }
 }
