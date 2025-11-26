@@ -18,12 +18,12 @@ namespace Combat
         ChargeAttack,
         Running,
         Damaged,
-        JumpBack,
         Dying,
         Charge,
         // Only Player
-        PerfectChargeAttack
+        PerfectChargeAttack,
         // Enemy AI
+        JumpBack,
     }
     [Serializable]
     public enum AttackType

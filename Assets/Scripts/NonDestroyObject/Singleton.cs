@@ -19,8 +19,6 @@ namespace NonDestroyObject
                     }
                     _instance = componentList[0];
                     GameObject singletonObject = this.gameObject;
-
-                    DontDestroyOnLoad(singletonObject);
                     //Debug.Log(typeof(T).ToString() + "Singleton well made.");
                 }
             }

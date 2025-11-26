@@ -2,7 +2,6 @@
 using System.Collections;
 using TMPro;
 using UI;
-using UI.Gatcha;
 using UI.Inventory;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -20,11 +19,6 @@ namespace NonDestroyObject
         Equip = 4,
         Enforcement = 5,
     }
-
-    public enum PopupType
-    {
-        Gatcha = 0,
-    }
     public delegate void UIUpdateVoid();
     public class UIManager : Singleton<UIManager>
     {
@@ -32,8 +26,6 @@ namespace NonDestroyObject
         [SerializeField] private float updateIntervalConstant;
         private IEnumerator _hpUpdateCoroutine;
         [Header("Popup")]
-        public GatchaPopup gatchaPopup;
-        public Popup noInternetInGatchaPopup;
         public InventoryPopup inventoryPopup;
         public Popup rankingPopup;
         public Popup pausePopup;
@@ -46,7 +38,6 @@ namespace NonDestroyObject
         public Transform titleTransform;
         public Transform stageHpTransform;
         public Button startButton;
-        public Button gatchaButton;
         public Button inventoryButton;
         public Slider attackChargeGageSlider;
         public GameObject attackPerfectEffectObject;
@@ -92,8 +83,6 @@ namespace NonDestroyObject
 
         public void HideAllPopup()
         {
-            gatchaPopup.Close();
-            noInternetInGatchaPopup.Close();
             inventoryPopup.Close();
             rankingPopup.Close();
             pausePopup.Close();
@@ -114,7 +103,6 @@ namespace NonDestroyObject
         public void ActiveMainPagesButtons(bool show)
         {
             startButton.gameObject.SetActive(show);
-            gatchaButton.gameObject.SetActive(show);
             inventoryButton.gameObject.SetActive(show);
         }
 
