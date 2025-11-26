@@ -10843,6 +10843,7 @@ GameObject:
   - component: {fileID: 867883817}
   - component: {fileID: 867883816}
   - component: {fileID: 867883815}
+  - component: {fileID: 9022269751654130905}
   m_Layer: 5
   m_Name: Ranking Button
   m_TagString: Untagged
@@ -10850,6 +10851,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!114 &9022269751654130905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867883813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6dc6269ca93a4368a1d5faa7a636c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clipName: 0
 --- !u!224 &867883814
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13748,6 +13762,7 @@ GameObject:
   - component: {fileID: 1635595214}
   - component: {fileID: 1635595213}
   - component: {fileID: 1635595212}
+  - component: {fileID: 9022269751654130906}
   m_Layer: 5
   m_Name: OK Button
   m_TagString: Untagged
@@ -13755,6 +13770,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &9022269751654130906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1635595210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6dc6269ca93a4368a1d5faa7a636c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clipName: 0
 --- !u!224 &1635595211
 RectTransform:
   m_ObjectHideFlags: 0
