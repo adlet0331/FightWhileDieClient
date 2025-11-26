@@ -316,6 +316,9 @@ namespace NonDestroyObject
             inputBlocked = false;
             InitAiPos(false);
             UIManager.Instance.SwitchMainPage2CombatUI(true);
+            
+            // Start background movement when combat begins
+            BackgroundManager.Instance.Play();
         }
 
         private void EndCombat(bool cleared)
@@ -325,7 +328,12 @@ namespace NonDestroyObject
                 // 스테이지 클리어 처리
                 UpdateRandomEnemyAI();
                 DataManager.Instance.playerDataManager.StageCleared();
-                InitAiPos(false);
+                
+                // Start stage transition: player runs, background moves, then enemy spawns
+                if (_stageTransitionCoroutine != null)
+                    StopCoroutine(_stageTransitionCoroutine);
+                _stageTransitionCoroutine = StageTransition();
+                StartCoroutine(_stageTransitionCoroutine);
             }
             else
             {
@@ -335,8 +343,29 @@ namespace NonDestroyObject
                 DataManager.Instance.playerDataManager.StageReset();
                 InitAiPos(true);
                 afterEndCombat = 0.0f;
+                BackgroundManager.Instance.Stop();
+                InitPlayerEnemyHp();
             }
+        }
+        
+        private IEnumerator StageTransition()
+        {
+            // Play player running animation
+            player.EntityAction(CombatEntityStatus.Running);
+            
+            // Wait 1 second for transition
+            yield return new WaitForSeconds(1.0f);
+            
+            // Stop player running and return to idle
+            player.EntityAction(CombatEntityStatus.Idle);
+            
+            // Initialize enemy position
+            InitAiPos(false);
+            
+            // Initialize HP for new stage
             InitPlayerEnemyHp();
+            
+            _stageTransitionCoroutine = null;
         }
 
         private void UpdateRandomSeed()
@@ -348,5 +377,6 @@ namespace NonDestroyObject
         // IEnumerator
         private IEnumerator _afterDeadCoroutine;
         private IEnumerator _shakeCameraCoroutine;
+        private IEnumerator _stageTransitionCoroutine;
     }
 }
