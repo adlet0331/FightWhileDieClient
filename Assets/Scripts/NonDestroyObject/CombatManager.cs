@@ -18,7 +18,8 @@ namespace NonDestroyObject
         [SerializeField] private Transform aiRightStandingPosition;
         [SerializeField] private Transform aiLeftStartPosition;
         [SerializeField] private Transform aiLeftStandingPosition;
-        [SerializeField] private int currentEnemyIndex;
+        [SerializeField] private int currentLeftEnemyIndex;
+        [SerializeField] private int currentRightEnemyIndex;
         [SerializeField] private float strongAttackHoldTime;
         [SerializeField] private float strongAttackHoldRandomMaxTime;
         [SerializeField] private float perfectAttackTimeInterval;
@@ -37,9 +38,13 @@ namespace NonDestroyObject
 
         public bool IsInCombat { get; private set; }
         
-        public EnemyEntity CurrentEnemyEntity
+        public EnemyEntity CurrentLeftEnemyEntity
         {
-            get => enemyAIList[currentEnemyIndex];
+            get => enemyAIList[currentLeftEnemyIndex];
+        }
+        public EnemyEntity CurrentRightEnemyEntity
+        {
+            get => enemyAIList[currentRightEnemyIndex];
         }
         public bool TimeBlocked
         {
@@ -52,13 +57,15 @@ namespace NonDestroyObject
                 if (value)
                 {
                     player.TimeBlocked();
-                    CurrentEnemyEntity.TimeBlocked();
+                    CurrentLeftEnemyEntity.TimeBlocked();
+                    CurrentRightEnemyEntity.TimeBlocked();
                 }
                 else
                 {
                     
                     player.TimeResumed();
-                    CurrentEnemyEntity.TimeResumed();
+                    CurrentLeftEnemyEntity.TimeResumed();
+                    CurrentRightEnemyEntity.TimeResumed();
                 }
             }
         }
@@ -117,9 +124,12 @@ namespace NonDestroyObject
 
         private void UpdateRandomEnemyAI()
         {
-            CurrentEnemyEntity.Hide();
-            currentEnemyIndex = _random.Next(0, enemyAIList.Length);
-            CurrentEnemyEntity.Show();
+            CurrentLeftEnemyEntity.Hide();
+            CurrentRightEnemyEntity.Hide();
+            currentLeftEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2 + 1;
+            currentRightEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2;
+            CurrentLeftEnemyEntity.Show();
+            CurrentRightEnemyEntity.Show();
         }
         
         // Player Input
@@ -194,12 +204,12 @@ namespace NonDestroyObject
                 player.MyAttackHitted();
                 int damage = (int)(DataManager.Instance.playerDataManager.Atk * playerDamagePerAttackRate[(int)player.AttackType]);
                 
-                var dead = CurrentEnemyEntity.Damaged(damage);
+                var dead = CurrentLeftEnemyEntity.Damaged(damage);
                 if (dead)
                 {
                     // 코인 이펙트
                     UIManager.Instance.ShowCoinEffect();
-                    var delay = CurrentEnemyEntity.GetAnimationTime("Dying");
+                    var delay = CurrentLeftEnemyEntity.GetAnimationTime("Dying");
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
                         EndCombat(true);
@@ -213,14 +223,31 @@ namespace NonDestroyObject
                 {
                     ShakeCamera(1, 1, 1f);
                 }
-                UIManager.Instance.UpdateEnemyHp(CurrentEnemyEntity.CurrentHpRatio);
+                UIManager.Instance.UpdateEnemyHp(CurrentLeftEnemyEntity.CurrentHpRatio);
                 return;
             }
 
             // Player 피격 판정
-            if (CurrentEnemyEntity.IsEnemyHittingPlayer)
+            if (CurrentLeftEnemyEntity.IsEnemyHittingPlayer)
             {
-                CurrentEnemyEntity.MyAttackHitted();
+                CurrentLeftEnemyEntity.MyAttackHitted();
+                // Player's Hp is always 1
+                var dead = player.Damaged(1);
+                if (dead)
+                {
+                    var delay = player.GetAnimationTime("Dying");
+                    _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
+                    {
+                        EndCombat(false);
+                        _afterDeadCoroutine = null;
+                    });
+                    StartCoroutine(_afterDeadCoroutine);
+                }
+                return;
+            }
+            if (CurrentRightEnemyEntity.IsEnemyHittingPlayer)
+            {
+                CurrentRightEnemyEntity.MyAttackHitted();
                 // Player's Hp is always 1
                 var dead = player.Damaged(1);
                 if (dead)
@@ -237,22 +264,33 @@ namespace NonDestroyObject
             }
             #endregion
 
-            CurrentEnemyEntity.ActionUpdate();
+            CurrentLeftEnemyEntity.ActionUpdate();
+            CurrentRightEnemyEntity.ActionUpdate();
             // Enemy Entity Moving
-            if (CurrentEnemyEntity.CurrentStatus == CombatEntityStatus.Damaged)
+            if (CurrentLeftEnemyEntity.CurrentStatus == CombatEntityStatus.Damaged)
             {
-                CurrentEnemyEntity.transform.position += Vector3.right * (CurrentEnemyEntity.knockBackXInterval * Time.fixedDeltaTime);
-                return;
+                CurrentLeftEnemyEntity.transform.position -= Vector3.right * (CurrentLeftEnemyEntity.knockBackXInterval * Time.fixedDeltaTime);
             }
-            else if (CurrentEnemyEntity.CurrentStatus == CombatEntityStatus.Running)
+            else if (CurrentLeftEnemyEntity.CurrentStatus == CombatEntityStatus.Running)
             {
-                CurrentEnemyEntity.transform.position += Vector3.left * (CurrentEnemyEntity.runningSpeed * Time.fixedDeltaTime);
-                return;
+                CurrentLeftEnemyEntity.transform.position -= Vector3.left * (CurrentLeftEnemyEntity.runningSpeed * Time.fixedDeltaTime);
             }
-            else if (CurrentEnemyEntity.CurrentStatus == CombatEntityStatus.JumpBack)
+            else if (CurrentLeftEnemyEntity.CurrentStatus == CombatEntityStatus.JumpBack)
             {
-                CurrentEnemyEntity.transform.position += Vector3.right * (CurrentEnemyEntity.backJumpSpeed * Time.fixedDeltaTime);
-                return;
+                CurrentLeftEnemyEntity.transform.position -= Vector3.right * (CurrentLeftEnemyEntity.backJumpSpeed * Time.fixedDeltaTime);
+            }
+            // Right Enemy Entity Moving
+            if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.Damaged)
+            {
+                CurrentRightEnemyEntity.transform.position += Vector3.right * (CurrentRightEnemyEntity.knockBackXInterval * Time.fixedDeltaTime);
+            }
+            else if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.Running)
+            {
+                CurrentRightEnemyEntity.transform.position += Vector3.left * (CurrentRightEnemyEntity.runningSpeed * Time.fixedDeltaTime);
+            }
+            else if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.JumpBack)
+            {
+                CurrentRightEnemyEntity.transform.position += Vector3.right * (CurrentRightEnemyEntity.backJumpSpeed * Time.fixedDeltaTime);
             }
         }
 
@@ -260,20 +298,21 @@ namespace NonDestroyObject
         {
             if (playerDie)
             {
-                CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStandingPosition.localPosition, aiRightStandingPosition.rotation);
-                // CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStandingPosition.localPosition, aiLeftStandingPosition.rotation);
+                CurrentLeftEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStandingPosition.localPosition, aiLeftStandingPosition.rotation);
+                CurrentRightEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStandingPosition.localPosition, aiRightStandingPosition.rotation);
             }
             else
             {
-                CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStartPosition.localPosition, aiRightStartPosition.rotation);
-                // CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStartPosition.localPosition, aiLeftStartPosition.rotation);
+                CurrentLeftEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStartPosition.localPosition, aiLeftStartPosition.rotation);
+                CurrentRightEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStartPosition.localPosition, aiRightStartPosition.rotation);
             }
         }
 
         private void InitPlayerEnemyHp()
         {
             player.InitHp(1);
-            CurrentEnemyEntity.InitHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
+            CurrentLeftEnemyEntity.InitHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
+            CurrentRightEnemyEntity.InitHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
         }
 
         private IEnumerator CameraShake(float roughness, float magnitude, float duration)
