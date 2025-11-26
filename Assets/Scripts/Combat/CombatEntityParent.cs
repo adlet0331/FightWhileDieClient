@@ -53,8 +53,8 @@ namespace Combat
         [SerializeField] public float backJumpSpeed;
         [SerializeField] public float knockBackXInterval;
 
-        public bool OpponentInRange => attackHitBox.OpponentInRange;
-        public bool OpponentInChargeRange => chargeAttackHitBox.OpponentInRange;
+        public bool[] OpponentInRange => attackHitBox.OpponentInRanges;
+        public bool[] OpponentInChargeRange => chargeAttackHitBox.OpponentInRanges;
         // Current Status
         public AttackType AttackType => attackType;
         public CombatEntityStatus CurrentStatus => currentStatus;
@@ -97,6 +97,7 @@ namespace Combat
                 operation?.Invoke();
                 EntityAction(CombatEntityStatus.Idle);
                 _waitAndReturnToIdleCoroutine = null;
+                CombatManager.Instance.SwitchDirection = true;
             });
             StartCoroutine(_waitAndReturnToIdleCoroutine);
         }

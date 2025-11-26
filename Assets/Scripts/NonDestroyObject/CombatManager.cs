@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Combat;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,7 +36,7 @@ namespace NonDestroyObject
         [SerializeField] private int randomSeed;
         [SerializeField] private bool isHolded;
         [SerializeField] private float holdTime;
-
+        public bool SwitchDirection;
         public bool IsInCombat { get; private set; }
         
         public EnemyEntity CurrentLeftEnemyEntity
@@ -197,19 +198,30 @@ namespace NonDestroyObject
         {
             if (timeBlocked || inputBlocked) return;
 
-            #region CheckHitting
-            // enemyAI 피격 판정 우선 - 동시에 때리면 플레이어 판정이 우세 
-            if (player.PlayerHittingEnemy)
+            if (SwitchDirection)
             {
+                SwitchDirection = false;
+                player.transform.localScale = new Vector3(-player.transform.localScale.x, player.transform.localScale.y, player.transform.localScale.z);
+            }
+
+            #region CheckHitting
+            // enemyAI 피격 판정 우선 - 동시에 때리면 플레이어 판정이 우세
+            bool[] hittingEnemys = player.PlayerHittingEnemys();
+            for (int i = 0; i < hittingEnemys.Length; i++)
+            {
+                if (!hittingEnemys[i]) continue;
+                SwitchDirection = false;
                 player.MyAttackHitted();
                 int damage = (int)(DataManager.Instance.playerDataManager.Atk * playerDamagePerAttackRate[(int)player.AttackType]);
                 
-                var dead = CurrentLeftEnemyEntity.Damaged(damage);
+                EnemyEntity targetEnemy = (i % 2 == 1) ? CurrentRightEnemyEntity : CurrentLeftEnemyEntity;
+
+                var dead = targetEnemy.Damaged(damage);
                 if (dead)
                 {
                     // 코인 이펙트
                     UIManager.Instance.ShowCoinEffect();
-                    var delay = CurrentLeftEnemyEntity.GetAnimationTime("Dying");
+                    var delay = targetEnemy.GetAnimationTime("Dying");
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
                         EndCombat(true);
@@ -223,12 +235,11 @@ namespace NonDestroyObject
                 {
                     ShakeCamera(1, 1, 1f);
                 }
-                UIManager.Instance.UpdateEnemyHp(CurrentLeftEnemyEntity.CurrentHpRatio);
-                return;
+                UIManager.Instance.UpdateEnemyHp(targetEnemy.CurrentHpRatio);
             }
 
             // Player 피격 판정
-            if (CurrentLeftEnemyEntity.IsEnemyHittingPlayer)
+            if (CurrentLeftEnemyEntity.EnemyHittingPlayers().Any(hitting => hitting))
             {
                 CurrentLeftEnemyEntity.MyAttackHitted();
                 // Player's Hp is always 1
@@ -245,7 +256,7 @@ namespace NonDestroyObject
                 }
                 return;
             }
-            if (CurrentRightEnemyEntity.IsEnemyHittingPlayer)
+            if (CurrentRightEnemyEntity.EnemyHittingPlayers().Any(hitting => hitting))
             {
                 CurrentRightEnemyEntity.MyAttackHitted();
                 // Player's Hp is always 1
@@ -369,6 +380,7 @@ namespace NonDestroyObject
                 // 스테이지 클리어 처리
                 UpdateRandomEnemyAI();
                 DataManager.Instance.playerDataManager.StageCleared();
+                player.transform.localScale = new Vector3(Mathf.Abs(player.transform.localScale.x), player.transform.localScale.y, player.transform.localScale.z);
                 
                 // Start stage transition: player runs, background moves, then enemy spawns
                 if (_stageTransitionCoroutine != null)

@@ -900,6 +900,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 926359774}
     m_Modifications:
+    - target: {fileID: 3117746138525706423, guid: c805d09748bd69c41a815e89f1e77e71, type: 3}
+      propertyPath: m_TagString
+      value: EnemyL
+      objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700009, guid: c805d09748bd69c41a815e89f1e77e71, type: 3}
       propertyPath: m_Name
       value: SquareKnight (1)
@@ -11033,6 +11037,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 926359774}
     m_Modifications:
+    - target: {fileID: 3117746138525706423, guid: 03568f5c74189014ab7886089ed32a0e, type: 3}
+      propertyPath: m_TagString
+      value: EnemyL
+      objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700009, guid: 03568f5c74189014ab7886089ed32a0e, type: 3}
       propertyPath: m_Name
       value: RedRobbery (1)
@@ -11543,6 +11551,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 926359774}
     m_Modifications:
+    - target: {fileID: 3117746138525706423, guid: c805d09748bd69c41a815e89f1e77e71, type: 3}
+      propertyPath: m_TagString
+      value: EnemyR
+      objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700009, guid: c805d09748bd69c41a815e89f1e77e71, type: 3}
       propertyPath: m_Name
       value: SquareKnight
@@ -14194,6 +14206,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 926359774}
     m_Modifications:
+    - target: {fileID: 3117746138525706423, guid: 03568f5c74189014ab7886089ed32a0e, type: 3}
+      propertyPath: m_TagString
+      value: EnemyR
+      objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700009, guid: 03568f5c74189014ab7886089ed32a0e, type: 3}
       propertyPath: m_Name
       value: RedRobbery
@@ -15385,6 +15401,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 926359774}
     m_Modifications:
+    - target: {fileID: 3117746138525706423, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
+      propertyPath: m_TagString
+      value: EnemyL
+      objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700009, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
       propertyPath: m_Name
       value: SilverKnight (1)
@@ -15825,6 +15845,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 926359774}
     m_Modifications:
+    - target: {fileID: 3117746138525706423, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
+      propertyPath: m_TagString
+      value: EnemyR
+      objectReference: {fileID: 0}
     - target: {fileID: 3973778045446700009, guid: d70a71d23477b404282e8dac49c3e86c, type: 3}
       propertyPath: m_Name
       value: SilverKnight

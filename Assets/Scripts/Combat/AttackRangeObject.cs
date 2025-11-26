@@ -1,4 +1,5 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Combat
@@ -8,11 +9,10 @@ namespace Combat
     {
         [Header("Set in Unity")]
         [SerializeField] private BoxCollider2D attackRangeCollider;
-        [SerializeField] private string opponentTagName;
-        
-        public bool OpponentInRange => opponentInRange;
-        
-        [SerializeField] private bool opponentInRange;
+        [SerializeField] private bool isPlayer;
+        private string[] opponentTagNames;
+        public bool[] OpponentInRanges => opponentInRanges;
+        [SerializeField] private bool[] opponentInRanges;
 
         public void WhenShow()
         {
@@ -26,7 +26,23 @@ namespace Combat
                 
         public void ResetInRange()
         {
-            opponentInRange = false;
+            for (int i = 0; i < opponentInRanges.Length; i++)
+            {
+                opponentInRanges[i] = false;
+            }
+        }
+
+        private void Awake()
+        {
+            if (isPlayer)
+            {
+                opponentTagNames = new string[] { "EnemyL", "EnemyR" };
+            }
+            else
+            {
+                opponentTagNames = new string[] { "Player" };
+            }
+            opponentInRanges = new bool[opponentTagNames.Length];
         }
 
         private void Start()
@@ -36,16 +52,22 @@ namespace Combat
 
         private void OnTriggerEnter2D(Collider2D col)
         {
-            if (col.CompareTag(opponentTagName))
+            for (int i = 0; i < opponentTagNames.Length; i++)
             {
-                opponentInRange = true;
+                if (col.CompareTag(opponentTagNames[i]))
+                {
+                    opponentInRanges[i] = true;
+                }
             }
         }
         private void OnTriggerExit2D(Collider2D col)
         {
-            if (col.CompareTag(opponentTagName))
+            for (int i = 0; i < opponentTagNames.Length; i++)
             {
-                opponentInRange = false;
+                if (col.CompareTag(opponentTagNames[i]))
+                {
+                    opponentInRanges[i] = false;
+                }
             }
         }
     }
