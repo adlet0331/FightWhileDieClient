@@ -202,12 +202,12 @@ namespace UI.Inventory.Enhance
             switch (mode)
             {
                 case EnhanceViewMode.ItemNotSelected:
-                    animator.SetBool(AnimatorParams.ItemSelectedBool.ToString(), false);
+                    animator.Play("ItemNotSelected");
                     whenItemSelectedBoard.SetActive(false);
                     whenItemNotSelectedBoard.SetActive(true);
                     break;
                 case EnhanceViewMode.ItemSelected:
-                    animator.SetBool(AnimatorParams.ItemSelectedBool.ToString(), true);
+                    animator.Play("ItemSelected");
                     whenItemSelectedBoard.SetActive(true);
                     whenItemNotSelectedBoard.SetActive(false);
                     break;

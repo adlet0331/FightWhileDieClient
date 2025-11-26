@@ -122,7 +122,6 @@ namespace NonDestroyObject
         public void HandleRewardedAdClosed(object sender, EventArgs args)
         {
             Debug.Log("HandleRewardedAdClosed event received");
-            UIManager.Instance.gatchaPopup.WatchAdEndAndStartGatcha();
         }
         
         // Called when the user should be rewarded for interacting with the ad.

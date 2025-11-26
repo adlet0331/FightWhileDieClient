@@ -18,12 +18,12 @@ namespace Combat
         ChargeAttack,
         Running,
         Damaged,
-        JumpBack,
         Dying,
         Charge,
         // Only Player
-        PerfectChargeAttack
+        PerfectChargeAttack,
         // Enemy AI
+        JumpBack,
     }
     [Serializable]
     public enum AttackType
@@ -114,14 +114,13 @@ namespace Combat
         }
         
         /// <summary>
-        /// Switch "currentStatus" and Animation Variable
+        /// Switch "currentStatus" and Animation using Animator.Play()
         /// </summary>
         /// <param name="newStatus"></param>
         protected void SwitchStatusAndAnimation(CombatEntityStatus newStatus)
         {
             if (currentStatus == newStatus) return;
-            animator.SetBool(currentStatus.ToString(), false);
-            animator.SetBool(newStatus.ToString(), true);
+            animator.Play(newStatus.ToString());
         }
 
         /// <summary>
