@@ -72,8 +72,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRangeCollider: {fileID: 1138888567}
-  opponentTagName: Player
-  opponentInRange: 0
+  isPlayer: 0
+  opponentInRanges: 
 --- !u!1 &3117746138525706423
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4383551722597679850}
   m_Layer: 0
   m_Name: BodyCollider
-  m_TagString: Enemy
+  m_TagString: EnemyR
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -226,8 +226,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRangeCollider: {fileID: 8789761679208962417}
-  opponentTagName: Player
-  opponentInRange: 0
+  isPlayer: 0
+  opponentInRanges: 
 --- !u!1 &3973778045446700009
 GameObject:
   m_ObjectHideFlags: 0
@@ -277,8 +277,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 0
-  attackHitDuration: 0.15
-  chargeAttackHitDuration: 0.15
+  attackHitDuration: 1
+  chargeAttackHitDuration: 1
   attackClip: 1
   chargeAttackClip: 3
   runningSpeed: 2

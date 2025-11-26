@@ -10,10 +10,28 @@ namespace Combat
         [Header("EnemyEntity Variables")]
         [SerializeField] private float chargeElapsedTime;
         public float CurrentHpRatio => (float)currentHp / (float)maxHp;
-        public virtual bool IsEnemyHittingPlayer => Attacking && Hitting && ((AttackType == AttackType.Normal && OpponentInRange) || 
-                                                                             (AttackType == AttackType.Charge && OpponentInChargeRange));
+        public virtual bool[] EnemyHittingPlayers()
+        {
+            if (Attacking && Hitting)
+            {
+                switch (AttackType)
+                {
+                    case AttackType.Normal:
+                        return OpponentInRange;
+                    case AttackType.Charge:
+                        return OpponentInChargeRange;
+                    default:
+                        Debug.Assert(false, "Unknown AttackType in EnemyHittingPlayer");
+                        return new bool[OpponentInRange.Length];
+                }
+            }
+            else
+            {
+                return OpponentInRange.Length > 0 ? new bool[OpponentInRange.Length] : new bool[0];
+            }
+        }
 
-        protected override void WhenStart()
+        public override void WhenStart()
         {
             base.WhenStart();
             chargeElapsedTime = 0;
@@ -22,11 +40,11 @@ namespace Combat
         public virtual void ActionUpdate()
         {
             if (enemyActionBlockList.Contains(currentStatus)) return;
-            if (!OpponentInRange && !OpponentInChargeRange)
+            if (!OpponentInRange.Any(hit => hit) && !OpponentInChargeRange.Any(hit => hit))
             {
                 EntityAction(CombatEntityStatus.Running);
             }
-            else if (OpponentInChargeRange && CurrentHpRatio <= 0.5f)
+            else if (OpponentInChargeRange.Any(hit => hit) && CurrentHpRatio <= 0.5f)
             {
                 if (chargeElapsedTime == 0.0f)
                 {
@@ -44,7 +62,7 @@ namespace Combat
                     chargeElapsedTime = 0.0f;
                 }
             }
-            else if (OpponentInRange)
+            else if (OpponentInRange.Any(hit => hit))
             {
                 EntityAction(CombatEntityStatus.Attack);
             }
@@ -69,14 +87,14 @@ namespace Combat
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
             if (currentHp == 0)
             {
-                SwitchStatusAndAnimation(CombatEntityStatus.Dying);
+                PlayAnimation(CombatEntityStatus.Dying);
                 currentStatus = CombatEntityStatus.Dying;
                 WaitAndReturnToIdleWithOperation(GetAnimationTime("Dying"), ResetAfterDead);
                 return true;
             }
             else
             {
-                SwitchStatusAndAnimation(CombatEntityStatus.Damaged);
+                PlayAnimation(CombatEntityStatus.Damaged);
                 currentStatus = CombatEntityStatus.Damaged;
                 WaitAndReturnToIdleWithOperation(GetAnimationTime("Damaged"));
                 return false;

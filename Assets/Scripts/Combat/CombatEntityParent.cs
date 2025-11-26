@@ -53,8 +53,8 @@ namespace Combat
         [SerializeField] public float backJumpSpeed;
         [SerializeField] public float knockBackXInterval;
 
-        public bool OpponentInRange => attackHitBox.OpponentInRange;
-        public bool OpponentInChargeRange => chargeAttackHitBox.OpponentInRange;
+        public bool[] OpponentInRange => attackHitBox.OpponentInRanges;
+        public bool[] OpponentInChargeRange => chargeAttackHitBox.OpponentInRanges;
         // Current Status
         public AttackType AttackType => attackType;
         public CombatEntityStatus CurrentStatus => currentStatus;
@@ -75,11 +75,11 @@ namespace Combat
             WhenStart();
         }
 
-        protected virtual void WhenStart()
+        public virtual void WhenStart()
         {
             // Coroutines
             CancelAllCoroutine();
-            currentStatus = CombatEntityStatus.Idle;
+            EntityAction(CombatEntityStatus.Idle);
         }
 
         // 기다렸다가 IDLE로 전환
@@ -97,6 +97,7 @@ namespace Combat
                 operation?.Invoke();
                 EntityAction(CombatEntityStatus.Idle);
                 _waitAndReturnToIdleCoroutine = null;
+                CombatManager.Instance.SwitchDirection = true;
             });
             StartCoroutine(_waitAndReturnToIdleCoroutine);
         }
@@ -117,9 +118,8 @@ namespace Combat
         /// Switch "currentStatus" and Animation using Animator.Play()
         /// </summary>
         /// <param name="newStatus"></param>
-        protected void SwitchStatusAndAnimation(CombatEntityStatus newStatus)
+        protected void PlayAnimation(CombatEntityStatus newStatus)
         {
-            if (currentStatus == newStatus) return;
             animator.Play(newStatus.ToString());
         }
 
@@ -233,7 +233,8 @@ namespace Combat
         public virtual bool EntityAction(CombatEntityStatus combatEntityStatus)
         {
             // Animation 처리
-            SwitchStatusAndAnimation(combatEntityStatus);
+            Debug.Log($"$[{name}] EntityAction Called: {combatEntityStatus}");
+            PlayAnimation(combatEntityStatus);
             currentStatus = combatEntityStatus;
             // 변수 및 Coroutine 처리
             switch (combatEntityStatus)

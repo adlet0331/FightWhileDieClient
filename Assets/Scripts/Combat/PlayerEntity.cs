@@ -9,10 +9,29 @@ namespace Combat
         [SerializeField] private float perfectChargeAttackHitDuration;
         [SerializeField] private AttackRangeObject perfectChargeAttackHitBox;
         
-        public bool EnemyInPerfectChargeRange => perfectChargeAttackHitBox.OpponentInRange;
-        public bool PlayerHittingEnemy => Attacking && Hitting && ((AttackType == AttackType.Normal && OpponentInRange) ||
-                                                                   (AttackType == AttackType.Charge && OpponentInChargeRange) ||
-                                                                   (AttackType == AttackType.PerfectCharge && EnemyInPerfectChargeRange));
+        public bool[] EnemyInPerfectChargeRange => perfectChargeAttackHitBox.OpponentInRanges;
+        public bool[] PlayerHittingEnemys()
+        {
+            if (Attacking && Hitting)
+            {
+                switch (AttackType)
+                {
+                    case AttackType.Normal:
+                        return OpponentInRange;
+                    case AttackType.Charge:
+                        return OpponentInChargeRange;
+                    case AttackType.PerfectCharge:
+                        return EnemyInPerfectChargeRange;
+                    default:
+                        Debug.Assert(false, "Unknown AttackType in PlayerHittingEnemys");
+                        return new bool[OpponentInRange.Length];
+                }
+            }
+            else
+            {
+                return OpponentInRange.Length > 0 ? new bool[OpponentInRange.Length] : new bool[0];
+            }
+        }
 
         public override bool Damaged(int damage)
         {
@@ -20,14 +39,14 @@ namespace Combat
             currentHp = currentHp - damage > 0 ? currentHp - damage : 0;
             if (currentHp == 0)
             {
-                SwitchStatusAndAnimation(CombatEntityStatus.Dying);
+                PlayAnimation(CombatEntityStatus.Dying);
                 currentStatus = CombatEntityStatus.Dying;
                 WaitAndReturnToIdleWithOperation(GetAnimationTime("Dying"), ResetAfterDead);
                 return true;
             }
             else
             {
-                SwitchStatusAndAnimation(CombatEntityStatus.Damaged);
+                PlayAnimation(CombatEntityStatus.Damaged);
                 currentStatus = CombatEntityStatus.Damaged;
                 WaitAndReturnToIdleWithOperation(GetAnimationTime("Damaged"));
                 return false;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Combat;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,9 +15,12 @@ namespace NonDestroyObject
         [Header("Need Initialize In Unity")] 
         [SerializeField] private PlayerEntity player;
         [SerializeField] private EnemyEntity[] enemyAIList;
-        [SerializeField] private Transform aiStartPosition;
-        [SerializeField] private Transform aiStandingPosition;
-        [SerializeField] private int currentEnemyIndex;
+        [SerializeField] private Transform aiRightStartPosition;
+        [SerializeField] private Transform aiRightStandingPosition;
+        [SerializeField] private Transform aiLeftStartPosition;
+        [SerializeField] private Transform aiLeftStandingPosition;
+        [SerializeField] private int currentLeftEnemyIndex;
+        [SerializeField] private int currentRightEnemyIndex;
         [SerializeField] private float strongAttackHoldTime;
         [SerializeField] private float strongAttackHoldRandomMaxTime;
         [SerializeField] private float perfectAttackTimeInterval;
@@ -32,14 +36,16 @@ namespace NonDestroyObject
         [SerializeField] private int randomSeed;
         [SerializeField] private bool isHolded;
         [SerializeField] private float holdTime;
-        [Header("Auto Status")]
-        [SerializeField] private float afterEndCombat;
-
+        public bool SwitchDirection;
         public bool IsInCombat { get; private set; }
         
-        public EnemyEntity CurrentEnemyEntity
+        public EnemyEntity CurrentLeftEnemyEntity
         {
-            get => enemyAIList[currentEnemyIndex];
+            get => enemyAIList[currentLeftEnemyIndex];
+        }
+        public EnemyEntity CurrentRightEnemyEntity
+        {
+            get => enemyAIList[currentRightEnemyIndex];
         }
         public bool TimeBlocked
         {
@@ -52,13 +58,15 @@ namespace NonDestroyObject
                 if (value)
                 {
                     player.TimeBlocked();
-                    CurrentEnemyEntity.TimeBlocked();
+                    CurrentLeftEnemyEntity.TimeBlocked();
+                    CurrentRightEnemyEntity.TimeBlocked();
                 }
                 else
                 {
                     
                     player.TimeResumed();
-                    CurrentEnemyEntity.TimeResumed();
+                    CurrentLeftEnemyEntity.TimeResumed();
+                    CurrentRightEnemyEntity.TimeResumed();
                 }
             }
         }
@@ -72,11 +80,12 @@ namespace NonDestroyObject
             isHolded = false;
             // Coroutines
             _afterDeadCoroutine = null;
+            _shakeCameraCoroutine = null;
+            _stageTransitionCoroutine = null;
             // Random
             randomSeed = DateTime.Now.Millisecond * 103729;
             _random = new Random(randomSeed);
             UpdateRandomEnemyAI();
-            UpdateRandomSeed();
         }
 
         private void ActivateCoroutines(bool active)
@@ -91,6 +100,10 @@ namespace NonDestroyObject
                 {
                     StopCoroutine(_shakeCameraCoroutine);
                 }
+                if (_stageTransitionCoroutine != null)
+                {
+                    StopCoroutine(_stageTransitionCoroutine);
+                }
             }
             else
             {
@@ -102,14 +115,22 @@ namespace NonDestroyObject
                 {
                     StartCoroutine(_shakeCameraCoroutine);
                 }
+                if (_stageTransitionCoroutine != null)
+                {
+                    StartCoroutine(_stageTransitionCoroutine);
+                }
             }
         }
 
         private void UpdateRandomEnemyAI()
         {
-            CurrentEnemyEntity.Hide();
-            currentEnemyIndex = _random.Next(0, enemyAIList.Length);
-            CurrentEnemyEntity.Show();
+            UpdateRandomSeed();
+            CurrentLeftEnemyEntity.Hide();
+            CurrentRightEnemyEntity.Hide();
+            currentLeftEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2 + 1;
+            currentRightEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2;
+            CurrentLeftEnemyEntity.Show();
+            CurrentRightEnemyEntity.Show();
         }
         
         // Player Input
@@ -126,28 +147,6 @@ namespace NonDestroyObject
 
             // Pause 때 Action 막기
             if (timeBlocked) return;
-
-            // Auto 켰을 때 자동조작
-            if (AutoManager.Instance.IsAuto)
-            {
-                // Skip Delay At First Pressed
-                if (AutoManager.Instance.IsFirst)
-                {
-                    afterEndCombat = 3.0f;
-                }
-                
-                if (afterEndCombat < 3.0f)
-                {
-                    afterEndCombat += Time.deltaTime;
-                    return;
-                }
-                
-                if (!IsInCombat)
-                {
-                    StartCombat();
-                }
-                // TODO: 오토 켰을 때 플레이어 액션 메커니즘 넣어야함
-            }
             
             // 공격 액션
             if (!inputBlocked && !player.Attacking && player.CurrentStatus != CombatEntityStatus.Dying)
@@ -191,46 +190,66 @@ namespace NonDestroyObject
                     isHolded = false;
                 }
             }
+
+            BackgroundManager.Instance.UpdateBackground(Time.deltaTime);
         }
 
         private void FixedUpdate()
         {
             if (timeBlocked || inputBlocked) return;
 
-            #region CheckHitting
-            // enemyAI 피격 판정 우선 - 동시에 때리면 플레이어 판정이 우세 
-            if (player.PlayerHittingEnemy)
+            if (SwitchDirection)
             {
+                SwitchDirection = false;
+                player.transform.localScale = new Vector3(-player.transform.localScale.x, player.transform.localScale.y, player.transform.localScale.z);
+            }
+
+            #region CheckHitting
+            // enemyAI 피격 판정 우선 - 동시에 때리면 플레이어 판정이 우세
+            bool[] hittingEnemys = player.PlayerHittingEnemys();
+            for (int i = 0; i < hittingEnemys.Length; i++)
+            {
+                if (!hittingEnemys[i]) continue;
+                SwitchDirection = false;
                 player.MyAttackHitted();
                 int damage = (int)(DataManager.Instance.playerDataManager.Atk * playerDamagePerAttackRate[(int)player.AttackType]);
                 
-                var dead = CurrentEnemyEntity.Damaged(damage);
+                EnemyEntity targetEnemy = (i % 2 == 1) ? CurrentRightEnemyEntity : CurrentLeftEnemyEntity;
+
+                var dead = targetEnemy.Damaged(damage);
                 if (dead)
                 {
                     // 코인 이펙트
                     UIManager.Instance.ShowCoinEffect();
-                    var delay = CurrentEnemyEntity.GetAnimationTime("Dying");
+                    var delay = targetEnemy.GetAnimationTime("Dying");
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
-                        EndCombat(true);
+                        var otherEnemy = (i % 2 == 0) ? CurrentRightEnemyEntity : CurrentLeftEnemyEntity;
+                        if (otherEnemy.CurrentStatus == CombatEntityStatus.Dying)
+                        {
+                            StartCombat();
+                            UpdateRandomEnemyAI();
+                            DataManager.Instance.playerDataManager.StageCleared();
+                        }
                         _afterDeadCoroutine = null;
                     });
                     StartCoroutine(_afterDeadCoroutine);
-                    // Update enemyAI[currentEnemyIndex]'s Random Seed
-                    UpdateRandomSeed();
                 }
                 else
                 {
                     ShakeCamera(1, 1, 1f);
                 }
-                UIManager.Instance.UpdateEnemyHp(CurrentEnemyEntity.CurrentHpRatio);
+                UIManager.Instance.UpdateEnemyHp(targetEnemy.CurrentHpRatio);
+            }
+            if (hittingEnemys.Any(hitting => hitting))
+            {
                 return;
             }
 
             // Player 피격 판정
-            if (CurrentEnemyEntity.IsEnemyHittingPlayer)
+            if (CurrentLeftEnemyEntity.EnemyHittingPlayers().Any(hitting => hitting))
             {
-                CurrentEnemyEntity.MyAttackHitted();
+                CurrentLeftEnemyEntity.MyAttackHitted();
                 // Player's Hp is always 1
                 var dead = player.Damaged(1);
                 if (dead)
@@ -238,7 +257,24 @@ namespace NonDestroyObject
                     var delay = player.GetAnimationTime("Dying");
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
-                        EndCombat(false);
+                        EndCombat();
+                        _afterDeadCoroutine = null;
+                    });
+                    StartCoroutine(_afterDeadCoroutine);
+                }
+                return;
+            }
+            if (CurrentRightEnemyEntity.EnemyHittingPlayers().Any(hitting => hitting))
+            {
+                CurrentRightEnemyEntity.MyAttackHitted();
+                // Player's Hp is always 1
+                var dead = player.Damaged(1);
+                if (dead)
+                {
+                    var delay = player.GetAnimationTime("Dying");
+                    _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
+                    {
+                        EndCombat();
                         _afterDeadCoroutine = null;
                     });
                     StartCoroutine(_afterDeadCoroutine);
@@ -247,37 +283,55 @@ namespace NonDestroyObject
             }
             #endregion
 
-            CurrentEnemyEntity.ActionUpdate();
+            CurrentLeftEnemyEntity.ActionUpdate();
+            CurrentRightEnemyEntity.ActionUpdate();
             // Enemy Entity Moving
-            if (CurrentEnemyEntity.CurrentStatus == CombatEntityStatus.Damaged)
+            if (CurrentLeftEnemyEntity.CurrentStatus == CombatEntityStatus.Damaged)
             {
-                CurrentEnemyEntity.transform.position += Vector3.right * (CurrentEnemyEntity.knockBackXInterval * Time.fixedDeltaTime);
-                return;
+                CurrentLeftEnemyEntity.transform.position -= Vector3.right * (CurrentLeftEnemyEntity.knockBackXInterval * Time.fixedDeltaTime);
             }
-            else if (CurrentEnemyEntity.CurrentStatus == CombatEntityStatus.Running)
+            else if (CurrentLeftEnemyEntity.CurrentStatus == CombatEntityStatus.Running)
             {
-                CurrentEnemyEntity.transform.position += Vector3.left * (CurrentEnemyEntity.runningSpeed * Time.fixedDeltaTime);
-                return;
+                CurrentLeftEnemyEntity.transform.position -= Vector3.left * (CurrentLeftEnemyEntity.runningSpeed * Time.fixedDeltaTime);
             }
-            else if (CurrentEnemyEntity.CurrentStatus == CombatEntityStatus.JumpBack)
+            else if (CurrentLeftEnemyEntity.CurrentStatus == CombatEntityStatus.JumpBack)
             {
-                CurrentEnemyEntity.transform.position += Vector3.right * (CurrentEnemyEntity.backJumpSpeed * Time.fixedDeltaTime);
-                return;
+                CurrentLeftEnemyEntity.transform.position -= Vector3.right * (CurrentLeftEnemyEntity.backJumpSpeed * Time.fixedDeltaTime);
+            }
+            // Right Enemy Entity Moving
+            if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.Damaged)
+            {
+                CurrentRightEnemyEntity.transform.position += Vector3.right * (CurrentRightEnemyEntity.knockBackXInterval * Time.fixedDeltaTime);
+            }
+            else if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.Running)
+            {
+                CurrentRightEnemyEntity.transform.position += Vector3.left * (CurrentRightEnemyEntity.runningSpeed * Time.fixedDeltaTime);
+            }
+            else if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.JumpBack)
+            {
+                CurrentRightEnemyEntity.transform.position += Vector3.right * (CurrentRightEnemyEntity.backJumpSpeed * Time.fixedDeltaTime);
             }
         }
 
         private void InitAiPos(bool playerDie)
         {
             if (playerDie)
-                CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiStandingPosition.localPosition, aiStandingPosition.rotation);
+            {
+                CurrentLeftEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStandingPosition.localPosition, aiLeftStandingPosition.rotation);
+                CurrentRightEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStandingPosition.localPosition, aiRightStandingPosition.rotation);
+            }
             else
-                CurrentEnemyEntity.transform.SetLocalPositionAndRotation(aiStartPosition.localPosition, aiStartPosition.rotation);
+            {
+                CurrentLeftEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStartPosition.localPosition, aiLeftStartPosition.rotation);
+                CurrentRightEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStartPosition.localPosition, aiRightStartPosition.rotation);
+            }
         }
 
         private void InitPlayerEnemyHp()
         {
             player.InitHp(1);
-            CurrentEnemyEntity.InitHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
+            CurrentLeftEnemyEntity.InitHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
+            CurrentRightEnemyEntity.InitHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
         }
 
         private IEnumerator CameraShake(float roughness, float magnitude, float duration)
@@ -311,32 +365,58 @@ namespace NonDestroyObject
         {
             DataManager.Instance.playerDataManager.StageReset();
             InitPlayerEnemyHp();
+            player.transform.localScale = new Vector3(Mathf.Abs(player.transform.localScale.x), player.transform.localScale.y, player.transform.localScale.z);
 
             IsInCombat = true;
             inputBlocked = false;
             InitAiPos(false);
             UIManager.Instance.SwitchMainPage2CombatUI(true);
+
+            // Start stage transition: player runs, background moves, then enemy spawns
+            if (_stageTransitionCoroutine != null)
+                StopCoroutine(_stageTransitionCoroutine);
+            _stageTransitionCoroutine = StageTransition();
+            StartCoroutine(_stageTransitionCoroutine);
+            
+            // Start background movement when combat begins
+            BackgroundManager.Instance.Play();
         }
 
-        private void EndCombat(bool cleared)
+        private void EndCombat()
         {
-            if (cleared)
-            {
-                // 스테이지 클리어 처리
-                UpdateRandomEnemyAI();
-                DataManager.Instance.playerDataManager.StageCleared();
-                InitAiPos(false);
-            }
-            else
-            {
-                IsInCombat = false;
-                inputBlocked = true;
-                UIManager.Instance.SwitchMainPage2CombatUI(false);
-                DataManager.Instance.playerDataManager.StageReset();
-                InitAiPos(true);
-                afterEndCombat = 0.0f;
-            }
+            IsInCombat = false;
+            inputBlocked = true;
+            UIManager.Instance.SwitchMainPage2CombatUI(false);
+            DataManager.Instance.playerDataManager.StageReset();
+            InitAiPos(true);
+            BackgroundManager.Instance.Stop();
             InitPlayerEnemyHp();
+            CurrentLeftEnemyEntity.WhenStart();
+            CurrentRightEnemyEntity.WhenStart();
+            player.transform.localScale = new Vector3(Mathf.Abs(player.transform.localScale.x), player.transform.localScale.y, player.transform.localScale.z);
+        }
+        
+        private IEnumerator StageTransition()
+        {
+            // Play player running animation
+            player.EntityAction(CombatEntityStatus.Running);
+            InitAiPos(false);
+            CurrentLeftEnemyEntity.WhenStart();
+            CurrentRightEnemyEntity.WhenStart();
+            BackgroundManager.Instance.Play();
+            
+            // Wait 1 second for transition
+            yield return new WaitForSeconds(1.0f);
+            
+            // Stop player running and return to idle
+            if (player.CurrentStatus == CombatEntityStatus.Running)
+                player.EntityAction(CombatEntityStatus.Idle);
+            BackgroundManager.Instance.Stop();
+            
+            // Initialize HP for new stage
+            InitPlayerEnemyHp();
+            
+            _stageTransitionCoroutine = null;
         }
 
         private void UpdateRandomSeed()
@@ -348,5 +428,6 @@ namespace NonDestroyObject
         // IEnumerator
         private IEnumerator _afterDeadCoroutine;
         private IEnumerator _shakeCameraCoroutine;
+        private IEnumerator _stageTransitionCoroutine;
     }
 }
