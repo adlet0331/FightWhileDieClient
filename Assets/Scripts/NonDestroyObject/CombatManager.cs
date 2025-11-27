@@ -58,14 +58,12 @@ namespace NonDestroyObject
                 if (value)
                 {
                     player.TimeBlocked();
-                    CurrentLeftEnemyEntity.TimeBlocked();
                     CurrentRightEnemyEntity.TimeBlocked();
                 }
                 else
                 {
                     
                     player.TimeResumed();
-                    CurrentLeftEnemyEntity.TimeResumed();
                     CurrentRightEnemyEntity.TimeResumed();
                 }
             }
@@ -125,11 +123,8 @@ namespace NonDestroyObject
         private void UpdateRandomEnemyAI()
         {
             UpdateRandomSeed();
-            CurrentLeftEnemyEntity.Hide();
             CurrentRightEnemyEntity.Hide();
-            currentLeftEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2 + 1;
             currentRightEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2;
-            CurrentLeftEnemyEntity.Show();
             CurrentRightEnemyEntity.Show();
         }
         
@@ -214,7 +209,7 @@ namespace NonDestroyObject
                 player.MyAttackHitted();
                 int damage = (int)(DataManager.Instance.playerDataManager.Atk * playerDamagePerAttackRate[(int)player.AttackType]);
                 
-                EnemyEntity targetEnemy = (i % 2 == 1) ? CurrentRightEnemyEntity : CurrentLeftEnemyEntity;
+                EnemyEntity targetEnemy = CurrentRightEnemyEntity;
 
                 var dead = targetEnemy.Damaged(damage);
                 if (dead)
@@ -224,8 +219,7 @@ namespace NonDestroyObject
                     var delay = targetEnemy.GetAnimationTime("Dying");
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
-                        var otherEnemy = (i % 2 == 0) ? CurrentRightEnemyEntity : CurrentLeftEnemyEntity;
-                        if (otherEnemy.CurrentStatus == CombatEntityStatus.Dying)
+                        if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.Dying)
                         {
                             StartCombat();
                             UpdateRandomEnemyAI();
@@ -247,23 +241,6 @@ namespace NonDestroyObject
             }
 
             // Player 피격 판정
-            if (CurrentLeftEnemyEntity.EnemyHittingPlayers().Any(hitting => hitting))
-            {
-                CurrentLeftEnemyEntity.MyAttackHitted();
-                // Player's Hp is always 1
-                var dead = player.Damaged(1);
-                if (dead)
-                {
-                    var delay = player.GetAnimationTime("Dying");
-                    _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
-                    {
-                        EndCombat();
-                        _afterDeadCoroutine = null;
-                    });
-                    StartCoroutine(_afterDeadCoroutine);
-                }
-                return;
-            }
             if (CurrentRightEnemyEntity.EnemyHittingPlayers().Any(hitting => hitting))
             {
                 CurrentRightEnemyEntity.MyAttackHitted();
@@ -283,21 +260,7 @@ namespace NonDestroyObject
             }
             #endregion
 
-            CurrentLeftEnemyEntity.ActionUpdate();
             CurrentRightEnemyEntity.ActionUpdate();
-            // Enemy Entity Moving
-            if (CurrentLeftEnemyEntity.CurrentStatus == CombatEntityStatus.Damaged)
-            {
-                CurrentLeftEnemyEntity.transform.position -= Vector3.right * (CurrentLeftEnemyEntity.knockBackXInterval * Time.fixedDeltaTime);
-            }
-            else if (CurrentLeftEnemyEntity.CurrentStatus == CombatEntityStatus.Running)
-            {
-                CurrentLeftEnemyEntity.transform.position -= Vector3.left * (CurrentLeftEnemyEntity.runningSpeed * Time.fixedDeltaTime);
-            }
-            else if (CurrentLeftEnemyEntity.CurrentStatus == CombatEntityStatus.JumpBack)
-            {
-                CurrentLeftEnemyEntity.transform.position -= Vector3.right * (CurrentLeftEnemyEntity.backJumpSpeed * Time.fixedDeltaTime);
-            }
             // Right Enemy Entity Moving
             if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.Damaged)
             {
@@ -317,12 +280,10 @@ namespace NonDestroyObject
         {
             if (playerDie)
             {
-                CurrentLeftEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStandingPosition.localPosition, aiLeftStandingPosition.rotation);
                 CurrentRightEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStandingPosition.localPosition, aiRightStandingPosition.rotation);
             }
             else
             {
-                CurrentLeftEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStartPosition.localPosition, aiLeftStartPosition.rotation);
                 CurrentRightEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStartPosition.localPosition, aiRightStartPosition.rotation);
             }
         }
@@ -330,7 +291,6 @@ namespace NonDestroyObject
         private void InitPlayerEnemyHp()
         {
             player.InitHp(1);
-            CurrentLeftEnemyEntity.InitHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
             CurrentRightEnemyEntity.InitHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
         }
 
@@ -391,7 +351,6 @@ namespace NonDestroyObject
             InitAiPos(true);
             BackgroundManager.Instance.Stop();
             InitPlayerEnemyHp();
-            CurrentLeftEnemyEntity.WhenStart();
             CurrentRightEnemyEntity.WhenStart();
             player.transform.localScale = new Vector3(Mathf.Abs(player.transform.localScale.x), player.transform.localScale.y, player.transform.localScale.z);
         }
@@ -401,7 +360,6 @@ namespace NonDestroyObject
             // Play player running animation
             player.EntityAction(CombatEntityStatus.Running);
             InitAiPos(false);
-            CurrentLeftEnemyEntity.WhenStart();
             CurrentRightEnemyEntity.WhenStart();
             BackgroundManager.Instance.Play();
             
