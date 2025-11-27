@@ -19,8 +19,7 @@ namespace NonDestroyObject
         [SerializeField] private Transform aiRightStandingPosition;
         [SerializeField] private Transform aiLeftStartPosition;
         [SerializeField] private Transform aiLeftStandingPosition;
-        [SerializeField] private int currentLeftEnemyIndex;
-        [SerializeField] private int currentRightEnemyIndex;
+        [SerializeField] private int currentEnemyIndex;
         [SerializeField] private float strongAttackHoldTime;
         [SerializeField] private float strongAttackHoldRandomMaxTime;
         [SerializeField] private float perfectAttackTimeInterval;
@@ -42,18 +41,10 @@ namespace NonDestroyObject
         // 현재 스테이지에서 적이 오른쪽에서 오는지 왼쪽에서 오는지 (true: 오른쪽, false: 왼쪽)
         private bool _isEnemyFromRight;
         
-        public EnemyEntity CurrentLeftEnemyEntity
-        {
-            get => enemyAIList[currentLeftEnemyIndex];
-        }
-        public EnemyEntity CurrentRightEnemyEntity
-        {
-            get => enemyAIList[currentRightEnemyIndex];
-        }
-        // 현재 활성화된 적 (랜덤하게 결정된 방향의 적)
+        // 현재 활성화된 적
         public EnemyEntity CurrentActiveEnemyEntity
         {
-            get => _isEnemyFromRight ? CurrentRightEnemyEntity : CurrentLeftEnemyEntity;
+            get => enemyAIList[currentEnemyIndex];
         }
         public bool TimeBlocked
         {
@@ -132,28 +123,21 @@ namespace NonDestroyObject
         {
             UpdateRandomSeed();
             
+            // 이전 적 숨기기
+            if (currentEnemyIndex < enemyAIList.Length)
+                CurrentActiveEnemyEntity.Hide();
+            
             // 랜덤하게 오른쪽 또는 왼쪽에서 적이 오도록 결정
-            bool wasEnemyFromRight = _isEnemyFromRight;
             _isEnemyFromRight = _random.Next(0, 2) == 0;
             
-            // 이전 적 숨기기 (방향이 바뀌었을 때만 이전 적을 숨김)
+            // 새로운 적 인덱스 선택 (짝수: 오른쪽, 홀수: 왼쪽)
             if (_isEnemyFromRight)
             {
-                if (!wasEnemyFromRight && currentLeftEnemyIndex < enemyAIList.Length)
-                    CurrentLeftEnemyEntity.Hide();
-                else if (wasEnemyFromRight)
-                    CurrentRightEnemyEntity.Hide();
-                    
-                currentRightEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2;
+                currentEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2;
             }
             else
             {
-                if (wasEnemyFromRight && currentRightEnemyIndex < enemyAIList.Length)
-                    CurrentRightEnemyEntity.Hide();
-                else if (!wasEnemyFromRight)
-                    CurrentLeftEnemyEntity.Hide();
-                    
-                currentLeftEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2 + 1;
+                currentEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2 + 1;
             }
             
             CurrentActiveEnemyEntity.Show();
