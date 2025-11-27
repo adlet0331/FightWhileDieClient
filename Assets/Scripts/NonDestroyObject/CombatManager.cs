@@ -39,6 +39,9 @@ namespace NonDestroyObject
         public bool SwitchDirection;
         public bool IsInCombat { get; private set; }
         
+        // 현재 스테이지에서 적이 오른쪽에서 오는지 왼쪽에서 오는지 (true: 오른쪽, false: 왼쪽)
+        private bool _isEnemyFromRight;
+        
         public EnemyEntity CurrentLeftEnemyEntity
         {
             get => enemyAIList[currentLeftEnemyIndex];
@@ -46,6 +49,11 @@ namespace NonDestroyObject
         public EnemyEntity CurrentRightEnemyEntity
         {
             get => enemyAIList[currentRightEnemyIndex];
+        }
+        // 현재 활성화된 적 (랜덤하게 결정된 방향의 적)
+        public EnemyEntity CurrentActiveEnemyEntity
+        {
+            get => _isEnemyFromRight ? CurrentRightEnemyEntity : CurrentLeftEnemyEntity;
         }
         public bool TimeBlocked
         {
@@ -58,13 +66,13 @@ namespace NonDestroyObject
                 if (value)
                 {
                     player.TimeBlocked();
-                    CurrentRightEnemyEntity.TimeBlocked();
+                    CurrentActiveEnemyEntity.TimeBlocked();
                 }
                 else
                 {
                     
                     player.TimeResumed();
-                    CurrentRightEnemyEntity.TimeResumed();
+                    CurrentActiveEnemyEntity.TimeResumed();
                 }
             }
         }
@@ -123,9 +131,32 @@ namespace NonDestroyObject
         private void UpdateRandomEnemyAI()
         {
             UpdateRandomSeed();
-            CurrentRightEnemyEntity.Hide();
-            currentRightEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2;
-            CurrentRightEnemyEntity.Show();
+            
+            // 랜덤하게 오른쪽 또는 왼쪽에서 적이 오도록 결정
+            bool wasEnemyFromRight = _isEnemyFromRight;
+            _isEnemyFromRight = _random.Next(0, 2) == 0;
+            
+            // 이전 적 숨기기 (방향이 바뀌었을 때만 이전 적을 숨김)
+            if (_isEnemyFromRight)
+            {
+                if (!wasEnemyFromRight && currentLeftEnemyIndex < enemyAIList.Length)
+                    CurrentLeftEnemyEntity.Hide();
+                else if (wasEnemyFromRight)
+                    CurrentRightEnemyEntity.Hide();
+                    
+                currentRightEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2;
+            }
+            else
+            {
+                if (wasEnemyFromRight && currentRightEnemyIndex < enemyAIList.Length)
+                    CurrentRightEnemyEntity.Hide();
+                else if (!wasEnemyFromRight)
+                    CurrentLeftEnemyEntity.Hide();
+                    
+                currentLeftEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2 + 1;
+            }
+            
+            CurrentActiveEnemyEntity.Show();
         }
         
         // Player Input
@@ -209,7 +240,7 @@ namespace NonDestroyObject
                 player.MyAttackHitted();
                 int damage = (int)(DataManager.Instance.playerDataManager.Atk * playerDamagePerAttackRate[(int)player.AttackType]);
                 
-                EnemyEntity targetEnemy = CurrentRightEnemyEntity;
+                EnemyEntity targetEnemy = CurrentActiveEnemyEntity;
 
                 var dead = targetEnemy.Damaged(damage);
                 if (dead)
@@ -219,7 +250,7 @@ namespace NonDestroyObject
                     var delay = targetEnemy.GetAnimationTime("Dying");
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
-                        if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.Dying)
+                        if (CurrentActiveEnemyEntity.CurrentStatus == CombatEntityStatus.Dying)
                         {
                             StartCombat();
                             UpdateRandomEnemyAI();
@@ -241,9 +272,9 @@ namespace NonDestroyObject
             }
 
             // Player 피격 판정
-            if (CurrentRightEnemyEntity.EnemyHittingPlayers().Any(hitting => hitting))
+            if (CurrentActiveEnemyEntity.EnemyHittingPlayers().Any(hitting => hitting))
             {
-                CurrentRightEnemyEntity.MyAttackHitted();
+                CurrentActiveEnemyEntity.MyAttackHitted();
                 // Player's Hp is always 1
                 var dead = player.Damaged(1);
                 if (dead)
@@ -260,38 +291,61 @@ namespace NonDestroyObject
             }
             #endregion
 
-            CurrentRightEnemyEntity.ActionUpdate();
-            // Right Enemy Entity Moving
-            if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.Damaged)
+            CurrentActiveEnemyEntity.ActionUpdate();
+            // Enemy Entity Moving (방향에 따라 이동 방향 결정)
+            if (CurrentActiveEnemyEntity.CurrentStatus == CombatEntityStatus.Damaged)
             {
-                CurrentRightEnemyEntity.transform.position += Vector3.right * (CurrentRightEnemyEntity.knockBackXInterval * Time.fixedDeltaTime);
+                if (_isEnemyFromRight)
+                    CurrentActiveEnemyEntity.transform.position += Vector3.right * (CurrentActiveEnemyEntity.knockBackXInterval * Time.fixedDeltaTime);
+                else
+                    CurrentActiveEnemyEntity.transform.position -= Vector3.right * (CurrentActiveEnemyEntity.knockBackXInterval * Time.fixedDeltaTime);
             }
-            else if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.Running)
+            else if (CurrentActiveEnemyEntity.CurrentStatus == CombatEntityStatus.Running)
             {
-                CurrentRightEnemyEntity.transform.position += Vector3.left * (CurrentRightEnemyEntity.runningSpeed * Time.fixedDeltaTime);
+                if (_isEnemyFromRight)
+                    CurrentActiveEnemyEntity.transform.position += Vector3.left * (CurrentActiveEnemyEntity.runningSpeed * Time.fixedDeltaTime);
+                else
+                    CurrentActiveEnemyEntity.transform.position -= Vector3.left * (CurrentActiveEnemyEntity.runningSpeed * Time.fixedDeltaTime);
             }
-            else if (CurrentRightEnemyEntity.CurrentStatus == CombatEntityStatus.JumpBack)
+            else if (CurrentActiveEnemyEntity.CurrentStatus == CombatEntityStatus.JumpBack)
             {
-                CurrentRightEnemyEntity.transform.position += Vector3.right * (CurrentRightEnemyEntity.backJumpSpeed * Time.fixedDeltaTime);
+                if (_isEnemyFromRight)
+                    CurrentActiveEnemyEntity.transform.position += Vector3.right * (CurrentActiveEnemyEntity.backJumpSpeed * Time.fixedDeltaTime);
+                else
+                    CurrentActiveEnemyEntity.transform.position -= Vector3.right * (CurrentActiveEnemyEntity.backJumpSpeed * Time.fixedDeltaTime);
             }
         }
 
         private void InitAiPos(bool playerDie)
         {
-            if (playerDie)
+            if (_isEnemyFromRight)
             {
-                CurrentRightEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStandingPosition.localPosition, aiRightStandingPosition.rotation);
+                if (playerDie)
+                {
+                    CurrentActiveEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStandingPosition.localPosition, aiRightStandingPosition.rotation);
+                }
+                else
+                {
+                    CurrentActiveEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStartPosition.localPosition, aiRightStartPosition.rotation);
+                }
             }
             else
             {
-                CurrentRightEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStartPosition.localPosition, aiRightStartPosition.rotation);
+                if (playerDie)
+                {
+                    CurrentActiveEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStandingPosition.localPosition, aiLeftStandingPosition.rotation);
+                }
+                else
+                {
+                    CurrentActiveEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStartPosition.localPosition, aiLeftStartPosition.rotation);
+                }
             }
         }
 
         private void InitPlayerEnemyHp()
         {
             player.InitHp(1);
-            CurrentRightEnemyEntity.InitHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
+            CurrentActiveEnemyEntity.InitHp(DataManager.Instance.playerDataManager.CurrentEnemyHp);
         }
 
         private IEnumerator CameraShake(float roughness, float magnitude, float duration)
@@ -351,7 +405,7 @@ namespace NonDestroyObject
             InitAiPos(true);
             BackgroundManager.Instance.Stop();
             InitPlayerEnemyHp();
-            CurrentRightEnemyEntity.WhenStart();
+            CurrentActiveEnemyEntity.WhenStart();
             player.transform.localScale = new Vector3(Mathf.Abs(player.transform.localScale.x), player.transform.localScale.y, player.transform.localScale.z);
         }
         
@@ -360,7 +414,7 @@ namespace NonDestroyObject
             // Play player running animation
             player.EntityAction(CombatEntityStatus.Running);
             InitAiPos(false);
-            CurrentRightEnemyEntity.WhenStart();
+            CurrentActiveEnemyEntity.WhenStart();
             BackgroundManager.Instance.Play();
             
             // Wait 1 second for transition
