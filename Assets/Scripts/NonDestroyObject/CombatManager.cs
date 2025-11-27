@@ -228,15 +228,12 @@ namespace NonDestroyObject
                     // 코인 이펙트
                     UIManager.Instance.ShowCoinEffect();
                     var delay = targetEnemy.GetAnimationTime("Dying");
-                    // 현재 죽은 적을 캡처하여 코루틴에서 사용
-                    var dyingEnemy = targetEnemy;
                     _afterDeadCoroutine = CoroutineUtils.WaitAndOperationIEnum(delay, () =>
                     {
-                        if (dyingEnemy.CurrentStatus == CombatEntityStatus.Dying)
+                        if (CurrentActiveEnemyEntity.CurrentStatus == CombatEntityStatus.Dying)
                         {
-                            // 스테이지가 깨질 때 랜덤으로 왼쪽/오른쪽 결정 후 다음 스테이지 시작
-                            UpdateRandomEnemyAI();
                             StartCombat();
+                            UpdateRandomEnemyAI();
                             DataManager.Instance.playerDataManager.StageCleared();
                         }
                         _afterDeadCoroutine = null;
