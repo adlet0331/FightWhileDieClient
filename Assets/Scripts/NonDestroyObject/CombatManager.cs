@@ -130,14 +130,18 @@ namespace NonDestroyObject
             // 랜덤하게 오른쪽 또는 왼쪽에서 적이 오도록 결정
             _isEnemyFromRight = _random.Next(0, 2) == 0;
             
-            // 새로운 적 인덱스 선택 (짝수: 오른쪽, 홀수: 왼쪽)
+            // 새로운 적 인덱스 선택 (왼쪽/오른쪽 구분 없이 전체 배열에서 선택)
+            currentEnemyIndex = _random.Next(0, enemyAIList.Length);
+            
+            // 왼쪽에서 오는 적은 x Scale을 뒤집어서 보이도록
+            var enemyScale = CurrentActiveEnemyEntity.transform.localScale;
             if (_isEnemyFromRight)
             {
-                currentEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2;
+                CurrentActiveEnemyEntity.transform.localScale = new Vector3(Mathf.Abs(enemyScale.x), enemyScale.y, enemyScale.z);
             }
             else
             {
-                currentEnemyIndex = _random.Next(0, enemyAIList.Length / 2) * 2 + 1;
+                CurrentActiveEnemyEntity.transform.localScale = new Vector3(-Mathf.Abs(enemyScale.x), enemyScale.y, enemyScale.z);
             }
             
             CurrentActiveEnemyEntity.Show();
