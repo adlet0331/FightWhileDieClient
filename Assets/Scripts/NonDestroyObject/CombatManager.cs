@@ -35,7 +35,6 @@ namespace NonDestroyObject
         [SerializeField] private int randomSeed;
         [SerializeField] private bool isHolded;
         [SerializeField] private float holdTime;
-        public bool SwitchDirection;
         public bool IsInCombat { get; private set; }
         
         // 현재 스테이지에서 적이 오른쪽에서 오는지 왼쪽에서 오는지 (true: 오른쪽, false: 왼쪽)
@@ -133,7 +132,7 @@ namespace NonDestroyObject
             // 새로운 적 인덱스 선택 (왼쪽/오른쪽 구분 없이 전체 배열에서 선택)
             currentEnemyIndex = _random.Next(0, enemyAIList.Length);
             
-            // 왼쪽에서 오는 적은 x Scale을 뒤집어서 보이도록
+            // 왼쪽에 스폰되면 -Scale, 오른쪽에 스폰되면 +Scale
             var enemyScale = CurrentActiveEnemyEntity.transform.localScale;
             if (_isEnemyFromRight)
             {
@@ -212,19 +211,12 @@ namespace NonDestroyObject
         {
             if (timeBlocked || inputBlocked) return;
 
-            if (SwitchDirection)
-            {
-                SwitchDirection = false;
-                player.transform.localScale = new Vector3(-player.transform.localScale.x, player.transform.localScale.y, player.transform.localScale.z);
-            }
-
             #region CheckHitting
             // enemyAI 피격 판정 우선 - 동시에 때리면 플레이어 판정이 우세
             bool[] hittingEnemys = player.PlayerHittingEnemys();
             for (int i = 0; i < hittingEnemys.Length; i++)
             {
                 if (!hittingEnemys[i]) continue;
-                SwitchDirection = false;
                 player.MyAttackHitted();
                 int damage = (int)(DataManager.Instance.playerDataManager.Atk * playerDamagePerAttackRate[(int)player.AttackType]);
                 
