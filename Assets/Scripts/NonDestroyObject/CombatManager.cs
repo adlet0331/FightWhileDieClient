@@ -305,7 +305,20 @@ namespace NonDestroyObject
             }
         }
 
-        private void InitAiPos()
+        private void InitAiPosStand()
+        {
+            // 항상 StartPosition 사용
+            if (_isEnemyFromRight)
+            {
+                CurrentActiveEnemyEntity.transform.SetLocalPositionAndRotation(aiRightStandingPosition.localPosition, aiRightStandingPosition.rotation);
+            }
+            else
+            {
+                CurrentActiveEnemyEntity.transform.SetLocalPositionAndRotation(aiLeftStandingPosition.localPosition, aiLeftStandingPosition.rotation);
+            }
+        }
+
+        private void InitAIPosStart()
         {
             // 항상 StartPosition 사용
             if (_isEnemyFromRight)
@@ -359,7 +372,7 @@ namespace NonDestroyObject
 
             IsInCombat = true;
             inputBlocked = false;
-            InitAiPos();
+            InitAiPosStand();
             UIManager.Instance.SwitchMainPage2CombatUI(true);
 
             // Start stage transition: player runs, background moves, then enemy spawns
@@ -378,7 +391,7 @@ namespace NonDestroyObject
             inputBlocked = true;
             UIManager.Instance.SwitchMainPage2CombatUI(false);
             DataManager.Instance.playerDataManager.StageReset();
-            InitAiPos();  // 항상 StartPosition 사용
+            InitAiPosStand();  // 항상 StartPosition 사용
             BackgroundManager.Instance.Stop();
             InitPlayerEnemyHp();
             CurrentActiveEnemyEntity.WhenStart();
@@ -389,7 +402,7 @@ namespace NonDestroyObject
         {
             // Play player running animation
             player.EntityAction(CombatEntityStatus.Running);
-            InitAiPos();
+            InitAiPosStand();
             CurrentActiveEnemyEntity.WhenStart();
             BackgroundManager.Instance.Play();
             
